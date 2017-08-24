@@ -1,8 +1,2 @@
-# Ignore everything
-*
-
-# But not these files...
-!.gitignore
-!ProjectSettings
-!Assets
-# etc...
+Library
+Temp
