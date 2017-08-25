@@ -9,7 +9,7 @@ public class ZombieBtn : MonoBehaviour {
     [SerializeField] private int zombiePrice;
  
 
-    public Zombie TowerObject {
+    public Zombie ZombieObject {
         get {
             return zombieObject;
         }

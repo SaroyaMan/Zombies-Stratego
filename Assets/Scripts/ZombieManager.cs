@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -19,12 +18,12 @@ public class ZombieManager : Singleton<ZombieManager> {
 	
 	private void Update () {
         HandleEscape();
-        if(Input.GetMouseButtonDown(0)) {
+        if(Input.GetMouseButtonDown(0) && ZombieBtnPressed != null) {
             Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
-            if(hit.collider.tag == "BuildSite") {   //Check if user clicked on build site
+            if(hit.collider != null && hit.collider.tag == "BuildTile") {   //Check if user clicked on build site
                 buildTile = hit.collider;
-                buildTile.tag = "BuildSiteFull";
+                buildTile.tag = "BuildTileFull";
                 RegisterBuildSite(buildTile);
                 PlaceZombie(hit);
             }
@@ -37,25 +36,25 @@ public class ZombieManager : Singleton<ZombieManager> {
     private void HandleEscape() {
         if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Mouse1)) {
             DisableDragSprite();
-            ZombieBtnPressed = null;
         }
     }
 
     public void PlaceZombie(RaycastHit2D hit) {
         if(!EventSystem.current.IsPointerOverGameObject() && ZombieBtnPressed != null) {
             //GameManager.Instance.SoundFx.PlayOneShot(SoundManager.Instance.Towerbuilt);
-            Zombie newZombie = Instantiate(ZombieBtnPressed.TowerObject);
-            newZombie.transform.position = hit.transform.position;
+            Zombie newZombie = Instantiate(ZombieBtnPressed.ZombieObject);
+            //newZombie.transform.position = hit.transform.position;
+            newZombie.transform.position = new Vector2(hit.transform.position.x + 0.25f, hit.transform.position.y + 0.5f);
+            //newZombie.transform.position = hit.t
             //BuyTower(ZombieBtnPressed.ZombiePrice);
             RegisterZombie(newZombie);
             DisableDragSprite();
-            ZombieBtnPressed = null;
         }
     }
 
     public void RenameTagsBuildSites() {
         foreach(Collider2D collider in buildList) {
-            collider.tag = "BuildSite";
+            collider.tag = "BuildTile";
         }
         buildList.Clear();
     }
@@ -72,16 +71,18 @@ public class ZombieManager : Singleton<ZombieManager> {
         //GameManager.Instance.SubtractMoney(price);
     }
 
-    public void SelectedZombie(ZombieBtn towerSelected) {
+    public void SelectedZombie(ZombieBtn zombieSelected) {
         //if(towerSelected.TowerPrice <= GameManager.Instance.TotalMoney) {
-            ZombieBtnPressed = towerSelected;
+            ZombieBtnPressed = zombieSelected;
             EnableDragSprite(ZombieBtnPressed.DragSprite);
+            TileManager.Instance.MarkAvailableBuildTiles();
         //}
     }
 
     public void FollowMouse() {
         transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.position = new Vector2(transform.position.x, transform.position.y);
+        //print("x = " + transform.position.x + "y = " + transform.position.y);
     }
 
     public void EnableDragSprite(Sprite sprite) {
@@ -91,5 +92,7 @@ public class ZombieManager : Singleton<ZombieManager> {
 
     public void DisableDragSprite() {
         spriteRenderer.enabled = false;
+        ZombieBtnPressed = null;
+        TileManager.Instance.UnmarkAvailableBuildTiles();
     }
 }
