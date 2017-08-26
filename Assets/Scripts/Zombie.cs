@@ -15,25 +15,32 @@ public class Zombie : MonoBehaviour {
 
 
     void OnMouseDown() {
-        TileManager.Instance.MarkAvailableBuildTiles();
-        gameObject.SetActive(false);
-        Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
-        gameObject.SetActive(true);
+        if(ZombieManager.Instance.ZombieBtnPressed == null) {
+            TileManager.Instance.MarkAvailableBuildTiles();
+            gameObject.SetActive(false);
+            Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
+            gameObject.SetActive(true);
+        }
+
     }
 
     void OnMouseDrag() {
-        var mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
-        transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
+        if(ZombieManager.Instance.ZombieBtnPressed == null) {
+            var mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
+            transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
+        }
     }
 
     void OnMouseUp() {
-        TileManager.Instance.UnmarkAvailableBuildTiles();
-        if(ZombieManager.Instance.ChangeZombiePosition(this, originPosition)) {
-            originPosition = transform.position;
-        }
-        else {
-            transform.position = originPosition;
+        if(ZombieManager.Instance.ZombieBtnPressed == null) {
+            TileManager.Instance.UnmarkAvailableBuildTiles();
+            if(ZombieManager.Instance.ChangeZombiePosition(this, originPosition)) {
+                originPosition = transform.position;
+            }
+            else {
+                transform.position = originPosition;
+            }
         }
     }
 
