@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour {
 
+    [SerializeField] private short zIndex;
+
     public bool IsInUse { get; set; }
+
+    public short ZIndex { get { return zIndex; } }
 
 	// Use this for initialization
 	void Start () {

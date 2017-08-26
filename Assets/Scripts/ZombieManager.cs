@@ -25,7 +25,8 @@ public class ZombieManager : Singleton<ZombieManager> {
                 buildTile = hit.collider;
                 buildTile.tag = "BuildTileFull";
                 RegisterBuildSite(buildTile);
-                PlaceZombie(hit);
+                Tile tile = hit.transform.gameObject.GetComponent<Tile>();
+                PlaceZombie(tile);
             }
         }
         if(spriteRenderer.enabled) {
@@ -39,13 +40,13 @@ public class ZombieManager : Singleton<ZombieManager> {
         }
     }
 
-    public void PlaceZombie(RaycastHit2D hit) {
+    public void PlaceZombie(Tile tile) {
         if(!EventSystem.current.IsPointerOverGameObject() && ZombieBtnPressed != null) {
             //GameManager.Instance.SoundFx.PlayOneShot(SoundManager.Instance.Towerbuilt);
             Zombie newZombie = Instantiate(ZombieBtnPressed.ZombieObject);
             //newZombie.transform.position = hit.transform.position;
-            newZombie.transform.position = new Vector2(hit.transform.position.x + 0.25f, hit.transform.position.y + 0.5f);
-            //newZombie.transform.position = hit.t
+            newZombie.transform.position = new Vector2(tile.transform.position.x + 0.25f, tile.transform.position.y + 0.5f);
+            newZombie.GetComponent<SpriteRenderer>().sortingOrder = tile.ZIndex;
             //BuyTower(ZombieBtnPressed.ZombiePrice);
             RegisterZombie(newZombie);
             DisableDragSprite();
