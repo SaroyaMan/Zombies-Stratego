@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ZombieBtn : MonoBehaviour {
 
     [SerializeField] private Zombie zombieObject;
     [SerializeField] private Sprite dragSprite;
     [SerializeField] private int zombiePrice;
- 
 
     public Zombie ZombieObject {
         get {

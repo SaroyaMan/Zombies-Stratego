@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Tile : MonoBehaviour {
+public class Tile: MonoBehaviour {
 
     [SerializeField] private short zIndex;
 
@@ -10,13 +8,14 @@ public class Tile : MonoBehaviour {
 
     public short ZIndex { get { return zIndex; } }
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public void MarkTileInUse() {
+        IsInUse = true;
+        tag = "BuildTileFull";
+    }
+
+    public void UnmarkTileInUse() {
+        IsInUse = false;
+        tag = "BuildTile";
+    }
 }

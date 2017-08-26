@@ -3,21 +3,17 @@ using UnityEngine;
 
 public class TileManager: Singleton<TileManager> {
 
-    public Dictionary<int, Tile> buildTiles;
-    //FFD452FF
+    public Dictionary<int, Tile> buildTiles;    // all tiles
+    //public Dictionary<int, Tile> inUseTiles;    // in use tiles
 
     private void Start() {
         buildTiles = new Dictionary<int, Tile>();
+        //inUseTiles = new Dictionary<int, Tile>();
         var buildTilesGameObjects = GameObject.FindGameObjectsWithTag("BuildTile");
         foreach(var tile in buildTilesGameObjects) {
             buildTiles.Add(tile.GetHashCode(), tile.GetComponent<Tile>());
         }
     }
-
-    void Update() {
-
-    }
-
 
     public void MarkAvailableBuildTiles() {
         foreach(var tile in buildTiles.Values) {
@@ -30,9 +26,13 @@ public class TileManager: Singleton<TileManager> {
     public void UnmarkAvailableBuildTiles() {
         foreach(var tile in buildTiles.Values) {
             tile.GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f);
-            if(tile.tag == "BuildTileFull" && !tile.IsInUse) {
-                tile.IsInUse = true;
-            }
+        }
+    }
+
+    public void RenameTagsBuildTiles() {
+        foreach(var tile in buildTiles.Values) {
+            tile.tag = "BuildTile";
+            tile.IsInUse = false;
         }
     }
 }
