@@ -56,14 +56,6 @@ public class ZombieManager : Singleton<ZombieManager> {
         zombieList.Add(zombie);
     }
 
-    //public void RegisterBuildSite(Collider2D buildTag) {
-    //    buildList.Add(buildTag);
-    //}
-
-    //public void UnregisterBuildSite(Collider2D buildTag) {
-    //    buildList.Remove(buildTag);
-    //}
-
     public void BuyTower(int price) {
         //GameManager.Instance.SubtractMoney(price);
     }
@@ -96,7 +88,6 @@ public class ZombieManager : Singleton<ZombieManager> {
     public void FollowMouse() {
         transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.position = new Vector2(transform.position.x, transform.position.y);
-        //print("x = " + transform.position.x + "y = " + transform.position.y);
     }
 
     public void EnableDragSprite(Sprite sprite) {
