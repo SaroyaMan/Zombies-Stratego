@@ -1,10 +1,11 @@
 fileFormatVersion: 2
 guid: 94b5f336580b9844ca5667ec51b923b5
-timeCreated: 1503819040
+timeCreated: 1503841354
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: red_ribbon
+    21300002: window
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -102,6 +103,19 @@ TextureImporter:
         y: 5089
         width: 1156
         height: 177
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: window
+      rect:
+        serializedVersion: 2
+        x: 2357
+        y: 5462
+        width: 1010
+        height: 699
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

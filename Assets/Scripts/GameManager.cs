@@ -2,7 +2,7 @@
 
 public class GameManager : Singleton<GameManager> {
 
-    public GameMode GameMode = GameMode.Edit;
+    //public GameMode GameMode = GameMode.Edit;
     int money = Globals.TOTAL_MONEY;
 
     public int Money { get { return money; } }
