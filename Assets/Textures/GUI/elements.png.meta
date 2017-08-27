@@ -1,12 +1,14 @@
 fileFormatVersion: 2
 guid: 8d2404ddfd5c74246bd654d5bb48958f
-timeCreated: 1503647346
+timeCreated: 1503822492
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: empty_btn
     21300002: elements_0
     21300004: skull
+    21300006: black_rectangle
+    21300008: money_div
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -130,6 +132,32 @@ TextureImporter:
         y: 2278
         width: 67
         height: 61
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: black_rectangle
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 524
+        width: 403
+        height: 125
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: money_div
+      rect:
+        serializedVersion: 2
+        x: 2481
+        y: 1205
+        width: 130
+        height: 66
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

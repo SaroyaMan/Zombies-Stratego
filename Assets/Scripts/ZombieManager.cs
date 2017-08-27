@@ -8,11 +8,11 @@ public class ZombieManager : Singleton<ZombieManager> {
     private SpriteRenderer spriteRenderer;
     private List<Zombie> zombieList = new List<Zombie>();
     private List<Collider2D> buildList = new List<Collider2D>();
-    private Collider2D buildTile;
+    //private Collider2D buildTile;
 
     private void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        buildTile = GetComponent<Collider2D>();
+        //buildTile = GetComponent<Collider2D>();
         spriteRenderer.enabled = false;
     }
 	
@@ -46,7 +46,7 @@ public class ZombieManager : Singleton<ZombieManager> {
             newZombie.GetComponent<SpriteRenderer>().sortingOrder = tile.ZIndex;
             newZombie.CurrentTile = tile;
             tile.MarkTileInUse();
-            //BuyTower(ZombieBtnPressed.ZombiePrice);
+            BuyZombie(ZombieBtnPressed.ZombiePrice);
             RegisterZombie(newZombie);
             DisableDragSprite();
         }
@@ -56,16 +56,20 @@ public class ZombieManager : Singleton<ZombieManager> {
         zombieList.Add(zombie);
     }
 
-    public void BuyTower(int price) {
-        //GameManager.Instance.SubtractMoney(price);
+    public void UnregisterZombie(Zombie zombie) {
+        zombieList.Remove(zombie);
+    }
+
+    public void BuyZombie(int price) {
+        GameManager.Instance.SubtractMoney(price);
     }
 
     public void SelectedZombie(ZombieBtn zombieSelected) {
-        //if(towerSelected.TowerPrice <= GameManager.Instance.TotalMoney) {
+        if(zombieSelected.ZombiePrice <= GameManager.Instance.Money && zombieList.Count <= Globals.MAX_ZOMBIES_FOR_PLAYER) {
             ZombieBtnPressed = zombieSelected;
             EnableDragSprite(ZombieBtnPressed.DragSprite);
             TileManager.Instance.MarkAvailableBuildTiles();
-        //}
+        }
     }
 
     public bool ChangeZombiePosition(Zombie zombie, Vector3 oldPosition) {
