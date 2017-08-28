@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SoundManager : Singleton<SoundManager> {
 
@@ -30,7 +28,7 @@ public class SoundManager : Singleton<SoundManager> {
     //public AudioClip Rock { get { return rock; } }
     //public AudioClip Towerbuilt { get { return towerbuilt; } }
 
-    private void Start() {
+    private void Awake() {
         AudioSource[] audioSources = GetComponents<AudioSource>();
         music = audioSources[0];
         sfx = audioSources[1];

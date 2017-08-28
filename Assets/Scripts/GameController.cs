@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class GameController : MonoBehaviour {
+public class GameController: MonoBehaviour {
 
     private Slider moneySlider, musicSlider, sfxSlider;
     private SoundManager soundManager;
@@ -10,7 +11,12 @@ public class GameController : MonoBehaviour {
         moneySlider = Globals.Instance.UnityObjects["MoneySlider"].GetComponent<Slider>();
         musicSlider = Globals.Instance.UnityObjects["MusicSlider"].GetComponent<Slider>();
         sfxSlider = Globals.Instance.UnityObjects["SfxSlider"].GetComponent<Slider>();
+
         soundManager = SoundManager.Instance;
+
+        moneySlider.value = PlayerPrefs.GetInt("MoneyBet", 2);
+        musicSlider.value = PlayerPrefs.GetFloat("Music", 1);
+        sfxSlider.value = PlayerPrefs.GetFloat("SFX", 1);
     }
 
 
@@ -24,6 +30,7 @@ public class GameController : MonoBehaviour {
     }
 
     /* Main Menu Controls */
+
     public void StartSingleGame() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MenuLogic.Instance.ChangeMenuState(MenuScreens.Loading);

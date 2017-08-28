@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MenuLogic: Singleton<MenuLogic> {
@@ -106,21 +107,25 @@ public class MenuLogic: Singleton<MenuLogic> {
 
     public void UpdateMoneySliderTxt(float value) {
         GameView.Instance.SetText("MoneyLbl", value + "$");
+        PlayerPrefs.SetInt("MoneyBet", (int) value);
     }
 
     public void UpdateMusicVolume(float value) {
         SoundManager.Instance.Music.volume = value;
+        PlayerPrefs.SetFloat("Music",value);
     }
+
 
     public void UpdateSfxVolume(float value) {
         SoundManager.Instance.SFX.volume = value;
+        PlayerPrefs.SetFloat("SFX", value);
     }
 
     public void OpenGithub() {
-        Application.OpenURL("https://github.com/SaroyaMan");
+        Application.OpenURL(Globals.GITHUB_PROFILE_URL);
     }
 
     public void OpenCV() {
-        Application.OpenURL("https://drive.google.com/file/d/0B8BaWfqNelVKb3p2MUVUTDQ1WVk/view");
+        Application.OpenURL(Globals.CV_URL);
     }
 }
