@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class Zombie : MonoBehaviour {
 
@@ -9,6 +7,7 @@ public class Zombie : MonoBehaviour {
     private Vector3 originPosition;
     private Animator anim;
 
+    public static bool IsInEdit;
     public Tile CurrentTile { get; set; }
     public short Rank { get { return rank; } }
 
@@ -17,23 +16,22 @@ public class Zombie : MonoBehaviour {
         anim = GetComponent<Animator>();
     }
 
-
     void OnMouseDown() {
-        if(ZombieManager.Instance.ZombieBtnPressed == null) {
+        if(ZombieManager.Instance.ZombieBtnPressed == null && IsInEdit) {
             TileManager.Instance.MarkAvailableBuildTiles();
         }
 
     }
 
     void OnMouseDrag() {
-        if(ZombieManager.Instance.ZombieBtnPressed == null) {
+        if(ZombieManager.Instance.ZombieBtnPressed == null && IsInEdit) {
             var mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
         }
     }
 
     void OnMouseUp() {
-        if(ZombieManager.Instance.ZombieBtnPressed == null) {
+        if(ZombieManager.Instance.ZombieBtnPressed == null && IsInEdit) {
             TileManager.Instance.UnmarkAvailableBuildTiles();
             if(ZombieManager.Instance.ChangeZombiePosition(this, originPosition)) {
                 originPosition = transform.position;

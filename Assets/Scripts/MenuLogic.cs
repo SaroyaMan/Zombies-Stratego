@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MenuLogic: Singleton<MenuLogic> {
 
     private Text moneyTextLbl;
     private AudioSource audioSource;
-    private MenuScreens currentScreen;
+    //private MenuScreens currentScreen;
     private MenuScreens prevScreen;
 
     private void Start() {
@@ -14,7 +13,7 @@ public class MenuLogic: Singleton<MenuLogic> {
     }
 
     private void Init() {
-        prevScreen = currentScreen = MenuScreens.Default;
+        prevScreen = Globals.Instance.currentScreen = MenuScreens.Default;
         moneyTextLbl = Globals.Instance.UnityObjects["MoneyLbl"].GetComponent<Text>();
         audioSource = GetComponent<AudioSource>();
         ShutdownScreens();
@@ -33,7 +32,7 @@ public class MenuLogic: Singleton<MenuLogic> {
     }
 
     public void GoBack() {
-        if(prevScreen != MenuScreens.Main && currentScreen != MenuScreens.Options) {
+        if(prevScreen != MenuScreens.Main && Globals.Instance.currentScreen != MenuScreens.Options) {
             prevScreen = MenuScreens.Main;
         }
         ChangeMenuState(prevScreen);
@@ -42,11 +41,12 @@ public class MenuLogic: Singleton<MenuLogic> {
     public void ChangeMenuState(MenuScreens newScreen) {
         var unityObjects = Globals.Instance.UnityObjects;
 
-        prevScreen = currentScreen;
+        prevScreen = Globals.Instance.currentScreen;
 
         if(prevScreen == MenuScreens.Edit) {
             unityObjects["ImgWindow"].SetActive(true);
             unityObjects["Img_Logo"].SetActive(true);
+            Zombie.IsInEdit = false;
         }
 
         switch(prevScreen) {
@@ -68,11 +68,12 @@ public class MenuLogic: Singleton<MenuLogic> {
         if(newScreen == MenuScreens.Edit) {
             unityObjects["ImgWindow"].SetActive(false);
             unityObjects["Img_Logo"].SetActive(false);
+            Zombie.IsInEdit = true;
         }
 
 
-        currentScreen = newScreen;
-        switch(currentScreen) {
+        Globals.Instance.currentScreen = newScreen;
+        switch(Globals.Instance.currentScreen) {
             case MenuScreens.Main:
                 unityObjects["ScreenMenu"].SetActive(true);
                 GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Main Menu");

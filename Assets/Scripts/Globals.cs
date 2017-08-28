@@ -11,6 +11,7 @@ public class Globals : Singleton<Globals> {
 
     public const int TOTAL_MONEY = 100;
     public const int MAX_ZOMBIES_FOR_PLAYER = 36; //9 rows on 4 columns
+    public MenuScreens currentScreen;
 
 
     public const string GITHUB_PROFILE_URL = "https://github.com/SaroyaMan";
