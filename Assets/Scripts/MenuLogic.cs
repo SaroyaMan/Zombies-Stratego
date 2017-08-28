@@ -43,6 +43,11 @@ public class MenuLogic: Singleton<MenuLogic> {
 
         prevScreen = currentScreen;
 
+        if(prevScreen == MenuScreens.Edit) {
+            unityObjects["ImgWindow"].SetActive(true);
+            unityObjects["Img_Logo"].SetActive(true);
+        }
+
         switch(prevScreen) {
             case MenuScreens.Main: unityObjects["ScreenMenu"].SetActive(false); break;
 
@@ -59,12 +64,17 @@ public class MenuLogic: Singleton<MenuLogic> {
             default: break;
         }
 
+        if(newScreen == MenuScreens.Edit) {
+            unityObjects["ImgWindow"].SetActive(false);
+            unityObjects["Img_Logo"].SetActive(false);
+        }
+
 
         currentScreen = newScreen;
         switch(currentScreen) {
             case MenuScreens.Main:
                 unityObjects["ScreenMenu"].SetActive(true);
-                unityObjects["Title"].GetComponent<Text>().text = "Main Menu";
+                GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Main Menu");
                 break;
 
             case MenuScreens.SinglePlayer:
@@ -73,17 +83,17 @@ public class MenuLogic: Singleton<MenuLogic> {
 
             case MenuScreens.MultiPlayer:
                 unityObjects["ScreenMultiplayer"].SetActive(true);
-                unityObjects["Title"].GetComponent<Text>().text = "Multiplayer";
+                GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Multiplayer");
                 break;
 
             case MenuScreens.StudentInfo:
                 unityObjects["ScreenStudentInfo"].SetActive(true);
-                unityObjects["Title"].GetComponent<Text>().text = "Student Info";
+                GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Student Info");
                 break;
 
             case MenuScreens.Options:
                 unityObjects["ScreenOptions"].SetActive(true);
-                unityObjects["Title"].GetComponent<Text>().text = "Options";
+                GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Options");
                 break;
 
             case MenuScreens.Loading: unityObjects["ScreenLoading"].SetActive(true); break;

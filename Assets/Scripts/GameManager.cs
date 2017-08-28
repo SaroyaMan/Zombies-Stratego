@@ -15,4 +15,8 @@ public class GameManager : Singleton<GameManager> {
         money -= price;
         GameView.Instance.SetText("Txt_CurrMoney", money.ToString());
     }
+
+    public void SaveStrategy() {
+
+    }
 }

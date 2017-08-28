@@ -18,6 +18,11 @@ public class GameController : MonoBehaviour {
         ZombieManager.Instance.SelectedZombie(zombieSelected);
     }
 
+    public void SaveChangesInEditMode() {
+        MenuLogic.Instance.ChangeMenuState(MenuScreens.Main);
+        GameManager.Instance.SaveStrategy();
+    }
+
     /* Main Menu Controls */
     public void StartSingleGame() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
@@ -32,6 +37,11 @@ public class GameController : MonoBehaviour {
     public void Multiplayer() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MenuLogic.Instance.ChangeMenuState(MenuScreens.MultiPlayer);
+    }
+
+    public void EditMode() {
+        soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
+        MenuLogic.Instance.ChangeMenuState(MenuScreens.Edit);
     }
 
     public void StudentInfo() {
