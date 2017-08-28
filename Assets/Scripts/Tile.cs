@@ -12,12 +12,10 @@ public class Tile: MonoBehaviour {
     public void MarkTileInUse() {
         IsInUse = true;
         tag = "BuildTileFull";
-        GameManager.Instance.SaveTile(this);
     }
 
     public void UnmarkTileInUse() {
         IsInUse = false;
         tag = "BuildTile";
-        GameManager.Instance.SaveTile(this);
     }
 }

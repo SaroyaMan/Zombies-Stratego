@@ -15,19 +15,6 @@ public class TileManager: Singleton<TileManager> {
         foreach(var tile in buildTilesGameObjects) {
             buildTiles.Add(tile.GetHashCode(), tile.GetComponent<Tile>());
         }
-        LoadTilesInUse();
-    }
-
-    private void LoadTilesInUse() {
-        if(Globals.Instance.SavedData.ContainsKey("Tiles")) {
-            var tilesInUse = Globals.Instance.SavedData["Tiles"] as List<TileData>;
-            print(tilesInUse);
-            foreach(var tile in tilesInUse) {
-                if(tile.isInUse) {
-                    buildTiles[tile.hashCode].MarkTileInUse();
-                }
-            }
-        }
     }
 
     public void MarkAvailableBuildTiles() {

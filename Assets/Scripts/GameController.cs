@@ -33,7 +33,7 @@ public class GameController: MonoBehaviour {
 
     public void StartSingleGame() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
-        MenuLogic.Instance.ChangeMenuState(MenuScreens.Loading);
+        MenuLogic.Instance.ChangeMenuState(MenuScreens.SinglePlayer);
     }
 
     public void StartMultiplayerGame() {

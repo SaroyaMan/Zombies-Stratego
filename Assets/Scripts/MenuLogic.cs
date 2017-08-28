@@ -26,6 +26,8 @@ public class MenuLogic: Singleton<MenuLogic> {
         unityObjects["ScreenStudentInfo"].SetActive(false);
         unityObjects["ScreenMultiplayer"].SetActive(false);
         unityObjects["ScreenEdit"].SetActive(false);
+        unityObjects["ScreenGame"].SetActive(false);
+        unityObjects["TitleGameImg"].SetActive(false);
         //unityObjects["Map"].SetActive(false);
     }
 
@@ -41,14 +43,14 @@ public class MenuLogic: Singleton<MenuLogic> {
 
         prevScreen = Globals.Instance.currentScreen;
 
-        if(prevScreen == MenuScreens.Edit) {
-            unityObjects["ImgWindow"].SetActive(true);
-            unityObjects["Img_Logo"].SetActive(true);
-            Zombie.IsInEdit = false;
-        }
-
         switch(prevScreen) {
             case MenuScreens.Main: unityObjects["ScreenMenu"].SetActive(false); break;
+
+            case MenuScreens.SinglePlayer:
+                unityObjects["ScreenGame"].SetActive(false);
+                unityObjects["TitleGameImg"].SetActive(false);
+                ToggleMenuWindow(true);
+                break;
 
             case MenuScreens.MultiPlayer: unityObjects["ScreenMultiplayer"].SetActive(false); break;
 
@@ -58,47 +60,54 @@ public class MenuLogic: Singleton<MenuLogic> {
 
             case MenuScreens.Loading: unityObjects["ScreenLoading"].SetActive(false); break;
 
-            case MenuScreens.Edit: unityObjects["ScreenEdit"].SetActive(false); break;
+            case MenuScreens.Edit:
+                unityObjects["ScreenEdit"].SetActive(false);
+                unityObjects["TitleGameImg"].SetActive(false);
+                ToggleMenuWindow(true);
+                Zombie.IsInEdit = false;
+                break;
 
             default: break;
         }
-
-        if(newScreen == MenuScreens.Edit) {
-            unityObjects["ImgWindow"].SetActive(false);
-            unityObjects["Img_Logo"].SetActive(false);
-            Zombie.IsInEdit = true;
-        }
-
 
         Globals.Instance.currentScreen = newScreen;
         switch(Globals.Instance.currentScreen) {
             case MenuScreens.Main:
                 unityObjects["ScreenMenu"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Main Menu");
+                GameView.Instance.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Main Menu");
                 break;
 
             case MenuScreens.SinglePlayer:
-
+                unityObjects["ScreenGame"].SetActive(true);
+                unityObjects["TitleGameImg"].SetActive(true);
+                GameView.Instance.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Single player mode");
+                ToggleMenuWindow(false);
                 break;
 
             case MenuScreens.MultiPlayer:
                 unityObjects["ScreenMultiplayer"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Multiplayer");
+                GameView.Instance.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Multiplayer");
                 break;
 
             case MenuScreens.StudentInfo:
                 unityObjects["ScreenStudentInfo"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Student Info");
+                GameView.Instance.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Student Info");
                 break;
 
             case MenuScreens.Options:
                 unityObjects["ScreenOptions"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["Title"].GetComponent<Text>(), "Options");
+                GameView.Instance.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Options");
                 break;
 
             case MenuScreens.Loading: unityObjects["ScreenLoading"].SetActive(true); break;
 
-            case MenuScreens.Edit: unityObjects["ScreenEdit"].SetActive(true); break;
+            case MenuScreens.Edit:
+                unityObjects["ScreenEdit"].SetActive(true);
+                unityObjects["TitleGameImg"].SetActive(true);
+                GameView.Instance.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Edit mode");
+                ToggleMenuWindow(false);
+                Zombie.IsInEdit = true;
+                break;
 
             default: break;
         }
@@ -126,5 +135,10 @@ public class MenuLogic: Singleton<MenuLogic> {
 
     public void OpenCV() {
         Application.OpenURL(Globals.CV_URL);
+    }
+
+    private void ToggleMenuWindow(bool isTurnOn) {
+        Globals.Instance.UnityObjects["MainWindow"].SetActive(isTurnOn);
+        Globals.Instance.UnityObjects["Img_Logo"].SetActive(isTurnOn);
     }
 }

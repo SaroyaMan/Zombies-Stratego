@@ -35,17 +35,17 @@ public class Globals : Singleton<Globals> {
             unityObjects.Add(ob.name, ob);
         }
         //PlayerPrefs.DeleteAll();
-        InitSavedData();
+        //InitSavedData();
     }
 
-    private void InitSavedData() {
-        string savedDataStr = PlayerPrefs.GetString("SaveData", "{}");
-        object jsonParsed = MiniJSON.Json.Deserialize(savedDataStr);
-        if(jsonParsed != null) {
-            savedData = jsonParsed as Dictionary<string, object>;
-        }
-        else savedData = new Dictionary<string, object>();
-        string savedDataString = MiniJSON.Json.Serialize(savedData);
-        print(savedDataString);
-    }
+    //private void InitSavedData() {
+    //    string savedDataStr = PlayerPrefs.GetString("SaveData", "{}");
+    //    object jsonParsed = MiniJSON.Json.Deserialize(savedDataStr);
+    //    if(jsonParsed != null) {
+    //        savedData = jsonParsed as Dictionary<string, object>;
+    //    }
+    //    else savedData = new Dictionary<string, object>();
+    //    string savedDataString = MiniJSON.Json.Serialize(savedData);
+    //    print(savedDataString);
+    //}
 }
