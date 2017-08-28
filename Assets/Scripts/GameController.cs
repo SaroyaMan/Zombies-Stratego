@@ -21,12 +21,12 @@ public class GameController: MonoBehaviour {
 
 
     public void ZombieSelectedInEditMode(ZombieBtn zombieSelected) {
-        ZombieManager.Instance.SelectedZombie(zombieSelected);
+        StrategyEditor.Instance.SelectedZombie(zombieSelected);
     }
 
     public void SaveChangesInEditMode() {
         MenuLogic.Instance.ChangeMenuState(MenuScreens.Main);
-        GameManager.Instance.SaveStrategy();
+        MenuLogic.Instance.SaveStrategy();
     }
 
     /* Main Menu Controls */

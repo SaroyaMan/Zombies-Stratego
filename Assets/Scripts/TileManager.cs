@@ -2,18 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public struct TileData { public int hashCode; public bool isInUse; }
-
 public class TileManager: Singleton<TileManager> {
 
-    public Dictionary<int, Tile> buildTiles;    // all tiles
+    public Dictionary<int, Tile> buildTiles;    // all build tiles
+    public Dictionary<int, Tile> allTiles;      // all tiles
+
+
+    private void Awake() {
+        DontDestroyOnLoad(this);
+    }
 
     private void Start() {
         buildTiles = new Dictionary<int, Tile>();
+        allTiles = new Dictionary<int, Tile>();
+
         var buildTilesGameObjects = GameObject.FindGameObjectsWithTag("BuildTile");
         foreach(var tile in buildTilesGameObjects) {
             buildTiles.Add(tile.GetHashCode(), tile.GetComponent<Tile>());
+        }
+
+        var tilesGameObjects = FindObjectsOfType<Tile>();
+        foreach(var tile in tilesGameObjects) {
+            allTiles.Add(tile.GetHashCode(), tile);
+
         }
     }
 

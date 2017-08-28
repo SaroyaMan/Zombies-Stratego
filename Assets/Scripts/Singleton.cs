@@ -8,8 +8,10 @@ public class Singleton<T>: MonoBehaviour where T : MonoBehaviour {
     public static T Instance {
         get {
             T memorizedObject = FindObjectOfType<T>();
-            if(instance == null)
+            if(instance == null) {
                 instance = memorizedObject;
+                //DontDestroyOnLoad(instance);
+            }
             else if(instance != memorizedObject)
                 Destroy(memorizedObject);
             return instance;

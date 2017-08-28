@@ -8,6 +8,7 @@ public class SoundManager : Singleton<SoundManager> {
     public AudioSource Music { get { return music; } }
     public AudioSource SFX { get { return sfx; } }
 
+
     [SerializeField] private AudioClip buttonPress;
     //[SerializeField] private AudioClip death;
     //[SerializeField] private AudioClip fireball;
@@ -29,6 +30,7 @@ public class SoundManager : Singleton<SoundManager> {
     //public AudioClip Towerbuilt { get { return towerbuilt; } }
 
     private void Awake() {
+        DontDestroyOnLoad(this);
         AudioSource[] audioSources = GetComponents<AudioSource>();
         music = audioSources[0];
         sfx = audioSources[1];

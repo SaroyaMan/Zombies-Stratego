@@ -11,7 +11,10 @@ public enum MenuScreens {
 public class Globals : Singleton<Globals> {
 
     public const int TOTAL_MONEY = 100;
-    public const int MAX_ZOMBIES_FOR_PLAYER = 36; //9 rows on 4 columns
+    public const int MAX_ZOMBIES_FOR_PLAYER = 35; //9 rows on 4 columns = 36. 36 - 1 (flag) = 35
+    public const int ROWS = 9;
+    public const int COLUMNS = 16;
+    public const int MIN_PRICE = 1;
     public MenuScreens currentScreen;
 
 
@@ -19,10 +22,8 @@ public class Globals : Singleton<Globals> {
     public const string CV_URL = "https://drive.google.com/file/d/0B8BaWfqNelVKb3p2MUVUTDQ1WVk/view";
 
     private Dictionary<string, GameObject> unityObjects;
-    private Dictionary<string, object> savedData;
 
     public Dictionary<string, GameObject> UnityObjects { get { return unityObjects; } }
-    public Dictionary<string, object> SavedData { get { return savedData; } }
 
     private void Awake() {
         Init();

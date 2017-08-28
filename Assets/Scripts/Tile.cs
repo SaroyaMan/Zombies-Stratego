@@ -4,6 +4,7 @@ public class Tile: MonoBehaviour {
 
     [SerializeField] private short zIndex;
 
+
     public bool IsInUse { get; set; }
 
     public short ZIndex { get { return zIndex; } }

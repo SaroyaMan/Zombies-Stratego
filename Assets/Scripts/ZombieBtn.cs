@@ -5,11 +5,10 @@ public class ZombieBtn : MonoBehaviour {
 
     [SerializeField] private Zombie zombieObject;
     [SerializeField] private Sprite dragSprite;
-    [SerializeField] private int zombiePrice;
 
     public void Start() {
         Text[] texts = GetComponentsInChildren<Text>();
-        GameView.Instance.SetText(texts[0], ZombiePrice.ToString() );
+        GameView.Instance.SetText(texts[0], ZombieObject.Price.ToString() );
         GameView.Instance.SetText(texts[1], ZombieObject.Rank.ToString());
     }
 
@@ -22,12 +21,6 @@ public class ZombieBtn : MonoBehaviour {
     public Sprite DragSprite {
         get {
             return dragSprite;
-        }
-    }
-
-    public int ZombiePrice {
-        get {
-            return zombiePrice;
         }
     }
 }

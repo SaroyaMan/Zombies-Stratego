@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuLogic: Singleton<MenuLogic> {
 
-    private Text moneyTextLbl;
     //private MenuScreens currentScreen;
     private MenuScreens prevScreen;
+
+    int money = Globals.TOTAL_MONEY;
+
+    public int Money { get { return money; } }
 
     private void Start() {
         Init();
@@ -13,10 +17,27 @@ public class MenuLogic: Singleton<MenuLogic> {
 
     private void Init() {
         prevScreen = Globals.Instance.currentScreen = MenuScreens.Default;
-        moneyTextLbl = Globals.Instance.UnityObjects["MoneyLbl"].GetComponent<Text>();
-        ShutdownScreens();
+        //money = PlayerPrefs.GetInt("Money", Globals.TOTAL_MONEY); //TODO: Uncomment it
+        GameView.Instance.SetText("Txt_CurrMoney", money.ToString());
+
+        ShutdownScreens();    //TODO: Uncomment it
         ChangeMenuState(MenuScreens.Main);
     }
+
+    public void SubtractMoney(int price) {
+        money -= price;
+        //PlayerPrefs.SetInt("Money", money);
+        GameView.Instance.SetText("Txt_CurrMoney", money.ToString());
+    }
+
+    public void SaveStrategy() {
+
+    }
+
+    public void InitalizeGame() {
+
+    }
+
 
     private void ShutdownScreens() {
         var unityObjects = Globals.Instance.UnityObjects;
@@ -26,9 +47,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         unityObjects["ScreenStudentInfo"].SetActive(false);
         unityObjects["ScreenMultiplayer"].SetActive(false);
         unityObjects["ScreenEdit"].SetActive(false);
-        unityObjects["ScreenGame"].SetActive(false);
         unityObjects["TitleGameImg"].SetActive(false);
-        //unityObjects["Map"].SetActive(false);
     }
 
     public void GoBack() {
@@ -47,9 +66,6 @@ public class MenuLogic: Singleton<MenuLogic> {
             case MenuScreens.Main: unityObjects["ScreenMenu"].SetActive(false); break;
 
             case MenuScreens.SinglePlayer:
-                unityObjects["ScreenGame"].SetActive(false);
-                unityObjects["TitleGameImg"].SetActive(false);
-                ToggleMenuWindow(true);
                 break;
 
             case MenuScreens.MultiPlayer: unityObjects["ScreenMultiplayer"].SetActive(false); break;
@@ -64,7 +80,7 @@ public class MenuLogic: Singleton<MenuLogic> {
                 unityObjects["ScreenEdit"].SetActive(false);
                 unityObjects["TitleGameImg"].SetActive(false);
                 ToggleMenuWindow(true);
-                Zombie.IsInEdit = false;
+                StrategyEditor.IsInEdit = false;
                 break;
 
             default: break;
@@ -78,10 +94,12 @@ public class MenuLogic: Singleton<MenuLogic> {
                 break;
 
             case MenuScreens.SinglePlayer:
-                unityObjects["ScreenGame"].SetActive(true);
-                unityObjects["TitleGameImg"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Single player mode");
-                ToggleMenuWindow(false);
+                //unityObjects["ScreenGame"].SetActive(true);
+                //unityObjects["TitleGameImg"].SetActive(true);
+                //GameView.Instance.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Single player mode");
+                //ToggleMenuWindow(false);
+                SceneManager.LoadScene("Game_Scene");
+
                 break;
 
             case MenuScreens.MultiPlayer:
@@ -106,7 +124,7 @@ public class MenuLogic: Singleton<MenuLogic> {
                 unityObjects["TitleGameImg"].SetActive(true);
                 GameView.Instance.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Edit mode");
                 ToggleMenuWindow(false);
-                Zombie.IsInEdit = true;
+                StrategyEditor.IsInEdit = true;
                 break;
 
             default: break;
