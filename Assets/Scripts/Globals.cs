@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 //public enum GameMode { Edit, SinglePlayer, Multiplayer }
@@ -18,8 +19,10 @@ public class Globals : Singleton<Globals> {
     public const string CV_URL = "https://drive.google.com/file/d/0B8BaWfqNelVKb3p2MUVUTDQ1WVk/view";
 
     private Dictionary<string, GameObject> unityObjects;
+    private Dictionary<string, object> savedData;
 
     public Dictionary<string, GameObject> UnityObjects { get { return unityObjects; } }
+    public Dictionary<string, object> SavedData { get { return savedData; } }
 
     private void Awake() {
         Init();
@@ -31,6 +34,18 @@ public class Globals : Singleton<Globals> {
         foreach(var ob in gameObjects) {
             unityObjects.Add(ob.name, ob);
         }
+        //PlayerPrefs.DeleteAll();
+        InitSavedData();
     }
 
+    private void InitSavedData() {
+        string savedDataStr = PlayerPrefs.GetString("SaveData", "{}");
+        object jsonParsed = MiniJSON.Json.Deserialize(savedDataStr);
+        if(jsonParsed != null) {
+            savedData = jsonParsed as Dictionary<string, object>;
+        }
+        else savedData = new Dictionary<string, object>();
+        string savedDataString = MiniJSON.Json.Serialize(savedData);
+        print(savedDataString);
+    }
 }

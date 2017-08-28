@@ -7,14 +7,37 @@ public class ZombieManager : Singleton<ZombieManager> {
     public ZombieBtn ZombieBtnPressed { get; set; }
     private SpriteRenderer spriteRenderer;
     private List<Zombie> zombieList = new List<Zombie>();
-    private List<Collider2D> buildList = new List<Collider2D>();
+    //private List<Collider2D> buildList = new List<Collider2D>();
     //private Collider2D buildTile;
+
+    public List<Zombie> ZombieList { get { return zombieList; } }
 
     private void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
         //buildTile = GetComponent<Collider2D>();
         spriteRenderer.enabled = false;
+
+        //LoadZombies();
     }
+
+    //private void LoadZombies() {
+    //    if(Globals.Instance.SavedData.ContainsKey("Zombies")) {
+    //        var dic = Globals.Instance.SavedData["Zombies"] as Dictionary<string, Zombie>;
+    //        print(dic);
+    //        //print("LoadZombies:\n" + stringZombies);
+    //        //zombieList = MiniJSON.Json.Deserialize(stringZombies) as List<Zombie>;
+    //        if(zombieList == null) {
+    //            zombieList = new List<Zombie>();
+    //            print("zombie list is empty");
+    //        }
+    //        else {
+    //            print("zombie count = " + zombieList.Count);
+    //        }
+    //    }
+    //    else {
+    //        zombieList = new List<Zombie>();
+    //    }
+    //}
 	
 	private void Update () {
         HandleEscape();

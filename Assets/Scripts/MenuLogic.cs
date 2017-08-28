@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class MenuLogic: Singleton<MenuLogic> {
 
     private Text moneyTextLbl;
-    private AudioSource audioSource;
     //private MenuScreens currentScreen;
     private MenuScreens prevScreen;
 
@@ -15,7 +14,6 @@ public class MenuLogic: Singleton<MenuLogic> {
     private void Init() {
         prevScreen = Globals.Instance.currentScreen = MenuScreens.Default;
         moneyTextLbl = Globals.Instance.UnityObjects["MoneyLbl"].GetComponent<Text>();
-        audioSource = GetComponent<AudioSource>();
         ShutdownScreens();
         ChangeMenuState(MenuScreens.Main);
     }
