@@ -9,6 +9,10 @@ public class StrategyEditor : Singleton<StrategyEditor> {
     public static bool IsInEdit;
     public static int NumOfBombs;
 
+    private void Awake() {
+        DontDestroyOnLoad(this);
+    }
+
     private void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.enabled = false;
@@ -66,7 +70,7 @@ public class StrategyEditor : Singleton<StrategyEditor> {
         soldier.gameObject.SetActive(true);
         if(hit.collider != null && hit.collider.tag == "BuildTile") {   //Check if user clicked on build site
             Tile tile = hit.transform.gameObject.GetComponent<Tile>();
-            soldier.GetComponent<SpriteRenderer>().sortingOrder = tile.ZIndex;
+            soldier.GetComponent<SpriteRenderer>().sortingOrder = tile.Row;
             soldier.CurrentTile.UnmarkTileInUse();
             soldier.CurrentTile = tile;
             soldier.transform.position = new Vector2(tile.transform.position.x + soldier.OffsetX, tile.transform.position.y + soldier.OffsetY);

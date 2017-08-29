@@ -47,4 +47,26 @@ public class TileManager: Singleton<TileManager> {
             tile.UnmarkTileInUse();
         }
     }
+
+    public List<Tile> GetAllEnemyTiles() {
+        List<Tile> tiles = new List<Tile>();
+
+        foreach(var tile in allTiles.Values) {
+            if(tile.tag == "EnemyTile")
+                tiles.Add(tile);
+        }
+
+        return tiles;
+    }
+
+    public List<Tile> GetAllPotentialFlagTiles() {
+        List<Tile> tiles = new List<Tile>();
+
+        foreach(var tile in allTiles.Values) {
+            if(tile.tag == "EnemyTile" && tile.Column == Globals.COLUMNS - 1)
+                tiles.Add(tile);
+        }
+
+        return tiles;
+    }
 }

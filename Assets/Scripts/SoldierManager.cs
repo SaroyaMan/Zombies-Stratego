@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class SoldierManager: Singleton<SoldierManager> {
 
-    [SerializeField] private List<Zombie> zombiPrototypes;
+    [SerializeField] private List<Zombie> zombiePrototypes;
     [SerializeField] private Bomb bombPrototype;
+    [SerializeField] private Flag enemyFlagPrototype;
 
     private List<PlayerSoldier> localPlayerList = new List<PlayerSoldier>();
     private List<PlayerSoldier> enemyList = new List<PlayerSoldier>();
@@ -32,29 +33,52 @@ public class SoldierManager: Singleton<SoldierManager> {
         enemyList.Add(soldier);
     }
 
-    public void PlaceSoldier(Tile tile, PlayerSoldier soldier) {
-        PlayerSoldier newSoldier = Instantiate(soldier);
+    public void PlaceSoldier(Tile tile, PlayerSoldier soldier, bool isEnemy = false) {
+        PlayerSoldier newSoldier = Instantiate(soldier, this.transform);
         newSoldier.transform.position = new Vector3(tile.transform.position.x + newSoldier.OffsetX,
             tile.transform.position.y + newSoldier.OffsetY);
-        newSoldier.GetComponent<SpriteRenderer>().sortingOrder = tile.ZIndex;
+        newSoldier.GetComponent<SpriteRenderer>().sortingOrder = tile.Row;
         newSoldier.CurrentTile = tile;
         tile.MarkTileInUse();
-        RegisterPlayer(newSoldier);
+
+        if(isEnemy) {
+            RegisterEnemy(newSoldier);
+        }
+        else {
+            RegisterPlayer(newSoldier);
+        }
     }
 
 
 
     public void InitPcBoard() {
         int money = Globals.TOTAL_MONEY;
+        Random.InitState(System.DateTime.Now.Millisecond);
 
         //Get all enemy tiles
+        List<Tile> enemyTiles = TileManager.Instance.GetAllEnemyTiles();
+        List<Tile> enemyFlagPotentialTiles = TileManager.Instance.GetAllPotentialFlagTiles();
+        Tile tile = null;
+
+        //Place Flag
+        while(true) {
+            tile = enemyFlagPotentialTiles[Random.Range(0, enemyFlagPotentialTiles.Count)];
+            if(tile.tag == "EnemyTile" && tile.Row != 5) {
+                PlaceSoldier(tile, enemyFlagPrototype, true);
+                break;
+            }
+        }
 
         //Place MAX_BOMBS Bombs
         for(int i = 0; i < Globals.MAX_BOMBS; i++) {
-            //Bomb bomb = CreateRandomBomb();
-            money -= bomb.Price;
-            RegisterEnemy(bomb);
-            
+            while(true) {
+                tile = enemyTiles[Random.Range(0, enemyTiles.Count)];
+                if(tile.tag == "EnemyTile") {
+                    PlaceSoldier(tile, bombPrototype, true);
+                    money -= bombPrototype.Price;
+                    break;
+                }
+            }
         }
 
 
@@ -69,7 +93,7 @@ public class SoldierManager: Singleton<SoldierManager> {
     public Zombie CreateRandomZombie(int money) {
         Zombie randZombie = null, newZombie = null;
         for(; ; ) {
-            randZombie = zombiPrototypes[Random.Range(0, zombiPrototypes.Count)];
+            randZombie = zombiePrototypes[Random.Range(0, zombiePrototypes.Count)];
             if(randZombie.Price <= money) {      //Can afford to create this zombie
                 newZombie = Instantiate(randZombie);
                 break;

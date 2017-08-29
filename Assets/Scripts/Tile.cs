@@ -2,12 +2,14 @@
 
 public class Tile: MonoBehaviour {
 
-    [SerializeField] private short zIndex;
+    [SerializeField] private short row;
+    [SerializeField] private short column;
 
 
     public bool IsInUse { get; set; }
 
-    public short ZIndex { get { return zIndex; } }
+    public short Row { get { return row; } }
+    public short Column { get { return column; } }
 
 
     public void MarkTileInUse() {
