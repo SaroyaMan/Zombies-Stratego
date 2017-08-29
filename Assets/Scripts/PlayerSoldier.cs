@@ -23,6 +23,11 @@ public abstract class PlayerSoldier: MonoBehaviour {
         strategyEditor = StrategyEditor.Instance;
     }
 
+    public void FlipSide() {
+        offset_x = -offset_x;
+        GetComponent<SpriteRenderer>().flipX = true;
+    }
+
     private void OnMouseDown() {
         if(strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
             TileManager.Instance.MarkAvailableBuildTiles();

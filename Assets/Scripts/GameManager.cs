@@ -10,5 +10,6 @@ public class GameManager : Singleton<GameManager> {
         if(isSinglePlayer) {
             SoldierManager.Instance.InitPcBoard();
         }
+
     }
 }

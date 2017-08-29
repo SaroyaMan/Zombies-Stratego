@@ -34,7 +34,10 @@ public class SoldierManager: Singleton<SoldierManager> {
     }
 
     public void PlaceSoldier(Tile tile, PlayerSoldier soldier, bool isEnemy = false) {
-        PlayerSoldier newSoldier = Instantiate(soldier, this.transform);
+        PlayerSoldier newSoldier = Instantiate(soldier, transform);
+        if(isEnemy) {
+            newSoldier.FlipSide();
+        }
         newSoldier.transform.position = new Vector3(tile.transform.position.x + newSoldier.OffsetX,
             tile.transform.position.y + newSoldier.OffsetY);
         newSoldier.GetComponent<SpriteRenderer>().sortingOrder = tile.Row;
@@ -48,8 +51,6 @@ public class SoldierManager: Singleton<SoldierManager> {
             RegisterPlayer(newSoldier);
         }
     }
-
-
 
     public void InitPcBoard() {
         int money = Globals.TOTAL_MONEY;
@@ -81,35 +82,29 @@ public class SoldierManager: Singleton<SoldierManager> {
             }
         }
 
-
-        //while(money > Globals.MIN_PRICE && enemyList.Count <= Globals.MAX_ZOMBIES_FOR_PLAYER) {
-        //    Zombie zombie = CreateRandomZombie(money);
-        //    money -= zombie.Price;
-        //    RegisterEnemy(zombie);
-
-        //}
+        //Place Zombies
+        while(money > Globals.MIN_PRICE && enemyList.Count <= Globals.MAX_SOLDIERS_FOR_PLAYER) {
+            Zombie zombie = CreateRandomZombie(money);
+            money -= zombie.Price;
+            while(true) {
+                tile = enemyTiles[Random.Range(0, enemyTiles.Count)];
+                if(tile.tag == "EnemyTile") {
+                    PlaceSoldier(tile, zombie, true);
+                    break;
+                }
+            }
+        }
+        print("Enemy money : " + money);
     }
 
-    public Zombie CreateRandomZombie(int money) {
-        Zombie randZombie = null, newZombie = null;
-        for(; ; ) {
+    private Zombie CreateRandomZombie(int money) {
+        Zombie randZombie;
+        while(true) {
             randZombie = zombiePrototypes[Random.Range(0, zombiePrototypes.Count)];
             if(randZombie.Price <= money) {      //Can afford to create this zombie
-                newZombie = Instantiate(randZombie);
                 break;
             }
         }
-        if(newZombie != null)
-            newZombie.gameObject.SetActive(false);
-        return newZombie;
+        return randZombie;
     }
-
-    //private Bomb CreateRandomBomb() {
-
-    //}
-
-    //public Tile PlaceZombieInRandomTile(Zombie zombie) {
-
-    //}
-
 }

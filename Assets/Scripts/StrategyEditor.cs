@@ -55,7 +55,7 @@ public class StrategyEditor : Singleton<StrategyEditor> {
     }
 
     public void SelectedSoldier(SoldierBtn soldierSelected) {
-        if(soldierSelected.SoldierObject.Price <= MenuLogic.Instance.Money && SoldierManager.Instance.LocalPlayerList.Count < Globals.MAX_ZOMBIES_FOR_PLAYER) {
+        if(soldierSelected.SoldierObject.Price <= MenuLogic.Instance.Money && SoldierManager.Instance.LocalPlayerList.Count < Globals.MAX_SOLDIERS_FOR_PLAYER) {
 
             PlayerBtnPressed = soldierSelected;
             EnableDragSprite(PlayerBtnPressed.DragSprite);
