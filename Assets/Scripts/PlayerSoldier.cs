@@ -24,7 +24,6 @@ public abstract class PlayerSoldier: MonoBehaviour {
     }
 
     private void OnMouseDown() {
-        print("OnMouseDown");
         if(strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
             TileManager.Instance.MarkAvailableBuildTiles();
         }

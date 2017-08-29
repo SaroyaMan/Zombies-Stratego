@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class StrategyEditor : Singleton<StrategyEditor> {
 
@@ -39,6 +40,9 @@ public class StrategyEditor : Singleton<StrategyEditor> {
         if(!EventSystem.current.IsPointerOverGameObject() && PlayerBtnPressed != null) {
             if(PlayerBtnPressed.SoldierObject is Bomb) {
                 NumOfBombs++;
+                if(NumOfBombs == Globals.MAX_BOMBS) {
+                    GameView.Instance.DisableButton(PlayerBtnPressed.GetComponent<Button>() );
+                }
             }
             SoldierManager.Instance.PlaceSoldier(tile, PlayerBtnPressed.SoldierObject);
             MenuLogic.Instance.BuySoldier(PlayerBtnPressed.SoldierObject.Price);
@@ -48,10 +52,7 @@ public class StrategyEditor : Singleton<StrategyEditor> {
 
     public void SelectedSoldier(SoldierBtn soldierSelected) {
         if(soldierSelected.SoldierObject.Price <= MenuLogic.Instance.Money && SoldierManager.Instance.LocalPlayerList.Count < Globals.MAX_ZOMBIES_FOR_PLAYER) {
-            if(soldierSelected.SoldierObject is Bomb && NumOfBombs == Globals.MAX_BOMBS) {
 
-                return;
-            }
             PlayerBtnPressed = soldierSelected;
             EnableDragSprite(PlayerBtnPressed.DragSprite);
             TileManager.Instance.MarkAvailableBuildTiles();
@@ -69,7 +70,6 @@ public class StrategyEditor : Singleton<StrategyEditor> {
             soldier.CurrentTile.UnmarkTileInUse();
             soldier.CurrentTile = tile;
             soldier.transform.position = new Vector2(tile.transform.position.x + soldier.OffsetX, tile.transform.position.y + soldier.OffsetY);
-            //soldier.transform.position = new Vector2(tile.transform.position.x + 0.25f, tile.transform.position.y + 0.5f);
             tile.MarkTileInUse();
             return true;
         }

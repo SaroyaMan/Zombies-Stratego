@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class SoldierManager: Singleton<SoldierManager> {
 
-    [SerializeField] private List<Zombie> zombieTypes;
+    [SerializeField] private List<Zombie> zombiPrototypes;
+    [SerializeField] private Bomb bombPrototype;
 
     private List<PlayerSoldier> localPlayerList = new List<PlayerSoldier>();
     private List<PlayerSoldier> enemyList = new List<PlayerSoldier>();
@@ -32,9 +33,9 @@ public class SoldierManager: Singleton<SoldierManager> {
     }
 
     public void PlaceSoldier(Tile tile, PlayerSoldier soldier) {
-        PlayerSoldier newSoldier = Instantiate(soldier, transform);
+        PlayerSoldier newSoldier = Instantiate(soldier);
         newSoldier.transform.position = new Vector3(tile.transform.position.x + newSoldier.OffsetX,
-            tile.transform.position.y + newSoldier.OffsetY, 0);
+            tile.transform.position.y + newSoldier.OffsetY);
         newSoldier.GetComponent<SpriteRenderer>().sortingOrder = tile.ZIndex;
         newSoldier.CurrentTile = tile;
         tile.MarkTileInUse();
@@ -48,19 +49,27 @@ public class SoldierManager: Singleton<SoldierManager> {
 
         //Get all enemy tiles
 
-
-        while(money > Globals.MIN_PRICE && enemyList.Count <= Globals.MAX_ZOMBIES_FOR_PLAYER) {
-            Zombie zombie = CreateRandomZombie(money);
-            money -= zombie.Price;
-
-
+        //Place MAX_BOMBS Bombs
+        for(int i = 0; i < Globals.MAX_BOMBS; i++) {
+            //Bomb bomb = CreateRandomBomb();
+            money -= bomb.Price;
+            RegisterEnemy(bomb);
+            
         }
+
+
+        //while(money > Globals.MIN_PRICE && enemyList.Count <= Globals.MAX_ZOMBIES_FOR_PLAYER) {
+        //    Zombie zombie = CreateRandomZombie(money);
+        //    money -= zombie.Price;
+        //    RegisterEnemy(zombie);
+
+        //}
     }
 
     public Zombie CreateRandomZombie(int money) {
         Zombie randZombie = null, newZombie = null;
         for(; ; ) {
-            randZombie = zombieTypes[Random.Range(0, zombieTypes.Count)];
+            randZombie = zombiPrototypes[Random.Range(0, zombiPrototypes.Count)];
             if(randZombie.Price <= money) {      //Can afford to create this zombie
                 newZombie = Instantiate(randZombie);
                 break;
@@ -70,5 +79,13 @@ public class SoldierManager: Singleton<SoldierManager> {
             newZombie.gameObject.SetActive(false);
         return newZombie;
     }
+
+    //private Bomb CreateRandomBomb() {
+
+    //}
+
+    //public Tile PlaceZombieInRandomTile(Zombie zombie) {
+
+    //}
 
 }
