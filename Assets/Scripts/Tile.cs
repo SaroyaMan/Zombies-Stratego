@@ -9,6 +9,8 @@ public class Tile: MonoBehaviour {
     private Color defaultColor = new Color(1.0f, 1.0f, 1.0f);
 
     private SpriteRenderer spriteRenderer;
+    private bool isReadyToStep;
+    private PlayerSoldier soldier;
 
     private void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -36,5 +38,26 @@ public class Tile: MonoBehaviour {
 
     public void UnColorTile() {
         spriteRenderer.color = defaultColor;
+    }
+
+    public void ReadyToStep(Zombie zombie) {
+        isReadyToStep = true;
+        ColorTile();
+        soldier = zombie;
+    }
+
+    public void UnReadyToStep() {
+        isReadyToStep = false;
+        UnColorTile();
+        soldier = null;
+    }
+
+    public void OnMouseDown() {
+        if(isReadyToStep) {
+            if(soldier is Zombie) {
+                (soldier as Zombie).Walk(this);
+                IsInUse = true;
+            }
+        }
     }
 }

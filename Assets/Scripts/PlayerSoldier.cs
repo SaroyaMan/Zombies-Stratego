@@ -8,8 +8,8 @@ public abstract class PlayerSoldier: MonoBehaviour {
     [SerializeField] private float offset_y;
 
     private StrategyEditor strategyEditor;
-    private Vector3 originPosition;
-    private Animator anim;
+    protected Vector3 originPosition;
+    protected Animator anim;
 
     public short Rank { get { return rank; } }
     public int Price { get { return price; } }

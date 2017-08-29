@@ -1,10 +1,32 @@
 ﻿
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Zombie: PlayerSoldier {
 
+    private const float navigationUpdate = 0.02f;
+
     private bool isGridMarked;
     private List<Tile> tilesToStep;
+
+    private float navigationTime = 0;
+    private bool isWalking;
+    private Vector2 destination;
+
+
+    private void FixedUpdate() {
+        if(isWalking) {
+            navigationTime += Time.deltaTime;
+            if(navigationTime > navigationUpdate) {
+                transform.position = Vector2.MoveTowards(transform.position, destination, navigationTime);
+                navigationTime = 0;
+            }
+            if(Vector2.Distance(transform.position, destination) < 0.01f) {     // Zombie reached destionation
+                anim.Play("Idle");
+                isWalking = false;
+            }
+        }
+    }
 
     private new void OnMouseDown() {
         base.OnMouseDown();
@@ -23,15 +45,26 @@ public class Zombie: PlayerSoldier {
         isGridMarked = true;
         tilesToStep = TileManager.Instance.GetClosestTiles(CurrentTile);
         foreach(var tile in tilesToStep) {
-            tile.ColorTile();
+            tile.ReadyToStep(this);
         }
     }
 
     public void UnMarkAvailableTilesToStep() {
-        isGridMarked = false;
-        foreach(var tile in tilesToStep) {
-            tile.UnColorTile();
+        if(tilesToStep != null) {
+            isGridMarked = false;
+            foreach(var tile in tilesToStep) {
+                tile.UnReadyToStep();
+            }
+            tilesToStep = null;
         }
-        tilesToStep = null;
+    }
+
+    public void Walk(Tile tile) {
+        anim.Play("Walk");
+        UnMarkAvailableTilesToStep();
+        CurrentTile.UnmarkTileInUse();
+        CurrentTile = tile;
+        destination = new Vector2(tile.transform.position.x + OffsetX, tile.transform.position.y + OffsetY);
+        isWalking = true;
     }
 }
