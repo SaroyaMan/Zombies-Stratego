@@ -8,10 +8,7 @@ public class GameManager : Singleton<GameManager> {
 
     private void Start() {
         if(isSinglePlayer) {
-            Zombies.Instance.InitPcZombies();
+            SoldierManager.Instance.InitPcBoard();
         }
-        
     }
-
-
 }

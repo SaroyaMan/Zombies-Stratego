@@ -24,7 +24,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         ChangeMenuState(MenuScreens.Main);
     }
 
-    public void SubtractMoney(int price) {
+    public void BuySoldier (int price) {
         money -= price;
         //PlayerPrefs.SetInt("Money", money);
         GameView.Instance.SetText("Txt_CurrMoney", money.ToString());

@@ -20,8 +20,8 @@ public class GameController: MonoBehaviour {
     }
 
 
-    public void ZombieSelectedInEditMode(ZombieBtn zombieSelected) {
-        StrategyEditor.Instance.SelectedZombie(zombieSelected);
+    public void PlayerSelectedInEditMode(SoldierBtn soldierSelected) {
+        StrategyEditor.Instance.SelectedSoldier(soldierSelected);
     }
 
     public void SaveChangesInEditMode() {

@@ -15,6 +15,7 @@ public class Globals : Singleton<Globals> {
     public const int ROWS = 9;
     public const int COLUMNS = 16;
     public const int MIN_PRICE = 1;
+    public const int MAX_BOMBS = 6;
     public MenuScreens currentScreen;
 
 
