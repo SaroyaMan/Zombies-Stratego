@@ -9,12 +9,20 @@ public class SoldierManager: Singleton<SoldierManager> {
 
     private List<PlayerSoldier> localPlayerList = new List<PlayerSoldier>();
     private List<PlayerSoldier> enemyList = new List<PlayerSoldier>();
+    private Zombie selectedPlayer = null;
 
 
     public List<PlayerSoldier> LocalPlayerList { get { return localPlayerList; } }
 
     private void Awake() {
         DontDestroyOnLoad(this);
+    }
+
+    public void MarkSelectedSoldier(Zombie zombie) {
+        if(selectedPlayer != null) {
+            selectedPlayer.UnMarkAvailableTilesToStep();
+        }
+        selectedPlayer = zombie;
     }
 
     public void RegisterPlayer(PlayerSoldier soldier) {
@@ -64,7 +72,7 @@ public class SoldierManager: Singleton<SoldierManager> {
         //Place Flag
         while(true) {
             tile = enemyFlagPotentialTiles[Random.Range(0, enemyFlagPotentialTiles.Count)];
-            if(tile.tag == "EnemyTile" && tile.Row != 5) {
+            if(tile.tag == "EnemyTile") {
                 PlaceSoldier(tile, enemyFlagPrototype, true);
                 break;
             }
@@ -94,7 +102,6 @@ public class SoldierManager: Singleton<SoldierManager> {
                 }
             }
         }
-        print("Enemy money : " + money);
     }
 
     private Zombie CreateRandomZombie(int money) {

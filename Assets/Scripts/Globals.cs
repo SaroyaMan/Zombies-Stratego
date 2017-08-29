@@ -8,6 +8,10 @@ public enum MenuScreens {
     Default, Main, SinglePlayer, MultiPlayer, StudentInfo, Options, Loading, Edit
 }
 
+public enum GameSide {
+    LeftSide, RightSide
+}
+
 public class Globals : Singleton<Globals> {
 
     public const int TOTAL_MONEY = 100;
@@ -16,11 +20,11 @@ public class Globals : Singleton<Globals> {
     public const int COLUMNS = 16;
     public const int MIN_PRICE = 1;
     public const int MAX_BOMBS = 6;
-    public MenuScreens currentScreen;
-
-
     public const string GITHUB_PROFILE_URL = "https://github.com/SaroyaMan";
     public const string CV_URL = "https://drive.google.com/file/d/0B8BaWfqNelVKb3p2MUVUTDQ1WVk/view";
+    public static bool IS_IN_GAME;
+
+    public MenuScreens currentScreen;
 
     private Dictionary<string, GameObject> unityObjects;
 

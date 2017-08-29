@@ -28,20 +28,20 @@ public abstract class PlayerSoldier: MonoBehaviour {
         GetComponent<SpriteRenderer>().flipX = true;
     }
 
-    private void OnMouseDown() {
+    protected void OnMouseDown() {
         if(strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
             TileManager.Instance.MarkAvailableBuildTiles();
         }
     }
 
-    private void OnMouseDrag() {
+    protected void OnMouseDrag() {
         if(strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
             var mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
         }
     }
 
-    private void OnMouseUp() {
+    protected void OnMouseUp() {
         if(strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
             TileManager.Instance.UnmarkAvailableBuildTiles();
             if(strategyEditor.ChangeSoldierPosition(this)) {
