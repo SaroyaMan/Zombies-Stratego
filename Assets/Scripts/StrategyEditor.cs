@@ -8,6 +8,7 @@ public class StrategyEditor : Singleton<StrategyEditor> {
     private SpriteRenderer spriteRenderer;
     public static bool IsInEdit;
     public static int NumOfBombs;
+    public static bool HasFlag;
 
     private void Awake() {
         DontDestroyOnLoad(this);
@@ -47,6 +48,10 @@ public class StrategyEditor : Singleton<StrategyEditor> {
                 if(NumOfBombs == Globals.MAX_BOMBS) {
                     GameView.Instance.DisableButton(PlayerBtnPressed.GetComponent<Button>() );
                 }
+            }
+            if(PlayerBtnPressed.SoldierObject is Flag) {
+                HasFlag = true;
+                GameView.Instance.DisableButton(PlayerBtnPressed.GetComponent<Button>());
             }
             SoldierManager.Instance.PlaceSoldier(tile, PlayerBtnPressed.SoldierObject);
             MenuLogic.Instance.BuySoldier(PlayerBtnPressed.SoldierObject.Price);
