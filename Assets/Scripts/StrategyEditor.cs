@@ -46,12 +46,12 @@ public class StrategyEditor : Singleton<StrategyEditor> {
             if(PlayerBtnPressed.SoldierObject is Bomb) {
                 NumOfBombs++;
                 if(NumOfBombs == Globals.MAX_BOMBS) {
-                    GameView.Instance.DisableButton(PlayerBtnPressed.GetComponent<Button>() );
+                    GameView.DisableButton(PlayerBtnPressed.GetComponent<Button>() );
                 }
             }
             if(PlayerBtnPressed.SoldierObject is Flag) {
                 HasFlag = true;
-                GameView.Instance.DisableButton(PlayerBtnPressed.GetComponent<Button>());
+                GameView.DisableButton(PlayerBtnPressed.GetComponent<Button>());
             }
             SoldierManager.Instance.PlaceSoldier(tile, PlayerBtnPressed.SoldierObject);
             MenuLogic.Instance.BuySoldier(PlayerBtnPressed.SoldierObject.Price);

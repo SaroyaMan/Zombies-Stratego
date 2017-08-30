@@ -71,6 +71,8 @@ public class Tile: MonoBehaviour {
                 (soldier as Zombie).Walk(this);
                 IsInUse = true;
             }
+
+            GameManager.Instance.PassTurn();
         }
     }
 }

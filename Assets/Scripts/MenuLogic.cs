@@ -18,7 +18,7 @@ public class MenuLogic: Singleton<MenuLogic> {
     private void Init() {
         prevScreen = Globals.Instance.currentScreen = MenuScreens.Default;
         //money = PlayerPrefs.GetInt("Money", Globals.TOTAL_MONEY); //TODO: Uncomment it
-        GameView.Instance.SetText("Txt_CurrMoney", money.ToString());
+        GameView.SetText("Txt_CurrMoney", money.ToString());
 
         ShutdownScreens();    //TODO: Uncomment it
         ChangeMenuState(MenuScreens.Main);
@@ -27,17 +27,12 @@ public class MenuLogic: Singleton<MenuLogic> {
     public void BuySoldier (int price) {
         money -= price;
         //PlayerPrefs.SetInt("Money", money);
-        GameView.Instance.SetText("Txt_CurrMoney", money.ToString());
+        GameView.SetText("Txt_CurrMoney", money.ToString());
     }
 
     public void SaveStrategy() {
 
     }
-
-    public void InitalizeGame() {
-
-    }
-
 
     private void ShutdownScreens() {
         var unityObjects = Globals.Instance.UnityObjects;
@@ -91,7 +86,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         switch(Globals.Instance.currentScreen) {
             case MenuScreens.Main:
                 unityObjects["ScreenMenu"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Main Menu");
+                GameView.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Main Menu");
                 break;
 
             case MenuScreens.SinglePlayer:
@@ -100,17 +95,17 @@ public class MenuLogic: Singleton<MenuLogic> {
 
             case MenuScreens.MultiPlayer:
                 unityObjects["ScreenMultiplayer"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Multiplayer");
+                GameView.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Multiplayer");
                 break;
 
             case MenuScreens.StudentInfo:
                 unityObjects["ScreenStudentInfo"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Student Info");
+                GameView.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Student Info");
                 break;
 
             case MenuScreens.Options:
                 unityObjects["ScreenOptions"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Options");
+                GameView.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Options");
                 break;
 
             case MenuScreens.Loading: unityObjects["ScreenLoading"].SetActive(true); break;
@@ -118,7 +113,7 @@ public class MenuLogic: Singleton<MenuLogic> {
             case MenuScreens.Edit:
                 unityObjects["ScreenEdit"].SetActive(true);
                 unityObjects["TitleGameImg"].SetActive(true);
-                GameView.Instance.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Edit mode");
+                GameView.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Edit mode");
                 ToggleMenuWindow(false);
                 StrategyEditor.IsInEdit = true;
                 break;
@@ -128,7 +123,7 @@ public class MenuLogic: Singleton<MenuLogic> {
     }
 
     public void UpdateMoneySliderTxt(float value) {
-        GameView.Instance.SetText("MoneyLbl", value + "$");
+        GameView.SetText("MoneyLbl", value + "$");
         PlayerPrefs.SetInt("MoneyBet", (int) value);
     }
 

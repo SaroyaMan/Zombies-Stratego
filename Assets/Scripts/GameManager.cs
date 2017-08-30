@@ -15,7 +15,11 @@ public class GameManager : Singleton<GameManager> {
         }
 
         currentTurn = GameSide.LeftSide;
-        GameView.Instance.SetText("currTurnTxt", "Current Turn: " + currentTurn.ToString());
+        GameView.SetText("currTurnTxt", "Current Turn: " + currentTurn.ToString());
+    }
+
+    public void PassTurn() {
+        currentTurn = currentTurn == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
     }
 
     public void WinGame(GameSide winSide) {

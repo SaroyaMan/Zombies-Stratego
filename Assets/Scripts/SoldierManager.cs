@@ -13,6 +13,7 @@ public class SoldierManager: Singleton<SoldierManager> {
 
 
     public List<PlayerSoldier> LocalPlayerList { get { return localPlayerList; } }
+    public List<PlayerSoldier> EnemyList { get { return enemyList; } }
 
     private void Awake() {
         DontDestroyOnLoad(this);

@@ -8,8 +8,8 @@ public class SoldierBtn : MonoBehaviour {
 
     public void Start() {
         Text[] texts = GetComponentsInChildren<Text>();
-        GameView.Instance.SetText(texts[0], soldierObject.Price.ToString() );
-        GameView.Instance.SetText(texts[1], soldierObject.Rank.ToString());
+        GameView.SetText(texts[0], soldierObject.Price.ToString() );
+        GameView.SetText(texts[1], soldierObject.Rank.ToString());
     }
 
     public PlayerSoldier SoldierObject {
