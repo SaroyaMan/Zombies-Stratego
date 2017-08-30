@@ -30,16 +30,18 @@ public class SoldierManager: Singleton<SoldierManager> {
         if(soldier.CurrentSide == GameSide.LeftSide) {
             localPlayerList.Add(soldier);
         }
-        else
+        else {
             enemyList.Add(soldier);
+        }
     }
 
     public void UnregisterPlayer(PlayerSoldier soldier) {
         if(soldier.CurrentSide == GameSide.LeftSide) {
             localPlayerList.Remove(soldier);
         }
-        else
+        else {
             enemyList.Remove(soldier);
+        }
     }
 
     public void PlaceSoldier(Tile tile, PlayerSoldier soldier, bool isEnemy = false) {

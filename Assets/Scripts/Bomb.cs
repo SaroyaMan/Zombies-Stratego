@@ -9,6 +9,8 @@ public class Bomb : PlayerSoldier {
         anim.Play("Explode");
         yield return new WaitForSeconds(1.5f);
         SoldierManager.Instance.UnregisterPlayer(this);
+        GameManager.Instance.UpdateStats();
+
         Destroy(gameObject);
     }
 }

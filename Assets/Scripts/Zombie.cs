@@ -168,6 +168,7 @@ public class Zombie: PlayerSoldier {
         Anim.Play("Die");
         transform.parent = null;
         yield return new WaitForSeconds(3f);
+        GameManager.Instance.UpdateStats();
         Destroy(gameObject);
     }
 }
