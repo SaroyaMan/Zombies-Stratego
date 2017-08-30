@@ -114,12 +114,18 @@ public class Zombie: PlayerSoldier {
 
         if(isInWar && other.gameObject.tag == "Bomb") {
             isInWar = false;
-            if(other.gameObject.GetComponent<Bomb>() is Bomb) print("Ok, It's a bomb...");
-
             Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
             playerCollider.isTrigger = false;
             bomb.PlayerCollider.isTrigger = false;
             StartCoroutine(Explode(bomb));
+        }
+
+        if(isInWar && other.gameObject.tag == "Flag") {
+            isInWar = false;
+            Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
+            playerCollider.isTrigger = false;
+            flag.PlayerCollider.isTrigger = false;
+            GameManager.Instance.WinGame(CurrentSide);
         }
     }
 

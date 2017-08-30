@@ -18,4 +18,7 @@ public class GameManager : Singleton<GameManager> {
         GameView.Instance.SetText("currTurnTxt", "Current Turn: " + currentTurn.ToString());
     }
 
+    public void WinGame(GameSide winSide) {
+        print("Winner Is: " + winSide);
+    }
 }

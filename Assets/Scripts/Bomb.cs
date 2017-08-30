@@ -4,7 +4,6 @@ using UnityEngine;
 public class Bomb : PlayerSoldier {
 
     public IEnumerator Explode() {
-        print("explode !");
         CurrentTile.IsInUse = false;
         CurrentTile = null;
         anim.Play("Explode");
