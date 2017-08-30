@@ -33,7 +33,7 @@ public class Zombie: PlayerSoldier {
     private new void OnMouseDown() {
         base.OnMouseDown();
         if(Globals.IS_IN_GAME && GameManager.Instance.CurrentTurn == CurrentSide) {
-            if(!isGridMarked) {
+            if(!isGridMarked && !isDying) {
                 SoldierManager.Instance.MarkSelectedSoldier(this);
                 MarkAvailableTilesToStep();
             }
@@ -88,6 +88,7 @@ public class Zombie: PlayerSoldier {
         anim.Play("Walk");
         playerCollider.isTrigger = true;
         enemy.PlayerCollider.isTrigger = true;
+        enemy.gameObject.tag = "InWar";
 
         UnMarkAvailableTilesToStep();
         CurrentTile.UnmarkTileInUse();
@@ -101,7 +102,7 @@ public class Zombie: PlayerSoldier {
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        if(other.gameObject.tag == "Zombie" && isInWar) {
+        if(other.gameObject.tag == "InWar" && isInWar) {
             isInWar = false;
             Zombie zombie = other.gameObject.GetComponent<Zombie>() as Zombie;
             playerCollider.isTrigger = false;
@@ -128,14 +129,17 @@ public class Zombie: PlayerSoldier {
         enemy.Anim.Play("Attack");
         yield return new WaitForSeconds(0.5f);
         if(Rank > enemy.Rank) {         //kill enemy
+            CurrentTile.Soldier = this;
             StartCoroutine(enemy.Die());
         }
         else if(Rank < enemy.Rank) {    //kill this zombie
             enemy.Anim.Play("Idle");
+            enemy.gameObject.tag = "Zombie";
+            enemy.CurrentTile.Soldier = enemy;
             StartCoroutine(Die());
         }
-
         else {                          // draw - kill both
+            CurrentTile.IsInUse = false;
             StartCoroutine(Die());
             StartCoroutine(enemy.Die());
         }
