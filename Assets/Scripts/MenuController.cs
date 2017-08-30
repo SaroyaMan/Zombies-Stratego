@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class GameController: MonoBehaviour {
+public class MenuController: MonoBehaviour {
 
     private Slider moneySlider, musicSlider, sfxSlider;
     private SoundManager soundManager;
@@ -29,8 +28,7 @@ public class GameController: MonoBehaviour {
         MenuLogic.Instance.SaveStrategy();
     }
 
-    /* Main Menu Controls */
-
+    /* ================== Main Menu Controls ======================= */
     public void StartSingleGame() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MenuLogic.Instance.ChangeMenuState(MenuScreens.SinglePlayer);

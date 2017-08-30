@@ -8,6 +8,10 @@ public enum MenuScreens {
     Default, Main, SinglePlayer, MultiPlayer, StudentInfo, Options, Loading, Edit
 }
 
+public enum GameScreens {
+    InGame, Pause
+}
+
 public enum GameSide {
     LeftSide, RightSide
 }
