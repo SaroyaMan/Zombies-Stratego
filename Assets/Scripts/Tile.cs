@@ -17,9 +17,9 @@ public class Tile: MonoBehaviour {
     }
 
     public bool IsInUse { get; set; }
-
     public short Row { get { return row; } }
     public short Column { get { return column; } }
+    public PlayerSoldier Soldier { get { return soldier; } set { soldier = value; } }
 
 
     public void MarkTileInUse() {
@@ -40,19 +40,22 @@ public class Tile: MonoBehaviour {
         spriteRenderer.color = defaultColor;
     }
 
-    public void ReadyToStep(Zombie zombie) {
+    public void ReadyToStep(PlayerSoldier zombie) {
         isReadyToStep = true;
         ColorTile();
-        soldier = zombie;
+        if(soldier == null || !soldier.IsEnemy(zombie) )
+            soldier = zombie;
     }
 
-    public void UnReadyToStep() {
+    public void UnReadyToStep(PlayerSoldier zombie) {
         isReadyToStep = false;
         UnColorTile();
-        soldier = null;
+        if(soldier != null && zombie == soldier )
+            soldier = null;
     }
 
     public void OnMouseDown() {
+        print("Soldier = " + soldier);
         if(isReadyToStep) {
             if(soldier is Zombie) {
                 (soldier as Zombie).Walk(this);

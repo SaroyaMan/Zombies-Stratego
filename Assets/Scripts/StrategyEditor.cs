@@ -77,7 +77,9 @@ public class StrategyEditor : Singleton<StrategyEditor> {
             Tile tile = hit.transform.gameObject.GetComponent<Tile>();
             soldier.GetComponent<SpriteRenderer>().sortingOrder = tile.Row;
             soldier.CurrentTile.UnmarkTileInUse();
+            soldier.CurrentTile.Soldier = null;
             soldier.CurrentTile = tile;
+            soldier.CurrentTile.Soldier = soldier;
             soldier.transform.position = new Vector2(tile.transform.position.x + soldier.OffsetX, tile.transform.position.y + soldier.OffsetY);
             tile.MarkTileInUse();
             return true;

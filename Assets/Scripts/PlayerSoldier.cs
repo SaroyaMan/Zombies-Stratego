@@ -16,6 +16,8 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public float OffsetX { get { return offset_x; } }
     public float OffsetY { get { return offset_y; } }
     public Tile CurrentTile { get; set; }
+    public GameSide CurrentSide { get; set; }
+
 
     private void Awake() {
         originPosition = transform.position;
@@ -26,6 +28,11 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public void FlipSide() {
         offset_x = -offset_x;
         GetComponent<SpriteRenderer>().flipX = true;
+        CurrentSide = GameSide.RightSide;
+    }
+
+    public bool IsEnemy(PlayerSoldier enemy) {
+        return CurrentSide != enemy.CurrentSide;
     }
 
     protected void OnMouseDown() {

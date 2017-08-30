@@ -30,7 +30,7 @@ public class Zombie: PlayerSoldier {
 
     private new void OnMouseDown() {
         base.OnMouseDown();
-        if(Globals.IS_IN_GAME && GameManager.Instance.GameSide == GameSide.LeftSide) {
+        if(Globals.IS_IN_GAME && GameManager.Instance.CurrentTurn == CurrentSide) {
             if(!isGridMarked) {
                 SoldierManager.Instance.MarkSelectedSoldier(this);
                 MarkAvailableTilesToStep();
@@ -43,7 +43,7 @@ public class Zombie: PlayerSoldier {
 
     public void MarkAvailableTilesToStep() {
         isGridMarked = true;
-        tilesToStep = TileManager.Instance.GetClosestTiles(CurrentTile);
+        tilesToStep = TileManager.Instance.GetClosestTiles(CurrentTile, this);
         foreach(var tile in tilesToStep) {
             tile.ReadyToStep(this);
         }
@@ -53,7 +53,7 @@ public class Zombie: PlayerSoldier {
         if(tilesToStep != null) {
             isGridMarked = false;
             foreach(var tile in tilesToStep) {
-                tile.UnReadyToStep();
+                tile.UnReadyToStep(this);
             }
             tilesToStep = null;
         }
@@ -63,7 +63,9 @@ public class Zombie: PlayerSoldier {
         anim.Play("Walk");
         UnMarkAvailableTilesToStep();
         CurrentTile.UnmarkTileInUse();
+        CurrentTile.Soldier = null;
         CurrentTile = tile;
+        CurrentTile.Soldier = this;
         destination = new Vector2(tile.transform.position.x + OffsetX, tile.transform.position.y + OffsetY);
         isWalking = true;
     }
