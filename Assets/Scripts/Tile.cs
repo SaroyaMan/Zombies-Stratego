@@ -12,6 +12,8 @@ public class Tile: MonoBehaviour {
     private bool isReadyToStep;
     private PlayerSoldier soldier;
 
+    private PlayerSoldier attackingZombie;
+
     private void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -45,6 +47,9 @@ public class Tile: MonoBehaviour {
         ColorTile();
         if(soldier == null || !soldier.IsEnemy(zombie) )
             soldier = zombie;
+        else {
+            attackingZombie = zombie as Zombie;
+        }
     }
 
     public void UnReadyToStep(PlayerSoldier zombie) {
@@ -57,7 +62,12 @@ public class Tile: MonoBehaviour {
     public void OnMouseDown() {
         print("Soldier = " + soldier);
         if(isReadyToStep) {
-            if(soldier is Zombie) {
+            if(attackingZombie != null && attackingZombie is Zombie) {
+                (attackingZombie as Zombie).GetCloser(soldier);
+                attackingZombie = null;
+            }
+
+            else if(soldier is Zombie) {
                 (soldier as Zombie).Walk(this);
                 IsInUse = true;
             }

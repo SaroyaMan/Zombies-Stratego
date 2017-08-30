@@ -10,6 +10,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
     private StrategyEditor strategyEditor;
     protected Vector3 originPosition;
     protected Animator anim;
+    protected PolygonCollider2D playerCollider;
 
     public short Rank { get { return rank; } }
     public int Price { get { return price; } }
@@ -17,18 +18,21 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public float OffsetY { get { return offset_y; } }
     public Tile CurrentTile { get; set; }
     public GameSide CurrentSide { get; set; }
+    public Animator Anim { get { return anim; } }
+    public PolygonCollider2D PlayerCollider { get { return playerCollider; } }
 
 
     private void Awake() {
         originPosition = transform.position;
         anim = GetComponent<Animator>();
+        playerCollider = GetComponent<PolygonCollider2D>();
         strategyEditor = StrategyEditor.Instance;
     }
 
     public void FlipSide() {
         offset_x = -offset_x;
-        GetComponent<SpriteRenderer>().flipX = true;
-        CurrentSide = GameSide.RightSide;
+        GetComponent<SpriteRenderer>().flipX = !GetComponent<SpriteRenderer>().flipX;
+        CurrentSide = CurrentSide == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
     }
 
     public bool IsEnemy(PlayerSoldier enemy) {

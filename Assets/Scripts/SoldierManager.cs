@@ -26,19 +26,19 @@ public class SoldierManager: Singleton<SoldierManager> {
     }
 
     public void RegisterPlayer(PlayerSoldier soldier) {
-        localPlayerList.Add(soldier);
+        if(soldier.CurrentSide == GameSide.LeftSide) {
+            localPlayerList.Add(soldier);
+        }
+        else
+            enemyList.Add(soldier);
     }
 
     public void UnregisterPlayer(PlayerSoldier soldier) {
-        localPlayerList.Remove(soldier);
-    }
-
-    public void RegisterEnemy(PlayerSoldier soldier) {
-        enemyList.Add(soldier);
-    }
-
-    public void UnregisterEnemy(PlayerSoldier soldier) {
-        enemyList.Add(soldier);
+        if(soldier.CurrentSide == GameSide.LeftSide) {
+            localPlayerList.Remove(soldier);
+        }
+        else
+            enemyList.Remove(soldier);
     }
 
     public void PlaceSoldier(Tile tile, PlayerSoldier soldier, bool isEnemy = false) {
@@ -52,13 +52,7 @@ public class SoldierManager: Singleton<SoldierManager> {
         newSoldier.CurrentTile = tile;
         newSoldier.CurrentTile.Soldier = newSoldier;
         tile.MarkTileInUse();
-
-        if(isEnemy) {
-            RegisterEnemy(newSoldier);
-        }
-        else {
-            RegisterPlayer(newSoldier);
-        }
+        RegisterPlayer(newSoldier);
     }
 
     public void InitPcBoard() {

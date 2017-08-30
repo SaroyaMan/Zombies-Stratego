@@ -1,4 +1,4 @@
-﻿
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +11,8 @@ public class Zombie: PlayerSoldier {
 
     private float navigationTime = 0;
     private bool isWalking;
+    private bool isInWar;
+    private bool isDying;
     private Vector2 destination;
 
 
@@ -21,7 +23,7 @@ public class Zombie: PlayerSoldier {
                 transform.position = Vector2.MoveTowards(transform.position, destination, navigationTime);
                 navigationTime = 0;
             }
-            if(Vector2.Distance(transform.position, destination) < 0.01f) {     // Zombie reached destionation
+            if(Vector2.Distance(transform.position, destination) < 0.01f && !isDying) {     // Zombie reached destionation
                 anim.Play("Idle");
                 isWalking = false;
             }
@@ -60,13 +62,92 @@ public class Zombie: PlayerSoldier {
     }
 
     public void Walk(Tile tile) {
+        if(tile.Column < CurrentTile.Column) {
+            //animation walk should be reversed
+            //anim.speed = -1;
+        }
         anim.Play("Walk");
         UnMarkAvailableTilesToStep();
         CurrentTile.UnmarkTileInUse();
         CurrentTile.Soldier = null;
+
         CurrentTile = tile;
+        GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
+        if(CurrentTile.Soldier != null && IsEnemy(CurrentTile.Soldier)) {
+            print("ATTACK !");
+        }
+        else {
+            CurrentTile.Soldier = this;
+            destination = new Vector2(tile.transform.position.x + OffsetX, tile.transform.position.y + OffsetY);
+            isWalking = true;
+        }
+    }
+
+    public void GetCloser(PlayerSoldier enemy) {
+
+        anim.Play("Walk");
+        playerCollider.isTrigger = true;
+        enemy.PlayerCollider.isTrigger = true;
+
+        UnMarkAvailableTilesToStep();
+        CurrentTile.UnmarkTileInUse();
+        CurrentTile.Soldier = null;
+        CurrentTile = enemy.CurrentTile;
+
+
         CurrentTile.Soldier = this;
-        destination = new Vector2(tile.transform.position.x + OffsetX, tile.transform.position.y + OffsetY);
-        isWalking = true;
+        destination = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);
+        isWalking = isInWar = true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        if(other.gameObject.tag == "Zombie" && isInWar) {
+            isInWar = false;
+            Zombie zombie = other.gameObject.GetComponent<Zombie>() as Zombie;
+            playerCollider.isTrigger = false;
+            zombie.PlayerCollider.isTrigger = false;
+            StartCoroutine(Kill(zombie));
+        }
+
+        //if(other.gameObject.tag == "Bomb") {
+        //    isInWar = false;
+        //    isDying = true;
+
+        //    Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
+        //    //bomb.Explode();
+        //    SoldierManager.Instance.UnregisterPlayer(this);
+        //    Anim.Play("Die");
+        //    transform.parent = null;
+        //    yield return new WaitForSeconds(3f);
+        //    Destroy(gameObject);
+        //}
+    }
+
+    private IEnumerator Kill(Zombie enemy) {
+        anim.Play("Attack");
+        enemy.Anim.Play("Attack");
+        yield return new WaitForSeconds(0.5f);
+        if(Rank > enemy.Rank) {         //kill enemy
+            StartCoroutine(enemy.Die());
+        }
+        else if(Rank < enemy.Rank) {    //kill this zombie
+            enemy.Anim.Play("Idle");
+            StartCoroutine(Die());
+        }
+
+        else {                          // draw - kill both
+            StartCoroutine(Die());
+            StartCoroutine(enemy.Die());
+        }
+        yield return null;
+    }
+
+    private IEnumerator Die() {
+        isDying = true;
+        SoldierManager.Instance.UnregisterPlayer(this);
+        Anim.Play("Die");
+        transform.parent = null;
+        yield return new WaitForSeconds(3f);
+        Destroy(gameObject);
     }
 }
