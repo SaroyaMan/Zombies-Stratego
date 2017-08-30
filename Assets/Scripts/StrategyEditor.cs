@@ -65,6 +65,7 @@ public class StrategyEditor : Singleton<StrategyEditor> {
             PlayerBtnPressed = soldierSelected;
             EnableDragSprite(PlayerBtnPressed.DragSprite);
             TileManager.Instance.MarkAvailableBuildTiles();
+
         }
     }
 

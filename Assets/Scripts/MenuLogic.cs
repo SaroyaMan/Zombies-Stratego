@@ -80,6 +80,7 @@ public class MenuLogic: Singleton<MenuLogic> {
                 unityObjects["ScreenEdit"].SetActive(false);
                 unityObjects["TitleGameImg"].SetActive(false);
                 ToggleMenuWindow(true);
+                StrategyEditor.Instance.DisableDragSprite();
                 StrategyEditor.IsInEdit = false;
                 break;
 
@@ -94,12 +95,7 @@ public class MenuLogic: Singleton<MenuLogic> {
                 break;
 
             case MenuScreens.SinglePlayer:
-                //unityObjects["ScreenGame"].SetActive(true);
-                //unityObjects["TitleGameImg"].SetActive(true);
-                //GameView.Instance.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Single player mode");
-                //ToggleMenuWindow(false);
                 SceneManager.LoadScene("Game_Scene");
-
                 break;
 
             case MenuScreens.MultiPlayer:

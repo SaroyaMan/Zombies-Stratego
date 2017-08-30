@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 public class GameView : Singleton<GameView> {
 
