@@ -9,7 +9,7 @@ public class Tile: MonoBehaviour {
     private Color defaultColor = new Color(1.0f, 1.0f, 1.0f);
 
     private SpriteRenderer spriteRenderer;
-    private bool isReadyToStep;
+    public bool isReadyToStep;
     private PlayerSoldier soldier;
 
     private PlayerSoldier attackingZombie;
@@ -42,9 +42,9 @@ public class Tile: MonoBehaviour {
         spriteRenderer.color = defaultColor;
     }
 
-    public void ReadyToStep(PlayerSoldier zombie) {
+    public void ReadyToStep(PlayerSoldier zombie, bool isPc = false) {
         isReadyToStep = true;
-        ColorTile();
+        if(!isPc) ColorTile();
         if(soldier == null || !soldier.IsEnemy(zombie) )
             soldier = zombie;
         else {
@@ -52,15 +52,14 @@ public class Tile: MonoBehaviour {
         }
     }
 
-    public void UnReadyToStep(PlayerSoldier zombie) {
+    public void UnReadyToStep(PlayerSoldier zombie, bool isPc = false) {
         isReadyToStep = false;
-        UnColorTile();
+        if(!isPc)  UnColorTile();
         if(soldier != null && zombie == soldier )
             soldier = null;
     }
 
     public void OnMouseDown() {
-        //print("Soldier = " + soldier);
         if(isReadyToStep) {
             if(attackingZombie != null && attackingZombie is Zombie) {
                 (attackingZombie as Zombie).GetCloser(soldier);
@@ -71,7 +70,6 @@ public class Tile: MonoBehaviour {
                 (soldier as Zombie).Walk(this);
                 IsInUse = true;
             }
-
             GameManager.Instance.PassTurn();
         }
     }

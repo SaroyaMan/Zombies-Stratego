@@ -15,6 +15,9 @@ public class Zombie: PlayerSoldier {
     private bool isDying;
     private Vector2 destination;
 
+    public bool IsDying { get { return isDying; } }
+    public List<Tile> TilesToStep { get { return tilesToStep; } set { tilesToStep = value; } }
+
 
     private void FixedUpdate() {
         if(isWalking) {
@@ -32,7 +35,7 @@ public class Zombie: PlayerSoldier {
 
     private new void OnMouseDown() {
         base.OnMouseDown();
-        if(Globals.IS_IN_GAME && GameManager.Instance.CurrentTurn == CurrentSide) {
+        if(Globals.IS_IN_GAME && GameManager.Instance.CurrentTurn == CurrentSide && !GameManager.Instance.IsPcPlaying) {
             if(!isGridMarked && !isDying) {
                 SoldierManager.Instance.MarkSelectedSoldier(this);
                 MarkAvailableTilesToStep();
@@ -73,14 +76,10 @@ public class Zombie: PlayerSoldier {
 
         CurrentTile = tile;
         GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
-        if(CurrentTile.Soldier != null && IsEnemy(CurrentTile.Soldier)) {
-            print("ATTACK !");
-        }
-        else {
-            CurrentTile.Soldier = this;
-            destination = new Vector2(tile.transform.position.x + OffsetX, tile.transform.position.y + OffsetY);
-            isWalking = true;
-        }
+
+        CurrentTile.Soldier = this;
+        destination = new Vector2(tile.transform.position.x + OffsetX, tile.transform.position.y + OffsetY);
+        isWalking = true;
     }
 
     public void GetCloser(PlayerSoldier enemy) {
@@ -96,7 +95,6 @@ public class Zombie: PlayerSoldier {
         CurrentTile.UnmarkTileInUse();
         CurrentTile.Soldier = null;
         CurrentTile = enemy.CurrentTile;
-
 
         CurrentTile.Soldier = this;
         destination = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);

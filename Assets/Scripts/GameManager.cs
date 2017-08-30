@@ -2,11 +2,13 @@
 public class GameManager : Singleton<GameManager> {
 
     private bool isSinglePlayer = true;
+    private bool isPcPlaying;
     private GameSide currentTurn;
     int totalSoldiersLeftSide, totalSoldiersRightSide;
 
 
     public bool IsSinglePlayer { get { return isSinglePlayer; } }
+    public bool IsPcPlaying { get { return isPcPlaying; } }
     public GameSide CurrentTurn { get { return currentTurn; } }
 
     private void Start() {
@@ -25,6 +27,14 @@ public class GameManager : Singleton<GameManager> {
     public void PassTurn() {
         currentTurn = currentTurn == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
         GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
+
+        if(isSinglePlayer && currentTurn == GameSide.RightSide && !isPcPlaying) {
+            isPcPlaying = true;
+            StartCoroutine(SoldierManager.Instance.MakeRandomMove());
+        }
+        else {
+            isPcPlaying = false;
+        }
     }
 
     public void UpdateStats() {

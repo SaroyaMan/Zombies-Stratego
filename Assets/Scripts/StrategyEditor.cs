@@ -10,14 +10,9 @@ public class StrategyEditor : Singleton<StrategyEditor> {
     public static int NumOfBombs;
     public static bool HasFlag;
 
-    private void Awake() {
-        DontDestroyOnLoad(this);
-    }
-
     private void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.enabled = false;
-        
     }
 
 	private void Update () {

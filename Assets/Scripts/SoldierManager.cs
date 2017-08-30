@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SoldierManager: Singleton<SoldierManager> {
@@ -111,5 +112,29 @@ public class SoldierManager: Singleton<SoldierManager> {
             }
         }
         return randZombie;
+    }
+
+    public IEnumerator MakeRandomMove() {
+        var soldierList = GameManager.Instance.CurrentTurn == GameSide.LeftSide ? localPlayerList : enemyList;
+        List<Tile> tilesToStep;
+        Zombie randZombie;
+        while(true) {
+            randZombie = soldierList[Random.Range(0, soldierList.Count)] as Zombie;
+            if(randZombie is Zombie && !randZombie.IsDying) {
+                tilesToStep = TileManager.Instance.GetClosestTiles(randZombie.CurrentTile, randZombie);
+                if(tilesToStep.Count > 0) {
+                    break;
+                }
+            }
+        }
+        randZombie.TilesToStep = tilesToStep;
+        foreach(var tile in tilesToStep) {
+            tile.ReadyToStep(randZombie, true);
+        }
+        var randTile = tilesToStep[Random.Range(0, tilesToStep.Count)];
+        yield return new WaitForSeconds(2f);
+        randTile.OnMouseDown();
+
+        yield return null;
     }
 }
