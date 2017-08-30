@@ -88,7 +88,9 @@ public class Zombie: PlayerSoldier {
         anim.Play("Walk");
         playerCollider.isTrigger = true;
         enemy.PlayerCollider.isTrigger = true;
-        enemy.gameObject.tag = "InWar";
+
+        if(enemy is Zombie)
+            enemy.gameObject.tag = "InWar";
 
         UnMarkAvailableTilesToStep();
         CurrentTile.UnmarkTileInUse();
@@ -102,7 +104,7 @@ public class Zombie: PlayerSoldier {
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        if(other.gameObject.tag == "InWar" && isInWar) {
+        if(isInWar && other.gameObject.tag == "InWar") {
             isInWar = false;
             Zombie zombie = other.gameObject.GetComponent<Zombie>() as Zombie;
             playerCollider.isTrigger = false;
@@ -110,18 +112,26 @@ public class Zombie: PlayerSoldier {
             StartCoroutine(Kill(zombie));
         }
 
-        //if(other.gameObject.tag == "Bomb") {
-        //    isInWar = false;
-        //    isDying = true;
+        if(isInWar && other.gameObject.tag == "Bomb") {
+            isInWar = false;
+            if(other.gameObject.GetComponent<Bomb>() is Bomb) print("Ok, It's a bomb...");
 
-        //    Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
-        //    //bomb.Explode();
-        //    SoldierManager.Instance.UnregisterPlayer(this);
-        //    Anim.Play("Die");
-        //    transform.parent = null;
-        //    yield return new WaitForSeconds(3f);
-        //    Destroy(gameObject);
-        //}
+            Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
+            playerCollider.isTrigger = false;
+            bomb.PlayerCollider.isTrigger = false;
+            StartCoroutine(Explode(bomb));
+        }
+    }
+
+    private IEnumerator Explode(Bomb bomb) {
+        isInWar = false;
+        anim.Play("Attack");
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(bomb.Explode());
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(Die());
+
+        yield return null;
     }
 
     private IEnumerator Kill(Zombie enemy) {
