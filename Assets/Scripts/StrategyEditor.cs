@@ -94,13 +94,16 @@ public class StrategyEditor : Singleton<StrategyEditor> {
             otherSoldier.CurrentTile = tmpTile;
 
             var tmpPos = soldier.OriginPosition;
-            soldier.transform.position = otherSoldier.transform.position;
-            otherSoldier.transform.position = tmpPos;
-
-
-
+            soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
+            otherSoldier.transform.position = new Vector2(otherSoldier.CurrentTile.transform.position.x + otherSoldier.OffsetX, otherSoldier.CurrentTile.transform.position.y + otherSoldier.OffsetY); ;
             return true;
         }
+        else if(hit.collider != null && hit.collider.tag == "Trash" && !(soldier is Flag) ) {
+            soldier.CurrentTile.UnmarkTileInUse();
+            MenuLogic.Instance.SellSoldier(soldier.Price);
+            Destroy(soldier.gameObject);
+        }
+        print(hit.collider.tag);
         return false;
     }
 

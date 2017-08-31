@@ -30,6 +30,12 @@ public class MenuLogic: Singleton<MenuLogic> {
         GameView.SetText("Txt_CurrMoney", money.ToString());
     }
 
+    public void SellSoldier(int price) {
+        money += price;
+        //PlayerPrefs.SetInt("Money", money); //TODO: Uncomment it
+        GameView.SetText("Txt_CurrMoney", money.ToString());
+    }
+
     public void SaveStrategy() {
 
     }
