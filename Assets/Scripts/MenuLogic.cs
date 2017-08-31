@@ -91,7 +91,7 @@ public class MenuLogic: Singleton<MenuLogic> {
 
             case MenuScreens.SinglePlayer:
                 //Globals.Instance.UnityObjects.Clear();
-                SceneManager.LoadScene("Game_Scene");
+                SceneManager.LoadSceneAsync("Game_Scene");
                 break;
 
             case MenuScreens.MultiPlayer:

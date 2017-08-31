@@ -43,6 +43,10 @@ public class GameController : MonoBehaviour {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         GameManager.Instance.ChangeGameState(GameScreens.InGame);
     }
+
+    public void QuitGame() {
+        GameManager.Instance.QuitGame();
+    }
 }
 
 

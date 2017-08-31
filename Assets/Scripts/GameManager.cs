@@ -125,4 +125,12 @@ public class GameManager : Singleton<GameManager> {
         isPaused = false;
         Time.timeScale = 1;           //Resume game here
     }
+
+    public void QuitGame() {
+        Destroy(SoldierManager.Instance.gameObject);
+        Destroy(SoundManager.Instance.gameObject);
+        Destroy(TileManager.Instance.gameObject);
+        Time.timeScale = 1;
+        SceneManager.LoadSceneAsync("Main_Scene");
+    }
 }
