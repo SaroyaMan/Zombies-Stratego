@@ -34,6 +34,12 @@ public class TileManager: Singleton<TileManager> {
         }
     }
 
+    public void ClearTiles() {
+        foreach(var tile in allTiles.Values) {
+            tile.ResetTile();
+        }
+    }
+
     public void MarkAvailableBuildTiles() {
         foreach(var tile in buildTiles.Values) {
             if(tile.tag == "BuildTile") {

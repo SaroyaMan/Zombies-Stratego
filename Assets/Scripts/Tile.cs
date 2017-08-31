@@ -14,14 +14,29 @@ public class Tile: MonoBehaviour {
 
     private PlayerSoldier attackingZombie;
 
-    private void Start() {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
     public bool IsInUse { get; set; }
     public short Row { get { return row; } }
     public short Column { get { return column; } }
     public PlayerSoldier Soldier { get { return soldier; } set { soldier = value; } }
+
+    private void Start() {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    public void ResetTile() {
+        if(Column < 4) {
+            tag = "BuildTile";
+        }
+        else if(Column > 11) {
+            tag = "EnemyTile";
+        }
+        else {
+            tag = "Tile";
+        }
+        IsInUse = isReadyToStep = false;
+        Soldier = attackingZombie = null;
+        UnColorTile();
+    }
 
 
     public void MarkTileInUse() {

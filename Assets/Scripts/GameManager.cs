@@ -18,7 +18,11 @@ public class GameManager : Singleton<GameManager> {
 
     private void Start() {
         Globals.IS_IN_GAME = true;
+        InitGame();
+        ShutdownScreens();
+    }
 
+    private void InitGame() {
         if(isSinglePlayer) {
             SoldierManager.Instance.InitPcBoard();
         }
@@ -27,7 +31,6 @@ public class GameManager : Singleton<GameManager> {
         UpdateStats();
         currentTurn = GameSide.LeftSide;
         GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
-        ShutdownScreens();
     }
 
     public void PassTurn() {
@@ -130,8 +133,7 @@ public class GameManager : Singleton<GameManager> {
     }
 
     private void ResumeGame() {
-        var unityObjects = Globals.Instance.UnityObjects;
-        unityObjects["PauseWindow"].SetActive(false);
+        Globals.Instance.UnityObjects["PauseWindow"].SetActive(false);
         GameView.EnableButton("PauseBtn");
         GameView.MakeScreenNormal();
         isPaused = false;
@@ -146,7 +148,17 @@ public class GameManager : Singleton<GameManager> {
         SceneManager.LoadSceneAsync("Main_Scene");
     }
 
-    public void ResetMatch() {      //TODO: Implement it after saving the strategy preferences
-        //ResumeGame();
+    public void ResetMatch() {
+        TileManager.Instance.ClearTiles();
+        SoldierManager.Instance.ClearSoldiers();
+        SoldierManager.Instance.LoadStrategy();
+        InitGame();
+
+
+        //Globals.Instance.UnityObjects["PauseWindow"].SetActive(false);
+        //GameView.EnableButton("PauseBtn");
+        //GameView.MakeScreenNormal();
+        //isPaused = false;
+        ResumeGame();
     }
 }

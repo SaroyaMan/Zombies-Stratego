@@ -61,16 +61,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         for(int i = 0; i < Globals.MAX_SOLDIERS_FOR_PLAYER + 1; i++) {
             string tilePattern = PlayerPrefs.GetString(y + "," + z, "");
             if(tilePattern != "") {
-                if(tilePattern == "Bomb") {
-                    StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns["Bomb"].SoldierObject);
-                }
-                else if(tilePattern == "BlueFlag") {
-                    StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns["BlueFlag"].SoldierObject);
-                }
-
-                else {
-                    StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns[tilePattern].SoldierObject);
-                }
+                StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns[tilePattern].SoldierObject);
             }
             z++;
             if(z == 4) {
@@ -133,7 +124,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         switch(Globals.Instance.currentScreen) {
             case MenuScreens.Main:
                 unityObjects["ScreenMenu"].SetActive(true);
-                GameView.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Main Menu");
+                GameView.SetText("TitleMenu", "Main Menu");
                 break;
 
             case MenuScreens.SinglePlayer:
@@ -143,17 +134,17 @@ public class MenuLogic: Singleton<MenuLogic> {
 
             case MenuScreens.MultiPlayer:
                 unityObjects["ScreenMultiplayer"].SetActive(true);
-                GameView.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Multiplayer");
+                GameView.SetText("TitleMenu", "Multiplayer");
                 break;
 
             case MenuScreens.StudentInfo:
                 unityObjects["ScreenStudentInfo"].SetActive(true);
-                GameView.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Student Info");
+                GameView.SetText("TitleMenu", "Student Info");
                 break;
 
             case MenuScreens.Options:
                 unityObjects["ScreenOptions"].SetActive(true);
-                GameView.SetText(unityObjects["TitleMenu"].GetComponent<Text>(), "Options");
+                GameView.SetText("TitleMenu", "Options");
                 break;
 
             case MenuScreens.Loading: unityObjects["ScreenLoading"].SetActive(true); break;
@@ -162,7 +153,7 @@ public class MenuLogic: Singleton<MenuLogic> {
                 unityObjects["ScreenEdit"].SetActive(true);
                 unityObjects["TitleGameImg"].SetActive(true);
                 trash.SetActive(true);
-                GameView.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Edit mode");
+                GameView.SetText("TitleMenu", "Edit mode");
                 ToggleMenuWindow(false);
                 StrategyEditor.IsInEdit = true;
                 break;

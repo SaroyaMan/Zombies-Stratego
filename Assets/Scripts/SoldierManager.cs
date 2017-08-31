@@ -7,6 +7,7 @@ public class SoldierManager: Singleton<SoldierManager> {
     [SerializeField] private List<Zombie> zombiePrototypes;
     [SerializeField] private Bomb bombPrototype;
     [SerializeField] private Flag enemyFlagPrototype;
+    [SerializeField] private Flag localFlagPrototype;
 
     private List<PlayerSoldier> localPlayerList = new List<PlayerSoldier>();
     private List<PlayerSoldier> enemyList = new List<PlayerSoldier>();
@@ -136,5 +137,42 @@ public class SoldierManager: Singleton<SoldierManager> {
         randTile.OnMouseDown();
 
         yield return null;
+    }
+
+    public void ClearSoldiers() {
+        foreach(var soldier in localPlayerList) {
+            Destroy(soldier.gameObject);
+        }
+        foreach(var soldier in enemyList) {
+            Destroy(soldier.gameObject);
+        }
+        localPlayerList.Clear();
+        enemyList.Clear();
+    }
+
+    public void LoadStrategy() {
+        int y = 0, z = 0;
+        var matrixTile = TileManager.Instance.MatrixTiles;
+        //var soldierBtns = Globals.Instance.GetAllSoldierBtns();
+
+        Dictionary<string, PlayerSoldier> soldierPrototypes = new Dictionary<string, PlayerSoldier>();
+        soldierPrototypes.Add(bombPrototype.name, bombPrototype);
+        soldierPrototypes.Add(localFlagPrototype.name, localFlagPrototype);
+        soldierPrototypes.Add(enemyFlagPrototype.name, enemyFlagPrototype);
+        foreach(var zombie in zombiePrototypes) {
+            soldierPrototypes.Add(zombie.name, zombie);
+        }
+
+        for(int i = 0; i < Globals.MAX_SOLDIERS_FOR_PLAYER + 1; i++) {
+            string tilePattern = PlayerPrefs.GetString(y + "," + z, "");
+            if(tilePattern != "") {
+                PlaceSoldier(matrixTile[y, z], soldierPrototypes[tilePattern]);
+            }
+            z++;
+            if(z == 4) {
+                y++;
+                z = 0;
+            }
+        }
     }
 }
