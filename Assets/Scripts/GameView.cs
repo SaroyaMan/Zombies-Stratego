@@ -18,6 +18,14 @@ public static class GameView {
         button.interactable = false;
     }
 
+    public static void DisableButton(string elementName) {
+        Globals.Instance.UnityObjects[elementName].GetComponent<Button>().interactable = false;
+    }
+
+    public static void EnableButton(string elementName) {
+        Globals.Instance.UnityObjects[elementName].GetComponent<Button>().interactable = true;
+    }
+
     public static void MakeScreenDark() {
         Globals.Instance.UnityObjects["Canvas"].GetComponent<Image>().color = transparentColor;
     }

@@ -35,7 +35,7 @@ public class Zombie: PlayerSoldier {
 
     private new void OnMouseDown() {
         base.OnMouseDown();
-        if(Globals.IS_IN_GAME && GameManager.Instance.CurrentTurn == CurrentSide && !GameManager.Instance.IsPcPlaying) {
+        if(Globals.IS_IN_GAME && GameManager.Instance.CurrentTurn == CurrentSide && !GameManager.Instance.IsPcPlaying && !GameManager.Instance.IsPaused) {
             if(!isGridMarked && !isDying) {
                 SoldierManager.Instance.MarkSelectedSoldier(this);
                 MarkAvailableTilesToStep();
