@@ -9,7 +9,7 @@ public enum MenuScreens {
 }
 
 public enum GameScreens {
-    InGame, Pause
+    Default, InGame, Pause, Options
 }
 
 public enum GameSide {
@@ -44,8 +44,5 @@ public class Globals : Singleton<Globals> {
         foreach(var ob in gameObjects) {
             unityObjects.Add(ob.name, ob);
         }
-        //PlayerPrefs.DeleteAll();
-        //InitSavedData();
     }
-
 }

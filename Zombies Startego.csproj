@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Bomb.cs" />
     <Compile Include="Assets\Scripts\Flag.cs" />
+    <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GameView.cs" />
     <Compile Include="Assets\Scripts\Globals.cs" />

@@ -20,13 +20,13 @@ public class MenuLogic: Singleton<MenuLogic> {
         //money = PlayerPrefs.GetInt("Money", Globals.TOTAL_MONEY); //TODO: Uncomment it
         GameView.SetText("Txt_CurrMoney", money.ToString());
 
-        ShutdownScreens();    //TODO: Uncomment it
+        ShutdownScreens();    
         ChangeMenuState(MenuScreens.Main);
     }
 
     public void BuySoldier (int price) {
         money -= price;
-        //PlayerPrefs.SetInt("Money", money);
+        //PlayerPrefs.SetInt("Money", money); //TODO: Uncomment it
         GameView.SetText("Txt_CurrMoney", money.ToString());
     }
 
@@ -90,6 +90,7 @@ public class MenuLogic: Singleton<MenuLogic> {
                 break;
 
             case MenuScreens.SinglePlayer:
+                //Globals.Instance.UnityObjects.Clear();
                 SceneManager.LoadScene("Game_Scene");
                 break;
 
