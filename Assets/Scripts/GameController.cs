@@ -44,7 +44,13 @@ public class GameController : MonoBehaviour {
         GameManager.Instance.ChangeGameState(GameScreens.InGame);
     }
 
+    public void ResetGame() {
+        soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
+        GameManager.Instance.ResetMatch();
+    }
+
     public void QuitGame() {
+        soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         GameManager.Instance.QuitGame();
     }
 }

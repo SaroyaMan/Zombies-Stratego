@@ -49,9 +49,18 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void WinGame(GameSide winSide) {
-        print("Winner Is: " + winSide);
-    }
+        Globals.Instance.UnityObjects["WinWindow"].SetActive(true);
+        if(isSinglePlayer && winSide == GameSide.LeftSide) {
+            GameView.SetText("TitleWinner", "You Won !");
+        }
+        else if(isSinglePlayer && winSide == GameSide.RightSide) {
+            GameView.SetText("TitleWinner", "PC Won !");
+        }
 
+        GameView.MakeScreenDark();
+        isPaused = true;
+        Time.timeScale = 0;           //Pause game here
+    }
 
     public void UpdateMusicVolume(float value) {
         SoundManager.Instance.Music.volume = value;
@@ -69,6 +78,7 @@ public class GameManager : Singleton<GameManager> {
 
     private void ShutdownScreens() {
         Globals.Instance.UnityObjects["PauseWindow"].SetActive(false);
+        Globals.Instance.UnityObjects["WinWindow"].SetActive(false);
     }
 
     public void ChangeGameState(GameScreens newScreen) {
@@ -132,5 +142,9 @@ public class GameManager : Singleton<GameManager> {
         Destroy(TileManager.Instance.gameObject);
         Time.timeScale = 1;
         SceneManager.LoadSceneAsync("Main_Scene");
+    }
+
+    public void ResetMatch() {      //TODO: Implement it after saving the strategy preferences
+        //ResumeGame();
     }
 }
