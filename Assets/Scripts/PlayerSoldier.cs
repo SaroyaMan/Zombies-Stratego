@@ -23,7 +23,6 @@ public abstract class PlayerSoldier: MonoBehaviour {
 
 
     private void Awake() {
-        originPosition = transform.position;
         anim = GetComponent<Animator>();
         playerCollider = GetComponent<PolygonCollider2D>();
         strategyEditor = StrategyEditor.Instance;
@@ -31,7 +30,6 @@ public abstract class PlayerSoldier: MonoBehaviour {
 
     public void FlipSide() {
         offset_x = -offset_x;
-        //GetComponent<SpriteRenderer>().flipX = !GetComponent<SpriteRenderer>().flipX;
         transform.localScale = new Vector3(-transform.localScale.x, 1, 1);
         CurrentSide = CurrentSide == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
     }
@@ -42,6 +40,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
 
     protected void OnMouseDown() {
         if(strategyEditor != null && strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
+            originPosition = transform.position;
             TileManager.Instance.MarkAvailableBuildTiles();
         }
     }
@@ -60,6 +59,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
                 originPosition = transform.position;
             }
             else {
+                print("else");
                 transform.position = originPosition;
             }
         }
