@@ -80,6 +80,27 @@ public class StrategyEditor : Singleton<StrategyEditor> {
             tile.MarkTileInUse();
             return true;
         }
+        else if(hit.collider != null && (hit.collider.tag == "Zombie" || hit.collider.tag == "Bomb" || hit.collider.tag == "Flag")) {
+            PlayerSoldier otherSoldier = hit.transform.gameObject.GetComponent<PlayerSoldier>();
+            soldier.GetComponent<SpriteRenderer>().sortingOrder = otherSoldier.CurrentTile.Row;
+            otherSoldier.GetComponent<SpriteRenderer>().sortingOrder = soldier.CurrentTile.Row;
+
+
+            soldier.CurrentTile.Soldier = otherSoldier;
+            otherSoldier.CurrentTile.Soldier = soldier;
+
+            var tmpTile = soldier.CurrentTile;
+            soldier.CurrentTile = otherSoldier.CurrentTile;
+            otherSoldier.CurrentTile = tmpTile;
+
+            var tmpPos = soldier.OriginPosition;
+            soldier.transform.position = otherSoldier.transform.position;
+            otherSoldier.transform.position = tmpPos;
+
+
+
+            return true;
+        }
         return false;
     }
 

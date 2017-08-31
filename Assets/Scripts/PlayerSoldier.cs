@@ -20,6 +20,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public GameSide CurrentSide { get; set; }
     public Animator Anim { get { return anim; } }
     public PolygonCollider2D PlayerCollider { get { return playerCollider; } }
+    public Vector3 OriginPosition { get { return originPosition; } }
 
 
     private void Awake() {
@@ -59,7 +60,6 @@ public abstract class PlayerSoldier: MonoBehaviour {
                 originPosition = transform.position;
             }
             else {
-                print("else");
                 transform.position = originPosition;
             }
         }
