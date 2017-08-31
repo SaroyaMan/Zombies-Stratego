@@ -22,6 +22,7 @@ public class StrategyEditor: Singleton<StrategyEditor> {
             RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
             if(hit.collider != null && hit.collider.tag == "BuildTile") {   //Check if user clicked on build site
                 if(!EventSystem.current.IsPointerOverGameObject() && PlayerBtnPressed != null) {
+                    SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieBought);
                     Tile tile = hit.transform.gameObject.GetComponent<Tile>();
                     PlaceSoldier(tile, PlayerBtnPressed.SoldierObject);
                     DisableDragSprite();

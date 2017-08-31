@@ -12,10 +12,12 @@ public class SoundManager : Singleton<SoundManager> {
     [SerializeField] private AudioClip buttonPress;
     [SerializeField] private AudioClip singlePlayerWin;
     [SerializeField] private AudioClip singlePlayerLose;
+    [SerializeField] private AudioClip zombieBought;
 
     public AudioClip ButtonPress { get { return buttonPress; } }
     public AudioClip SinglePlayerWin { get { return singlePlayerWin; } }
     public AudioClip SinglePlayerLose { get { return singlePlayerLose; } }
+    public AudioClip ZombieBought { get { return zombieBought; } }
 
 
     private void Awake() {
