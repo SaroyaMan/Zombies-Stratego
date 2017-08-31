@@ -52,9 +52,11 @@ public class GameManager : Singleton<GameManager> {
         Globals.Instance.UnityObjects["WinWindow"].SetActive(true);
         if(isSinglePlayer && winSide == GameSide.LeftSide) {
             GameView.SetText("TitleWinner", "You Won !");
+            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerWin);
         }
         else if(isSinglePlayer && winSide == GameSide.RightSide) {
             GameView.SetText("TitleWinner", "PC Won !");
+            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerLose);
         }
 
         GameView.MakeScreenDark();

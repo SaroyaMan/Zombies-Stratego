@@ -123,7 +123,7 @@ public class Zombie: PlayerSoldier {
             Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
             playerCollider.isTrigger = false;
             flag.PlayerCollider.isTrigger = false;
-            GameManager.Instance.WinGame(CurrentSide);
+            StartCoroutine(CollectFlag());
         }
     }
 
@@ -168,5 +168,11 @@ public class Zombie: PlayerSoldier {
         yield return new WaitForSeconds(3f);
         GameManager.Instance.UpdateStats();
         Destroy(gameObject);
+    }
+
+    private IEnumerator CollectFlag() {
+        yield return new WaitForSeconds(1f);
+        GameManager.Instance.WinGame(CurrentSide);
+        yield return null;
     }
 }
