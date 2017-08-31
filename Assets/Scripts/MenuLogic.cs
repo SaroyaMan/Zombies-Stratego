@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Text.RegularExpressions;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -22,7 +23,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         trash.SetActive(false);
         //money = PlayerPrefs.GetInt("Money", Globals.TOTAL_MONEY); //TODO: Uncomment it
         GameView.SetText("Txt_CurrMoney", money.ToString());
-
+        LoadStrategy();
         ShutdownScreens();    
         ChangeMenuState(MenuScreens.Main);
     }
@@ -40,7 +41,45 @@ public class MenuLogic: Singleton<MenuLogic> {
     }
 
     public void SaveStrategy() {
+        var buildTiles = TileManager.Instance.BuildTiles;
+        foreach(var tile in buildTiles.Values) {
+            //print(tile.Row + ", " + tile.Column + Regex.Match(soldier.name, @"\d+").Value + ", ");
+            if(tile.IsInUse) {
+                PlayerPrefs.SetString(tile.Row + "," + tile.Column, Regex.Match(tile.Soldier.name, @"^[a-zA-Z0-9]*").Value);
+            }
+            else {
+                PlayerPrefs.SetString(tile.Row + "," + tile.Column, "");
+            }
 
+        }
+    }
+
+    public void LoadStrategy() {
+        int y = 0, z = 0;
+        var matrixTile = TileManager.Instance.MatrixTiles;
+        var soldierBtns = Globals.Instance.GetAllSoldierBtns();
+        for(int i = 0; i < Globals.MAX_SOLDIERS_FOR_PLAYER + 1; i++) {
+            string tilePattern = PlayerPrefs.GetString(y + "," + z, "");
+            if(tilePattern != "") {
+                print("tilePattern = " + tilePattern);
+                if(tilePattern == "Bomb") {
+                    StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns["Bomb"].SoldierObject);
+                }
+                else if(tilePattern == "BlueFlag") {
+                    print("you should instantiate a Flag ");
+                    StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns["BlueFlag"].SoldierObject);
+                }
+
+                else {
+                    StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns[tilePattern].SoldierObject);
+                }
+            }
+            z++;
+            if(z == 4) {
+                y++;
+                z = 0;
+            }
+        }
     }
 
     private void ShutdownScreens() {

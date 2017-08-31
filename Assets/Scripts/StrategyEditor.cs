@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class StrategyEditor : Singleton<StrategyEditor> {
+public class StrategyEditor: Singleton<StrategyEditor> {
+
 
     public SoldierBtn PlayerBtnPressed { get; set; }
     private SpriteRenderer spriteRenderer;
@@ -10,19 +11,23 @@ public class StrategyEditor : Singleton<StrategyEditor> {
     public static int NumOfBombs;
     public static bool HasFlag;
 
-    private void Start () {
+    private void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.enabled = false;
     }
 
-	private void Update () {
+    private void Update() {
         HandleEscape();
         if(Input.GetMouseButtonDown(0) && PlayerBtnPressed != null) {
             Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
             if(hit.collider != null && hit.collider.tag == "BuildTile") {   //Check if user clicked on build site
-                Tile tile = hit.transform.gameObject.GetComponent<Tile>();
-                PlaceSoldier(tile);
+                if(!EventSystem.current.IsPointerOverGameObject() && PlayerBtnPressed != null) {
+                    Tile tile = hit.transform.gameObject.GetComponent<Tile>();
+                    PlaceSoldier(tile, PlayerBtnPressed.SoldierObject);
+                    DisableDragSprite();
+                }
+
             }
         }
         if(spriteRenderer.enabled) {
@@ -36,22 +41,19 @@ public class StrategyEditor : Singleton<StrategyEditor> {
         }
     }
 
-    public void PlaceSoldier(Tile tile) {
-        if(!EventSystem.current.IsPointerOverGameObject() && PlayerBtnPressed != null) {
-            if(PlayerBtnPressed.SoldierObject is Bomb) {
-                NumOfBombs++;
-                if(NumOfBombs == Globals.MAX_BOMBS) {
-                    GameView.DisableButton(PlayerBtnPressed.GetComponent<Button>() );
-                }
+    public void PlaceSoldier(Tile tile, PlayerSoldier soldier) {
+        if(soldier is Bomb) {
+            NumOfBombs++;
+            if(NumOfBombs == Globals.MAX_BOMBS) {
+                //GameView.DisableButton(PlayerBtnPressed.GetComponent<Button>());
             }
-            if(PlayerBtnPressed.SoldierObject is Flag) {
-                HasFlag = true;
-                GameView.DisableButton(PlayerBtnPressed.GetComponent<Button>());
-            }
-            SoldierManager.Instance.PlaceSoldier(tile, PlayerBtnPressed.SoldierObject);
-            MenuLogic.Instance.BuySoldier(PlayerBtnPressed.SoldierObject.Price);
-            DisableDragSprite();
         }
+        if(soldier is Flag) {
+            HasFlag = true;
+            //GameView.DisableButton(PlayerBtnPressed.GetComponent<Button>());
+        }
+        SoldierManager.Instance.PlaceSoldier(tile, soldier);
+        MenuLogic.Instance.BuySoldier(soldier.Price);
     }
 
     public void SelectedSoldier(SoldierBtn soldierSelected) {
@@ -98,9 +100,10 @@ public class StrategyEditor : Singleton<StrategyEditor> {
             otherSoldier.transform.position = new Vector2(otherSoldier.CurrentTile.transform.position.x + otherSoldier.OffsetX, otherSoldier.CurrentTile.transform.position.y + otherSoldier.OffsetY); ;
             return true;
         }
-        else if(hit.collider != null && hit.collider.tag == "Trash" && !(soldier is Flag) ) {
+        else if(hit.collider != null && hit.collider.tag == "Trash" && !(soldier is Flag)) {
             soldier.CurrentTile.UnmarkTileInUse();
             MenuLogic.Instance.SellSoldier(soldier.Price);
+            SoldierManager.Instance.UnregisterPlayer(soldier);
             Destroy(soldier.gameObject);
         }
         return false;

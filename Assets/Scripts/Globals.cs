@@ -45,4 +45,14 @@ public class Globals : Singleton<Globals> {
             unityObjects.Add(ob.name, ob);
         }
     }
+
+    public Dictionary<string, SoldierBtn> GetAllSoldierBtns() {
+        var soldierBtns = FindObjectsOfType<SoldierBtn>();
+        Dictionary<string, SoldierBtn> soldierButtonsDic = new Dictionary<string, SoldierBtn>();
+        print(soldierBtns.Length);
+        foreach(var btn in soldierBtns) {
+            soldierButtonsDic.Add(btn.SoldierObject.name, btn);
+        }
+        return soldierButtonsDic;
+    }
 }

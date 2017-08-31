@@ -3,16 +3,21 @@ using UnityEngine;
 
 public class TileManager: Singleton<TileManager> {
 
-    public Dictionary<int, Tile> buildTiles;    // all build tiles
-    public Dictionary<int, Tile> allTiles;      // all tiles
-    public Tile[,] matrixTiles;
+    private Dictionary<int, Tile> buildTiles;    // all build tiles
+    private Dictionary<int, Tile> allTiles;      // all tiles
+    private Tile[,] matrixTiles;
+
+    public Dictionary<int, Tile> BuildTiles { get { return buildTiles; } }
+    public Dictionary<int, Tile> AllTiles { get { return allTiles; } }
+    public Tile[,] MatrixTiles { get { return matrixTiles; } }
 
 
     private void Awake() {
         DontDestroyOnLoad(this);
+        Init();
     }
 
-    private void Start() {
+    private void Init() {
         buildTiles = new Dictionary<int, Tile>();
         allTiles = new Dictionary<int, Tile>();
         matrixTiles = new Tile[Globals.ROWS, Globals.COLUMNS];
