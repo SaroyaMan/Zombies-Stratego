@@ -44,12 +44,12 @@ public class Globals : Singleton<Globals> {
         foreach(var ob in gameObjects) {
             unityObjects.Add(ob.name, ob);
         }
+        //PlayerPrefs.DeleteAll();    //For testing
     }
 
     public Dictionary<string, SoldierBtn> GetAllSoldierBtns() {
         var soldierBtns = FindObjectsOfType<SoldierBtn>();
         Dictionary<string, SoldierBtn> soldierButtonsDic = new Dictionary<string, SoldierBtn>();
-        print(soldierBtns.Length);
         foreach(var btn in soldierBtns) {
             soldierButtonsDic.Add(btn.SoldierObject.name, btn);
         }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class StrategyEditor: Singleton<StrategyEditor> {
@@ -45,12 +44,12 @@ public class StrategyEditor: Singleton<StrategyEditor> {
         if(soldier is Bomb) {
             NumOfBombs++;
             if(NumOfBombs == Globals.MAX_BOMBS) {
-                //GameView.DisableButton(PlayerBtnPressed.GetComponent<Button>());
+                GameView.DisableButton("Btn_Bomb");
             }
         }
         if(soldier is Flag) {
             HasFlag = true;
-            //GameView.DisableButton(PlayerBtnPressed.GetComponent<Button>());
+            GameView.DisableButton("Btn_Flag");
         }
         SoldierManager.Instance.PlaceSoldier(tile, soldier);
         MenuLogic.Instance.BuySoldier(soldier.Price);
@@ -104,6 +103,11 @@ public class StrategyEditor: Singleton<StrategyEditor> {
             soldier.CurrentTile.UnmarkTileInUse();
             MenuLogic.Instance.SellSoldier(soldier.Price);
             SoldierManager.Instance.UnregisterPlayer(soldier);
+
+            if(soldier is Bomb) {
+                NumOfBombs--;
+                GameView.EnableButton("Btn_Bomb");
+            }
             Destroy(soldier.gameObject);
         }
         return false;

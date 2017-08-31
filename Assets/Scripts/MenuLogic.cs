@@ -61,12 +61,10 @@ public class MenuLogic: Singleton<MenuLogic> {
         for(int i = 0; i < Globals.MAX_SOLDIERS_FOR_PLAYER + 1; i++) {
             string tilePattern = PlayerPrefs.GetString(y + "," + z, "");
             if(tilePattern != "") {
-                print("tilePattern = " + tilePattern);
                 if(tilePattern == "Bomb") {
                     StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns["Bomb"].SoldierObject);
                 }
                 else if(tilePattern == "BlueFlag") {
-                    print("you should instantiate a Flag ");
                     StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns["BlueFlag"].SoldierObject);
                 }
 
