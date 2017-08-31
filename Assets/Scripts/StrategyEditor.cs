@@ -103,7 +103,6 @@ public class StrategyEditor : Singleton<StrategyEditor> {
             MenuLogic.Instance.SellSoldier(soldier.Price);
             Destroy(soldier.gameObject);
         }
-        print(hit.collider.tag);
         return false;
     }
 

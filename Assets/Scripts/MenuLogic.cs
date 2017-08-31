@@ -6,6 +6,7 @@ public class MenuLogic: Singleton<MenuLogic> {
 
     //private MenuScreens currentScreen;
     private MenuScreens prevScreen;
+    private GameObject trash;
 
     int money = Globals.TOTAL_MONEY;
 
@@ -17,6 +18,8 @@ public class MenuLogic: Singleton<MenuLogic> {
 
     private void Init() {
         prevScreen = Globals.Instance.currentScreen = MenuScreens.Default;
+        trash = GameObject.FindGameObjectWithTag("Trash");
+        trash.SetActive(false);
         //money = PlayerPrefs.GetInt("Money", Globals.TOTAL_MONEY); //TODO: Uncomment it
         GameView.SetText("Txt_CurrMoney", money.ToString());
 
@@ -80,6 +83,7 @@ public class MenuLogic: Singleton<MenuLogic> {
             case MenuScreens.Edit:
                 unityObjects["ScreenEdit"].SetActive(false);
                 unityObjects["TitleGameImg"].SetActive(false);
+                trash.SetActive(false);
                 ToggleMenuWindow(true);
                 StrategyEditor.Instance.DisableDragSprite();
                 StrategyEditor.IsInEdit = false;
@@ -120,6 +124,7 @@ public class MenuLogic: Singleton<MenuLogic> {
             case MenuScreens.Edit:
                 unityObjects["ScreenEdit"].SetActive(true);
                 unityObjects["TitleGameImg"].SetActive(true);
+                trash.SetActive(true);
                 GameView.SetText(unityObjects["TitleGame"].GetComponent<Text>(), "Edit mode");
                 ToggleMenuWindow(false);
                 StrategyEditor.IsInEdit = true;
