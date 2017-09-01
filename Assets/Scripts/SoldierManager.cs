@@ -175,4 +175,15 @@ public class SoldierManager: Singleton<SoldierManager> {
             }
         }
     }
+
+    public void HideAllSoldiers() {
+        Animator templateAnimator = zombiePrototypes[8].GetComponent<Animator>();
+        foreach(var soldier in localPlayerList) {
+            soldier.HideSoldier(templateAnimator);
+        }
+
+        foreach(var soldier in enemyList) {
+            soldier.HideSoldier(templateAnimator);
+        }
+    }
 }

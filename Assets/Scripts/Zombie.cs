@@ -105,6 +105,10 @@ public class Zombie: PlayerSoldier {
         if(isInWar && other.gameObject.tag == "InWar") {
             isInWar = false;
             Zombie zombie = other.gameObject.GetComponent<Zombie>() as Zombie;
+
+            CoverSoldier();
+            zombie.CoverSoldier();
+
             playerCollider.isTrigger = false;
             zombie.PlayerCollider.isTrigger = false;
             StartCoroutine(Kill(zombie));
@@ -113,6 +117,10 @@ public class Zombie: PlayerSoldier {
         if(isInWar && other.gameObject.tag == "Bomb") {
             isInWar = false;
             Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
+
+            CoverSoldier();
+            bomb.CoverSoldier();
+
             playerCollider.isTrigger = false;
             bomb.PlayerCollider.isTrigger = false;
             StartCoroutine(Explode(bomb));
@@ -121,6 +129,10 @@ public class Zombie: PlayerSoldier {
         if(isInWar && other.gameObject.tag == "Flag") {
             isInWar = false;
             Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
+
+            CoverSoldier();
+            flag.CoverSoldier();
+
             playerCollider.isTrigger = false;
             flag.PlayerCollider.isTrigger = false;
             StartCoroutine(CollectFlag());

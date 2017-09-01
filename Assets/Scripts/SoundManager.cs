@@ -14,10 +14,15 @@ public class SoundManager : Singleton<SoundManager> {
     [SerializeField] private AudioClip singlePlayerLose;
     [SerializeField] private AudioClip zombieBought;
 
+    [SerializeField] private AudioClip inGameMusic;
+
+
     public AudioClip ButtonPress { get { return buttonPress; } }
     public AudioClip SinglePlayerWin { get { return singlePlayerWin; } }
     public AudioClip SinglePlayerLose { get { return singlePlayerLose; } }
     public AudioClip ZombieBought { get { return zombieBought; } }
+    public AudioClip InGameMusic { get { return inGameMusic; } }
+
 
 
     private void Awake() {

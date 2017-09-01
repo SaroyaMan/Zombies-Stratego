@@ -31,6 +31,9 @@ public class GameManager : Singleton<GameManager> {
         UpdateStats();
         currentTurn = GameSide.LeftSide;
         GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
+
+        SoldierManager.Instance.HideAllSoldiers();
+
     }
 
     public void PassTurn() {
@@ -153,12 +156,6 @@ public class GameManager : Singleton<GameManager> {
         SoldierManager.Instance.ClearSoldiers();
         SoldierManager.Instance.LoadStrategy();
         InitGame();
-
-
-        //Globals.Instance.UnityObjects["PauseWindow"].SetActive(false);
-        //GameView.EnableButton("PauseBtn");
-        //GameView.MakeScreenNormal();
-        //isPaused = false;
         ResumeGame();
     }
 }

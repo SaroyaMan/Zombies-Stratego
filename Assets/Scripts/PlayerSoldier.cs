@@ -8,9 +8,17 @@ public abstract class PlayerSoldier: MonoBehaviour {
     [SerializeField] private float offset_y;
 
     private StrategyEditor strategyEditor;
+    private SpriteRenderer spriteRenderer;
+    private Color blueColor = new Color(0, 0, 1, 0.6f);
+    private Color redColor = new Color(1, 0, 0, 0.6f);
+    private Color defaultColor = new Color(1, 1, 1, 1);
+
+
     protected Vector3 originPosition;
     protected Animator anim;
+    protected RuntimeAnimatorController originAnim;
     protected PolygonCollider2D playerCollider;
+    protected bool isHidden;
 
     public short Rank { get { return rank; } }
     public int Price { get { return price; } }
@@ -18,14 +26,18 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public float OffsetY { get { return offset_y; } }
     public Tile CurrentTile { get; set; }
     public GameSide CurrentSide { get; set; }
-    public Animator Anim { get { return anim; } }
+    public Animator Anim { get { return anim; } set { anim = value; } }
+    public RuntimeAnimatorController OriginAnim { get { return originAnim; } }
+
     public PolygonCollider2D PlayerCollider { get { return playerCollider; } }
     public Vector3 OriginPosition { get { return originPosition; } }
 
 
     private void Awake() {
         anim = GetComponent<Animator>();
+        originAnim = anim.runtimeAnimatorController;
         playerCollider = GetComponent<PolygonCollider2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         strategyEditor = StrategyEditor.Instance;
     }
 
@@ -62,6 +74,22 @@ public abstract class PlayerSoldier: MonoBehaviour {
             else {
                 transform.position = originPosition;
             }
+        }
+    }
+
+    public void HideSoldier(Animator templateAnimator) {
+        if(!isHidden) {
+            isHidden = true;
+            Anim.runtimeAnimatorController = templateAnimator.runtimeAnimatorController;
+            spriteRenderer.color = CurrentSide == GameSide.LeftSide ? blueColor : redColor;
+        }
+    }
+
+    public void CoverSoldier() {
+        if(isHidden) {
+            isHidden = false;
+            Anim.runtimeAnimatorController = OriginAnim;
+            spriteRenderer.color = defaultColor;
         }
     }
 }

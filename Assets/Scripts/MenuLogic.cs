@@ -128,7 +128,7 @@ public class MenuLogic: Singleton<MenuLogic> {
                 break;
 
             case MenuScreens.SinglePlayer:
-                //Globals.Instance.UnityObjects.Clear();
+                //SoundManager.Instance.Music.clip  = SoundManager.Instance.InGameMusic;
                 SceneManager.LoadSceneAsync("Game_Scene");
                 break;
 
