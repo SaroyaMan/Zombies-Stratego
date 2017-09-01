@@ -29,11 +29,9 @@ public class GameManager : Singleton<GameManager> {
         totalSoldiersLeftSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
         totalSoldiersRightSide = SoldierManager.Instance.EnemyList.Count - 1;
         UpdateStats();
-        currentTurn = GameSide.LeftSide;
-        GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
-
         SoldierManager.Instance.HideAllSoldiers();
-
+        currentTurn = (GameSide) Random.Range(0, 2);
+        PassTurn();
     }
 
     public void PassTurn() {
