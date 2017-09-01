@@ -29,20 +29,40 @@ public class SoldierManager: Singleton<SoldierManager> {
     }
 
     public void RegisterPlayer(PlayerSoldier soldier) {
-        if(soldier.CurrentSide == GameSide.LeftSide) {
-            localPlayerList.Add(soldier);
+        if(Globals.IS_IN_GAME) {
+            if(soldier.CurrentSide != GameManager.Instance.PcSide) {
+                localPlayerList.Add(soldier);
+            }
+            else {
+                enemyList.Add(soldier);
+            }
         }
         else {
-            enemyList.Add(soldier);
+            if(soldier.CurrentSide == GameSide.LeftSide) {
+                localPlayerList.Add(soldier);
+            }
+            else {
+                enemyList.Add(soldier);
+            }
         }
     }
 
     public void UnregisterPlayer(PlayerSoldier soldier) {
-        if(soldier.CurrentSide == GameSide.LeftSide) {
-            localPlayerList.Remove(soldier);
+        if(Globals.IS_IN_GAME) {
+            if(soldier.CurrentSide != GameManager.Instance.PcSide) {
+                localPlayerList.Remove(soldier);
+            }
+            else {
+                enemyList.Remove(soldier);
+            }
         }
         else {
-            enemyList.Remove(soldier);
+            if(soldier.CurrentSide == GameSide.LeftSide) {
+                localPlayerList.Remove(soldier);
+            }
+            else {
+                enemyList.Remove(soldier);
+            }
         }
     }
 
@@ -178,17 +198,13 @@ public class SoldierManager: Singleton<SoldierManager> {
 
     public void HideAllSoldiers() {
         Animator templateAnimator = zombiePrototypes[8].GetComponent<Animator>();
-        //foreach(var soldier in localPlayerList) {
-        //    soldier.HideSoldier(templateAnimator, zombiePrototypes[8].OffsetX, zombiePrototypes[8].OffsetY);
-        //}
-
         foreach(var soldier in enemyList) {
             soldier.HideSoldier(templateAnimator, zombiePrototypes[8].OffsetX, zombiePrototypes[8].OffsetY);
         }
     }
 
     public void FlipSide() {
-        print("Sides should flip");
+        //print("Sides should flip");
         var matrixTiles = TileManager.Instance.MatrixTiles;
         Dictionary<string, Tile> inUsedTiles = new Dictionary<string, Tile>();
         foreach(var soldier in localPlayerList) {
@@ -204,7 +220,12 @@ public class SoldierManager: Singleton<SoldierManager> {
             soldier.CurrentTile.Soldier = soldier;
             soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
             if(soldier is Flag) {
-                soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                if(GameManager.Instance.PcSide == GameSide.LeftSide) {
+                    soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                }
+                else {
+                    soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                }
             }
         }
 
@@ -222,7 +243,12 @@ public class SoldierManager: Singleton<SoldierManager> {
             soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
 
             if(soldier is Flag) {
-                soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                if(GameManager.Instance.PcSide == GameSide.LeftSide) {
+                    soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                }
+                else {
+                    soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                }
             }
         }
     }

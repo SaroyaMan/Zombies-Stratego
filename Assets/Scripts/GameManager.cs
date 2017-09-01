@@ -31,14 +31,13 @@ public class GameManager : Singleton<GameManager> {
         totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
         totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
         currentTurn = (GameSide) Random.Range(0, 2);
-        pcSide = GameSide.RightSide;
 
-        int randomSide = Random.Range(0, 2);
-        //int randomSide = 1;
-        if(randomSide == 1) {
-            SoldierManager.Instance.FlipSide();
-            pcSide = GameSide.LeftSide;
-        }
+        //TODO : Fix The Bug when pcSide is randomly taken:
+        //pcSide = (GameSide) Random.Range(0, 2);
+        //if(pcSide == GameSide.LeftSide) {
+        //    SoldierManager.Instance.FlipSide();
+        //}
+
         SoldierManager.Instance.HideAllSoldiers();
         UpdateStats();
         PassTurn();
@@ -71,11 +70,11 @@ public class GameManager : Singleton<GameManager> {
 
     public void WinGame(GameSide winSide) {
         Globals.Instance.UnityObjects["WinWindow"].SetActive(true);
-        if(isSinglePlayer && winSide == GameSide.LeftSide) {
+        if(isSinglePlayer && pcSide != winSide) {
             GameView.SetText("TitleWinner", "You Won !");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerWin);
         }
-        else if(isSinglePlayer && winSide == GameSide.RightSide) {
+        else if(isSinglePlayer && pcSide == winSide) {
             GameView.SetText("TitleWinner", "PC Won !");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerLose);
         }
@@ -163,6 +162,7 @@ public class GameManager : Singleton<GameManager> {
         Destroy(SoundManager.Instance.gameObject);
         Destroy(TileManager.Instance.gameObject);
         Time.timeScale = 1;
+        Globals.IS_IN_GAME = false;
         SceneManager.LoadSceneAsync("Main_Scene");
     }
 
@@ -172,5 +172,8 @@ public class GameManager : Singleton<GameManager> {
         SoldierManager.Instance.LoadStrategy();
         InitGame();
         ResumeGame();
+        if(Globals.Instance.UnityObjects["WinWindow"]) {
+            Globals.Instance.UnityObjects["WinWindow"].SetActive(false);
+        }
     }
 }
