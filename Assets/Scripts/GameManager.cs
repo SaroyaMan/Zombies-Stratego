@@ -7,13 +7,15 @@ public class GameManager : Singleton<GameManager> {
     private bool isPcPlaying;
     private bool isPaused;
     private GameSide currentTurn;
-    int totalSoldiersLeftSide, totalSoldiersRightSide;
+    private GameSide pcSide = GameSide.RightSide;
+    int totalSoldiersLocalSide, totalSoldiersEnemySide;
     private GameScreens prevScreen, currentScreen;
 
 
     public bool IsSinglePlayer { get { return isSinglePlayer; } }
     public bool IsPcPlaying { get { return isPcPlaying; } }
     public GameSide CurrentTurn { get { return currentTurn; } }
+    public GameSide PcSide { get { return pcSide; } set { pcSide = value; } }
     public bool IsPaused { get { return isPaused; } }
 
     private void Start() {
@@ -26,30 +28,45 @@ public class GameManager : Singleton<GameManager> {
         if(isSinglePlayer) {
             SoldierManager.Instance.InitPcBoard();
         }
-        totalSoldiersLeftSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
-        totalSoldiersRightSide = SoldierManager.Instance.EnemyList.Count - 1;
-        UpdateStats();
-        SoldierManager.Instance.HideAllSoldiers();
+        totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
+        totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
         currentTurn = (GameSide) Random.Range(0, 2);
+        pcSide = GameSide.RightSide;
+
+        int randomSide = Random.Range(0, 2);
+        //int randomSide = 1;
+        if(randomSide == 1) {
+            SoldierManager.Instance.FlipSide();
+            pcSide = GameSide.LeftSide;
+        }
+        SoldierManager.Instance.HideAllSoldiers();
+        UpdateStats();
         PassTurn();
     }
 
     public void PassTurn() {
         currentTurn = currentTurn == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
-        GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
 
-        if(isSinglePlayer && currentTurn == GameSide.RightSide && !isPcPlaying) {
+        if(isSinglePlayer && currentTurn == pcSide && !isPcPlaying) {
             isPcPlaying = true;
             StartCoroutine(SoldierManager.Instance.MakeRandomMove());
         }
         else {
             isPcPlaying = false;
         }
+        GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
+
     }
 
     public void UpdateStats() {
-        GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLeftSide);
-        GameView.SetText("ZombiesRightText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersRightSide);
+        if(isSinglePlayer && pcSide == GameSide.RightSide) {
+            GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
+            GameView.SetText("ZombiesRightText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
+        }
+        else {
+            GameView.SetText("ZombiesRightText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
+            GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
+        }
     }
 
     public void WinGame(GameSide winSide) {

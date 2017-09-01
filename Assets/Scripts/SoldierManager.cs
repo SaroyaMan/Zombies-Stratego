@@ -116,7 +116,7 @@ public class SoldierManager: Singleton<SoldierManager> {
     }
 
     public IEnumerator MakeRandomMove() {
-        var soldierList = GameManager.Instance.CurrentTurn == GameSide.LeftSide ? localPlayerList : enemyList;
+        var soldierList = enemyList;
         List<Tile> tilesToStep;
         Zombie randZombie;
         while(true) {
@@ -178,12 +178,52 @@ public class SoldierManager: Singleton<SoldierManager> {
 
     public void HideAllSoldiers() {
         Animator templateAnimator = zombiePrototypes[8].GetComponent<Animator>();
-        foreach(var soldier in localPlayerList) {
-            soldier.HideSoldier(templateAnimator);
-        }
+        //foreach(var soldier in localPlayerList) {
+        //    soldier.HideSoldier(templateAnimator, zombiePrototypes[8].OffsetX, zombiePrototypes[8].OffsetY);
+        //}
 
         foreach(var soldier in enemyList) {
-            soldier.HideSoldier(templateAnimator);
+            soldier.HideSoldier(templateAnimator, zombiePrototypes[8].OffsetX, zombiePrototypes[8].OffsetY);
+        }
+    }
+
+    public void FlipSide() {
+        print("Sides should flip");
+        var matrixTiles = TileManager.Instance.MatrixTiles;
+        Dictionary<string, Tile> inUsedTiles = new Dictionary<string, Tile>();
+        foreach(var soldier in localPlayerList) {
+            var tile = matrixTiles[soldier.CurrentTile.Row, Globals.COLUMNS - 1 - soldier.CurrentTile.Column];
+            if(tile.IsInUse) {
+                inUsedTiles.Add(tile.Row.ToString() + tile.Column.ToString(), tile);
+            }
+            soldier.FlipSide();
+            soldier.CurrentTile.ResetTile();
+
+            soldier.CurrentTile = tile;
+            soldier.CurrentTile.IsInUse = true;
+            soldier.CurrentTile.Soldier = soldier;
+            soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
+            if(soldier is Flag) {
+                soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+            }
+        }
+
+
+        foreach(var soldier in enemyList) {
+            var tile = matrixTiles[soldier.CurrentTile.Row, Globals.COLUMNS - 1 - soldier.CurrentTile.Column];
+            if(!inUsedTiles.ContainsKey(soldier.CurrentTile.Row.ToString() + soldier.CurrentTile.Column.ToString())) {
+                soldier.CurrentTile.ResetTile();
+            }
+            soldier.FlipSide();
+
+            soldier.CurrentTile = tile;
+            soldier.CurrentTile.IsInUse = true;
+            soldier.CurrentTile.Soldier = soldier;
+            soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
+
+            if(soldier is Flag) {
+                soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+            }
         }
     }
 }

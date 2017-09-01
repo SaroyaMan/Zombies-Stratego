@@ -12,6 +12,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
     private Color blueColor = new Color(0, 0, 1, 0.6f);
     private Color redColor = new Color(1, 0, 0, 0.6f);
     private Color defaultColor = new Color(1, 1, 1, 1);
+    private float originOffsetX, originOffsetY;
 
 
     protected Vector3 originPosition;
@@ -39,10 +40,12 @@ public abstract class PlayerSoldier: MonoBehaviour {
         playerCollider = GetComponent<PolygonCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         strategyEditor = StrategyEditor.Instance;
+        originOffsetX = offset_x;
+        originOffsetY = offset_y;
     }
 
     public void FlipSide() {
-        offset_x = -offset_x;
+        offset_x = originOffsetX = -offset_x;
         transform.localScale = new Vector3(-transform.localScale.x, 1, 1);
         CurrentSide = CurrentSide == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
     }
@@ -77,11 +80,14 @@ public abstract class PlayerSoldier: MonoBehaviour {
         }
     }
 
-    public void HideSoldier(Animator templateAnimator) {
+    public void HideSoldier(Animator templateAnimator, float offsetX, float offsetY) {
         if(!isHidden) {
             isHidden = true;
             Anim.runtimeAnimatorController = templateAnimator.runtimeAnimatorController;
             spriteRenderer.color = CurrentSide == GameSide.LeftSide ? blueColor : redColor;
+            offset_x = CurrentSide == GameSide.LeftSide ? offsetX : -offsetX;
+            offset_y = offsetY;
+            transform.position = new Vector2(CurrentTile.transform.position.x + offset_x, CurrentTile.transform.position.y + offset_y);
         }
     }
 
@@ -90,6 +96,9 @@ public abstract class PlayerSoldier: MonoBehaviour {
             isHidden = false;
             Anim.runtimeAnimatorController = OriginAnim;
             spriteRenderer.color = defaultColor;
+            offset_x = originOffsetX;
+            offset_y = originOffsetY;
+            transform.position = new Vector2(CurrentTile.transform.position.x + offset_x, CurrentTile.transform.position.y + offset_y);
         }
     }
 }

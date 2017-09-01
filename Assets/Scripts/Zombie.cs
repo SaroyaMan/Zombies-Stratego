@@ -84,6 +84,9 @@ public class Zombie: PlayerSoldier {
 
     public void GetCloser(PlayerSoldier enemy) {
 
+        CoverSoldier();
+        enemy.CoverSoldier();
+
         anim.Play("Walk");
         playerCollider.isTrigger = true;
         enemy.PlayerCollider.isTrigger = true;
@@ -106,8 +109,8 @@ public class Zombie: PlayerSoldier {
             isInWar = false;
             Zombie zombie = other.gameObject.GetComponent<Zombie>() as Zombie;
 
-            CoverSoldier();
-            zombie.CoverSoldier();
+            //CoverSoldier();
+            //zombie.CoverSoldier();
 
             playerCollider.isTrigger = false;
             zombie.PlayerCollider.isTrigger = false;
@@ -118,8 +121,8 @@ public class Zombie: PlayerSoldier {
             isInWar = false;
             Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
 
-            CoverSoldier();
-            bomb.CoverSoldier();
+            //CoverSoldier();
+            //bomb.CoverSoldier();
 
             playerCollider.isTrigger = false;
             bomb.PlayerCollider.isTrigger = false;
@@ -130,8 +133,8 @@ public class Zombie: PlayerSoldier {
             isInWar = false;
             Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
 
-            CoverSoldier();
-            flag.CoverSoldier();
+            //CoverSoldier();
+            //flag.CoverSoldier();
 
             playerCollider.isTrigger = false;
             flag.PlayerCollider.isTrigger = false;
