@@ -177,7 +177,8 @@ public class Zombie: PlayerSoldier {
 
     private IEnumerator Die() {
         isDying = true;
-        SoldierManager.Instance.UnregisterPlayer(this);
+        if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
+        else SoldierManager.Instance.LocalPlayerList.Remove(this);
         Anim.Play("Die");
         transform.parent = null;
         yield return new WaitForSeconds(3f);

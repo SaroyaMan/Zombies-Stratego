@@ -28,48 +28,53 @@ public class SoldierManager: Singleton<SoldierManager> {
         selectedPlayer = zombie;
     }
 
-    public void RegisterPlayer(PlayerSoldier soldier) {
-        if(Globals.IS_IN_GAME) {
-            if(soldier.CurrentSide != GameManager.Instance.PcSide) {
-                localPlayerList.Add(soldier);
-            }
-            else {
-                enemyList.Add(soldier);
-            }
-        }
-        else {
-            if(soldier.CurrentSide == GameSide.LeftSide) {
-                localPlayerList.Add(soldier);
-            }
-            else {
-                enemyList.Add(soldier);
-            }
-        }
-    }
+    //public void RegisterPlayer(PlayerSoldier soldier) {
+    //    if(Globals.IS_IN_GAME) {
+    //        if(soldier.CurrentSide == GameManager.Instance.PcSide) {
+    //            enemyList.Add(soldier);
+    //        }
+    //        else {
+    //            localPlayerList.Add(soldier);
+    //        }
+    //    }
+    //    else {
+    //        if(soldier.CurrentSide == GameSide.LeftSide) {
+    //            localPlayerList.Add(soldier);
+    //        }
+    //        else {
+    //            enemyList.Add(soldier);
+    //        }
+    //    }
+    //}
 
-    public void UnregisterPlayer(PlayerSoldier soldier) {
-        if(Globals.IS_IN_GAME) {
-            if(soldier.CurrentSide != GameManager.Instance.PcSide) {
-                localPlayerList.Remove(soldier);
-            }
-            else {
-                enemyList.Remove(soldier);
-            }
-        }
-        else {
-            if(soldier.CurrentSide == GameSide.LeftSide) {
-                localPlayerList.Remove(soldier);
-            }
-            else {
-                enemyList.Remove(soldier);
-            }
-        }
-    }
+    //public void UnregisterPlayer(PlayerSoldier soldier) {
+    //    if(Globals.IS_IN_GAME) {
+    //        if(soldier.CurrentSide == GameManager.Instance.PcSide) {
+    //            enemyList.Remove(soldier);
+                
+    //        }
+    //        else {
+    //            localPlayerList.Remove(soldier);
+    //        }
+    //    }
+    //    else {
+    //        if(soldier.CurrentSide == GameSide.LeftSide) {
+    //            localPlayerList.Remove(soldier);
+    //        }
+    //        else {
+    //            enemyList.Remove(soldier);
+    //        }
+    //    }
+    //}
 
     public void PlaceSoldier(Tile tile, PlayerSoldier soldier, bool isEnemy = false) {
         PlayerSoldier newSoldier = Instantiate(soldier, transform);
         if(isEnemy) {
             newSoldier.FlipSide();
+            EnemyList.Add(newSoldier);
+        }
+        else {
+            LocalPlayerList.Add(newSoldier);
         }
         newSoldier.transform.position = new Vector3(tile.transform.position.x + newSoldier.OffsetX,
             tile.transform.position.y + newSoldier.OffsetY);
@@ -77,7 +82,7 @@ public class SoldierManager: Singleton<SoldierManager> {
         newSoldier.CurrentTile = tile;
         newSoldier.CurrentTile.Soldier = newSoldier;
         tile.MarkTileInUse();
-        RegisterPlayer(newSoldier);
+        //RegisterPlayer(newSoldier);
     }
 
     public void InitPcBoard() {
@@ -173,7 +178,6 @@ public class SoldierManager: Singleton<SoldierManager> {
     public void LoadStrategy() {
         int y = 0, z = 0;
         var matrixTile = TileManager.Instance.MatrixTiles;
-        //var soldierBtns = Globals.Instance.GetAllSoldierBtns();
 
         Dictionary<string, PlayerSoldier> soldierPrototypes = new Dictionary<string, PlayerSoldier>();
         soldierPrototypes.Add(bombPrototype.name, bombPrototype);
@@ -204,7 +208,6 @@ public class SoldierManager: Singleton<SoldierManager> {
     }
 
     public void FlipSide() {
-        //print("Sides should flip");
         var matrixTiles = TileManager.Instance.MatrixTiles;
         Dictionary<string, Tile> inUsedTiles = new Dictionary<string, Tile>();
         foreach(var soldier in localPlayerList) {

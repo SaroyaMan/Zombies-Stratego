@@ -8,7 +8,8 @@ public class Bomb : PlayerSoldier {
         CurrentTile = null;
         anim.Play("Explode");
         yield return new WaitForSeconds(1.5f);
-        SoldierManager.Instance.UnregisterPlayer(this);
+        if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
+        else SoldierManager.Instance.LocalPlayerList.Remove(this);
         GameManager.Instance.UpdateStats();
 
         Destroy(gameObject);

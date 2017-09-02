@@ -33,10 +33,10 @@ public class GameManager : Singleton<GameManager> {
         currentTurn = (GameSide) Random.Range(0, 2);
 
         //TODO : Fix The Bug when pcSide is randomly taken:
-        //pcSide = (GameSide) Random.Range(0, 2);
-        //if(pcSide == GameSide.LeftSide) {
-        //    SoldierManager.Instance.FlipSide();
-        //}
+        pcSide = (GameSide) Random.Range(0, 2);
+        if(pcSide == GameSide.LeftSide) {
+            SoldierManager.Instance.FlipSide();
+        }
 
         SoldierManager.Instance.HideAllSoldiers();
         UpdateStats();
