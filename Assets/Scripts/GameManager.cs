@@ -68,7 +68,15 @@ public class GameManager : Singleton<GameManager> {
         }
     }
 
+    public void CheckWin(GameSide potentialLoserSide) {
+        GameSide potentialWinnerSide = potentialLoserSide == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
+        if(!SoldierManager.Instance.HasZombies(potentialLoserSide)) {
+            WinGame(potentialWinnerSide);
+        }
+    }
+
     public void WinGame(GameSide winSide) {
+        SoldierManager.Instance.CoverAllSoldiers();
         Globals.Instance.UnityObjects["WinWindow"].SetActive(true);
         if(isSinglePlayer && pcSide != winSide) {
             GameView.SetText("TitleWinner", "You Won !");

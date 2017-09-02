@@ -28,44 +28,21 @@ public class SoldierManager: Singleton<SoldierManager> {
         selectedPlayer = zombie;
     }
 
-    //public void RegisterPlayer(PlayerSoldier soldier) {
-    //    if(Globals.IS_IN_GAME) {
-    //        if(soldier.CurrentSide == GameManager.Instance.PcSide) {
-    //            enemyList.Add(soldier);
-    //        }
-    //        else {
-    //            localPlayerList.Add(soldier);
-    //        }
-    //    }
-    //    else {
-    //        if(soldier.CurrentSide == GameSide.LeftSide) {
-    //            localPlayerList.Add(soldier);
-    //        }
-    //        else {
-    //            enemyList.Add(soldier);
-    //        }
-    //    }
-    //}
-
-    //public void UnregisterPlayer(PlayerSoldier soldier) {
-    //    if(Globals.IS_IN_GAME) {
-    //        if(soldier.CurrentSide == GameManager.Instance.PcSide) {
-    //            enemyList.Remove(soldier);
-                
-    //        }
-    //        else {
-    //            localPlayerList.Remove(soldier);
-    //        }
-    //    }
-    //    else {
-    //        if(soldier.CurrentSide == GameSide.LeftSide) {
-    //            localPlayerList.Remove(soldier);
-    //        }
-    //        else {
-    //            enemyList.Remove(soldier);
-    //        }
-    //    }
-    //}
+    public bool HasZombies(GameSide gameSide) {
+        if(gameSide == GameManager.Instance.PcSide) {
+            foreach(var soldier in enemyList) {
+                if(soldier is Zombie)
+                    return true;
+            }
+        }
+        else {
+            foreach(var solder in localPlayerList) {
+                if(solder is Zombie)
+                    return true;
+            }
+        }
+        return false;
+    }
 
     public void PlaceSoldier(Tile tile, PlayerSoldier soldier, bool isEnemy = false) {
         PlayerSoldier newSoldier = Instantiate(soldier, transform);
@@ -205,6 +182,13 @@ public class SoldierManager: Singleton<SoldierManager> {
         foreach(var soldier in enemyList) {
             soldier.HideSoldier(templateAnimator, zombiePrototypes[8].OffsetX, zombiePrototypes[8].OffsetY);
         }
+    }
+
+    public void CoverAllSoldiers() {
+        foreach(var soldier in localPlayerList)
+            soldier.CoverSoldier();
+        foreach(var soldier in enemyList)
+            soldier.CoverSoldier();
     }
 
     public void FlipSide() {

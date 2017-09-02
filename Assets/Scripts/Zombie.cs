@@ -183,6 +183,7 @@ public class Zombie: PlayerSoldier {
         transform.parent = null;
         yield return new WaitForSeconds(3f);
         GameManager.Instance.UpdateStats();
+        GameManager.Instance.CheckWin(CurrentSide);
         Destroy(gameObject);
     }
 
