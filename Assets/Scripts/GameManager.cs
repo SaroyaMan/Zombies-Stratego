@@ -3,6 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager> {
 
+
+    [SerializeField] private Sprite blueFlagSprite;
+    [SerializeField] private Sprite redFlagSprite;
+
     private bool isSinglePlayer = true;
     private bool isPcPlaying;
     private bool isPaused;
@@ -10,7 +14,6 @@ public class GameManager : Singleton<GameManager> {
     private GameSide pcSide = GameSide.RightSide;
     int totalSoldiersLocalSide, totalSoldiersEnemySide;
     private GameScreens prevScreen, currentScreen;
-
 
     public bool IsSinglePlayer { get { return isSinglePlayer; } }
     public bool IsPcPlaying { get { return isPcPlaying; } }
@@ -53,7 +56,9 @@ public class GameManager : Singleton<GameManager> {
         else {
             isPcPlaying = false;
         }
-        GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
+
+        //GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
+        GameView.SetImage("FlagColor", currentTurn == GameSide.LeftSide ? blueFlagSprite : redFlagSprite);
 
     }
 

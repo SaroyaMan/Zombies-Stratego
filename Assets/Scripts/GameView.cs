@@ -26,6 +26,10 @@ public static class GameView {
         Globals.Instance.UnityObjects[elementName].GetComponent<Button>().interactable = true;
     }
 
+    public static void SetImage(string elementName, Sprite sprite) {
+        Globals.Instance.UnityObjects[elementName].GetComponent<Image>().sprite = sprite;
+    }
+
     public static void MakeScreenDark() {
         Globals.Instance.UnityObjects["Canvas"].GetComponent<Image>().color = transparentColor;
     }
