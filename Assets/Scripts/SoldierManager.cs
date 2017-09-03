@@ -55,7 +55,7 @@ public class SoldierManager: Singleton<SoldierManager> {
         }
         newSoldier.transform.position = new Vector3(tile.transform.position.x + newSoldier.OffsetX,
             tile.transform.position.y + newSoldier.OffsetY);
-        newSoldier.GetComponent<SpriteRenderer>().sortingOrder = tile.Row;
+        newSoldier.GetComponent<SpriteRenderer>().sortingOrder = tile.Row + 1;
         newSoldier.CurrentTile = tile;
         newSoldier.CurrentTile.Soldier = newSoldier;
         tile.MarkTileInUse();

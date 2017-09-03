@@ -84,7 +84,7 @@ public class Zombie: PlayerSoldier {
         CurrentTile.Soldier = null;
 
         CurrentTile = tile;
-        GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
+        GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row + 1;
 
         CurrentTile.Soldier = this;
         destination = new Vector2(tile.transform.position.x + OffsetX, tile.transform.position.y + OffsetY);
@@ -147,7 +147,7 @@ public class Zombie: PlayerSoldier {
         if(isInWar && other.gameObject.tag == "Flag") {
             isInWar = false;
             Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
-
+            GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
             playerCollider.isTrigger = false;
             flag.PlayerCollider.isTrigger = false;
             StartCoroutine(CollectFlag());
@@ -159,6 +159,7 @@ public class Zombie: PlayerSoldier {
         anim.Play("Attack");
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
+        GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
         StartCoroutine(bomb.Explode());
         yield return new WaitForSeconds(1f);
         isDieRunning = true;
@@ -200,7 +201,7 @@ public class Zombie: PlayerSoldier {
         if(isDieRunning) {
             isDieRunning = false;
             isDying = true;
-            GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row - 1;
+            GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
             Anim.Play("Die");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
             transform.parent = null;

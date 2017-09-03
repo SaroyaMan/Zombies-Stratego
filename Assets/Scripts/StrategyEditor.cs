@@ -65,7 +65,7 @@ public class StrategyEditor: Singleton<StrategyEditor> {
         soldier.gameObject.SetActive(true);
         if(hit.collider != null && hit.collider.tag == "BuildTile") {   //Check if user clicked on build site
             Tile tile = hit.transform.gameObject.GetComponent<Tile>();
-            soldier.GetComponent<SpriteRenderer>().sortingOrder = tile.Row;
+            soldier.GetComponent<SpriteRenderer>().sortingOrder = tile.Row + 1;
             soldier.CurrentTile.UnmarkTileInUse();
             soldier.CurrentTile.Soldier = null;
             soldier.CurrentTile = tile;
@@ -76,8 +76,8 @@ public class StrategyEditor: Singleton<StrategyEditor> {
         }
         else if(hit.collider != null && (hit.collider.tag == "Zombie" || hit.collider.tag == "Bomb" || hit.collider.tag == "Flag")) {
             PlayerSoldier otherSoldier = hit.transform.gameObject.GetComponent<PlayerSoldier>();
-            soldier.GetComponent<SpriteRenderer>().sortingOrder = otherSoldier.CurrentTile.Row;
-            otherSoldier.GetComponent<SpriteRenderer>().sortingOrder = soldier.CurrentTile.Row;
+            soldier.GetComponent<SpriteRenderer>().sortingOrder = otherSoldier.CurrentTile.Row + 1;
+            otherSoldier.GetComponent<SpriteRenderer>().sortingOrder = soldier.CurrentTile.Row + 1;
 
 
             soldier.CurrentTile.Soldier = otherSoldier;
