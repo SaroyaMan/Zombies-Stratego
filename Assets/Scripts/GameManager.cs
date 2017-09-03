@@ -173,8 +173,8 @@ public class GameManager : Singleton<GameManager> {
         Destroy(TileManager.Instance.gameObject);
         Time.timeScale = 1;
         Globals.IS_IN_GAME = false;
-        //SceneManager.LoadScene("Main_Scene");
-        Initiate.Fade("Main_Scene", GameView.transitionColor, 3f);
+        SceneManager.LoadScene("Main_Scene");
+        //Initiate.Fade("Main_Scene", GameView.transitionColor, 3f);
     }
 
     public void ResetMatch() {
