@@ -65,7 +65,7 @@ public class Zombie: PlayerSoldier {
     }
 
     public void Walk(Tile tile) {
-        if(tile.Column < CurrentTile.Column) {
+        if(tile.Column < CurrentTile.Column) {      //TODO: Fix animation when Zombie walks reverse
             //animation walk should be reversed
             //anim.speed = -1;
         }

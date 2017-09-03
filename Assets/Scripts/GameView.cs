@@ -6,6 +6,8 @@ public static class GameView {
     private static Color defaultColor = new Color(0, 0, 0, 0);
     private static Color transparentColor = new Color(0, 0, 0, 0.5f);
 
+    public static Color transitionColor = new Color(0.980f, 0.922f, 0.843f);
+
     public static void SetText(Text textElement, string text) {
         textElement.text = text;
     }

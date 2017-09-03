@@ -129,7 +129,8 @@ public class MenuLogic: Singleton<MenuLogic> {
             case MenuScreens.SinglePlayer:
                 SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
                 SoundManager.Instance.Music.Play();
-                SceneManager.LoadSceneAsync("Game_Scene");
+                //SceneManager.LoadSceneAsync("Game_Scene");
+                Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
                 break;
 
             case MenuScreens.MultiPlayer:
