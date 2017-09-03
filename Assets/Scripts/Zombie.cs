@@ -144,6 +144,7 @@ public class Zombie: PlayerSoldier {
     private IEnumerator Explode(Bomb bomb) {
         isInWar = false;
         anim.Play("Attack");
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(bomb.Explode());
         yield return new WaitForSeconds(1f);
@@ -155,6 +156,8 @@ public class Zombie: PlayerSoldier {
     private IEnumerator Kill(Zombie enemy) {
         anim.Play("Attack");
         enemy.Anim.Play("Attack");
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
         if(Rank > enemy.Rank) {         //kill enemy
             CurrentTile.Soldier = this;
@@ -179,6 +182,7 @@ public class Zombie: PlayerSoldier {
         if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
         else SoldierManager.Instance.LocalPlayerList.Remove(this);
         Anim.Play("Die");
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
         transform.parent = null;
         yield return new WaitForSeconds(3f);
         GameManager.Instance.UpdateStats();
