@@ -33,6 +33,8 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public PolygonCollider2D PlayerCollider { get { return playerCollider; } }
     public Vector3 OriginPosition { get { return originPosition; } }
 
+    public abstract void SoldierPlacedInEditMode(bool isSoundActivated);
+    public abstract void MakeNoise();
 
     private void Awake() {
         anim = GetComponent<Animator>();
@@ -72,6 +74,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
         if(strategyEditor != null && strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
             TileManager.Instance.UnmarkAvailableBuildTiles();
             if(strategyEditor.ChangeSoldierPosition(this)) {
+                MakeNoise();
                 originPosition = transform.position;
             }
             else {
@@ -101,6 +104,4 @@ public abstract class PlayerSoldier: MonoBehaviour {
             transform.position = new Vector2(CurrentTile.transform.position.x + offset_x, CurrentTile.transform.position.y + offset_y);
         }
     }
-
-    public abstract void SoldierPlacedInEditMode(bool isSoundActivated);
 }

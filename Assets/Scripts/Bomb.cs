@@ -21,6 +21,10 @@ public class Bomb : PlayerSoldier {
             GameView.DisableButton("Btn_Bomb");
         }
         if(isSoundActivated)
-            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.BombBought);
+            MakeNoise();
+    }
+
+    public override void MakeNoise() {
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.BombBought);
     }
 }

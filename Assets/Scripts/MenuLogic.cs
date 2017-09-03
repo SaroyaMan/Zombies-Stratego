@@ -30,13 +30,13 @@ public class MenuLogic: Singleton<MenuLogic> {
 
     public void BuySoldier (int price) {
         money -= price;
-        PlayerPrefs.SetInt("Money", money);
+        //PlayerPrefs.SetInt("Money", money);
         GameView.SetText("Txt_CurrMoney", money.ToString());
     }
 
     public void SellSoldier(int price) {
         money += price;
-        PlayerPrefs.SetInt("Money", money);
+        //PlayerPrefs.SetInt("Money", money);
         GameView.SetText("Txt_CurrMoney", money.ToString());
     }
 
@@ -127,7 +127,8 @@ public class MenuLogic: Singleton<MenuLogic> {
                 break;
 
             case MenuScreens.SinglePlayer:
-                //SoundManager.Instance.Music.clip  = SoundManager.Instance.InGameMusic;
+                SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
+                SoundManager.Instance.Music.Play();
                 SceneManager.LoadSceneAsync("Game_Scene");
                 break;
 

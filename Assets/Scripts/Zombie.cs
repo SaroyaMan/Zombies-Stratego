@@ -198,6 +198,10 @@ public class Zombie: PlayerSoldier {
 
     public override void SoldierPlacedInEditMode(bool isSoundActivated) {
         if(isSoundActivated)
-            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieBought);
+            MakeNoise();
+    }
+
+    public override void MakeNoise() {
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieBought);
     }
 }
