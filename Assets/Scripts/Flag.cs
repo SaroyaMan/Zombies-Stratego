@@ -6,7 +6,6 @@ public class Flag: PlayerSoldier {
         GameView.DisableButton("Btn_Flag");
         if(isSoundActivated)
             MakeNoise();
-
     }
 
     public override void MakeNoise() {

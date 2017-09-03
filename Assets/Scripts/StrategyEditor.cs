@@ -94,8 +94,8 @@ public class StrategyEditor: Singleton<StrategyEditor> {
         }
         else if(hit.collider != null && hit.collider.tag == "Trash" && !(soldier is Flag)) {
             soldier.CurrentTile.UnmarkTileInUse();
-            MenuLogic.Instance.SellSoldier(soldier.Price);
             SoldierManager.Instance.LocalPlayerList.Remove(soldier);
+            MenuLogic.Instance.SellSoldier(soldier.Price);
 
             if(soldier is Bomb) {
                 NumOfBombs--;

@@ -8,7 +8,7 @@ public class MenuLogic: Singleton<MenuLogic> {
     //private MenuScreens currentScreen;
     private MenuScreens prevScreen;
     private GameObject trash;
-
+    private bool isAllowedToPlay;
     int money = Globals.TOTAL_MONEY;
 
     public int Money { get { return money; } }
@@ -32,12 +32,27 @@ public class MenuLogic: Singleton<MenuLogic> {
         money -= price;
         //PlayerPrefs.SetInt("Money", money);
         GameView.SetText("Txt_CurrMoney", money.ToString());
+        if(StrategyEditor.HasFlag && SoldierManager.Instance.LocalPlayerList.Count > Globals.MIN_SOLDIERS_ALLOWED && !isAllowedToPlay) {
+            isAllowedToPlay = true;
+            GameView.EnableButton("SingleBtn");
+            GameView.EnableButton("MultiBtn");
+            GameView.SetTextColor("ZombiesLeftText", GameView.GreenColor);
+        }
+        GameView.SetText("ZombiesLeftText", SoldierManager.Instance.LocalPlayerList.Count - 1 + " / " + Globals.MIN_SOLDIERS_ALLOWED);
     }
 
     public void SellSoldier(int price) {
         money += price;
         //PlayerPrefs.SetInt("Money", money);
         GameView.SetText("Txt_CurrMoney", money.ToString());
+        if((!StrategyEditor.HasFlag || SoldierManager.Instance.LocalPlayerList.Count <= Globals.MIN_SOLDIERS_ALLOWED) && isAllowedToPlay) {
+            //Start GAME BTN IS NOT ALLOWED
+            isAllowedToPlay = false;
+            GameView.DisableButton("SingleBtn");
+            GameView.DisableButton("MultiBtn");
+            GameView.SetTextColor("ZombiesLeftText", GameView.RedColor);
+        }
+        GameView.SetText("ZombiesLeftText", SoldierManager.Instance.LocalPlayerList.Count - 1 + " / " + Globals.MIN_SOLDIERS_ALLOWED);
     }
 
     public void SaveStrategy() {
@@ -67,6 +82,9 @@ public class MenuLogic: Singleton<MenuLogic> {
                 y++;
                 z = 0;
             }
+        }
+        if(!StrategyEditor.HasFlag) {
+            StrategyEditor.Instance.PlaceSoldier(matrixTile[0, 0], soldierBtns["BlueFlag"].SoldierObject, false);
         }
     }
 
