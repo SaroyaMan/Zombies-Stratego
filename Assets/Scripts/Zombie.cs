@@ -7,6 +7,7 @@ public class Zombie: PlayerSoldier {
     private const float navigationUpdate = 0.02f;
 
     private bool isGridMarked;
+    private bool isFlipped;
     private List<Tile> tilesToStep;
 
     private float navigationTime = 0;
@@ -29,13 +30,18 @@ public class Zombie: PlayerSoldier {
             if(Vector2.Distance(transform.position, destination) < 0.01f && !isDying) {     // Zombie reached destionation
                 anim.Play("Idle");
                 isWalking = false;
+                if(isFlipped) {
+                    FlipSide();
+                    isFlipped = false;
+                    transform.position = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);
+                };
             }
         }
     }
 
     private new void OnMouseDown() {
         base.OnMouseDown();
-        if(GameManager.Instance != null && GameManager.Instance.CurrentTurn == CurrentSide && !GameManager.Instance.IsPcPlaying && !GameManager.Instance.IsPaused) {
+        if(GameManager.Instance != null && GameManager.Instance.CurrentTurn == CurrentSide && !GameManager.Instance.IsPcPlaying && !GameManager.Instance.IsPaused && !IsDying) {
             if(!isGridMarked && !isDying) {
                 SoldierManager.Instance.MarkSelectedSoldier(this);
                 MarkAvailableTilesToStep();
@@ -65,9 +71,11 @@ public class Zombie: PlayerSoldier {
     }
 
     public void Walk(Tile tile) {
-        if(tile.Column < CurrentTile.Column) {      //TODO: Fix animation when Zombie walks reverse
-            //animation walk should be reversed
-            //anim.speed = -1;
+        if(CurrentSide == GameSide.LeftSide && tile.Column < CurrentTile.Column
+            || CurrentSide == GameSide.RightSide && tile.Column > CurrentTile.Column) {      //TODO: Fix animation when Zombie walks reverse
+            isFlipped = true;
+            FlipSide();
+            transform.position = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);
         }
         anim.Play("Walk");
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieWalk);
@@ -87,6 +95,17 @@ public class Zombie: PlayerSoldier {
 
         CoverSoldier();
         enemy.CoverSoldier();
+
+        if(CurrentSide == GameSide.LeftSide && enemy.CurrentTile.Column < CurrentTile.Column
+            || CurrentSide == GameSide.RightSide && enemy.CurrentTile.Column > CurrentTile.Column) {      //TODO: Fix animation when Zombie walks reverse
+            isFlipped = true;
+            if(enemy is Zombie) {
+                enemy.FlipSide();
+                enemy.transform.position = new Vector2(enemy.CurrentTile.transform.position.x + OffsetX, enemy.CurrentTile.transform.position.y + OffsetY);
+            }
+            FlipSide();
+            transform.position = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);
+        }
 
         anim.Play("Walk");
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieWalkShort);
@@ -120,9 +139,6 @@ public class Zombie: PlayerSoldier {
             isInWar = false;
             Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
 
-            //CoverSoldier();
-            //bomb.CoverSoldier();
-
             playerCollider.isTrigger = false;
             bomb.PlayerCollider.isTrigger = false;
             StartCoroutine(Explode(bomb));
@@ -131,9 +147,6 @@ public class Zombie: PlayerSoldier {
         if(isInWar && other.gameObject.tag == "Flag") {
             isInWar = false;
             Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
-
-            //CoverSoldier();
-            //flag.CoverSoldier();
 
             playerCollider.isTrigger = false;
             flag.PlayerCollider.isTrigger = false;
@@ -169,6 +182,7 @@ public class Zombie: PlayerSoldier {
             enemy.Anim.Play("Idle");
             enemy.gameObject.tag = "Zombie";
             enemy.CurrentTile.Soldier = enemy;
+            if(enemy.isFlipped) enemy.FlipSide();
             isDieRunning = true;
             StartCoroutine(Die());
         }
@@ -186,12 +200,13 @@ public class Zombie: PlayerSoldier {
         if(isDieRunning) {
             isDieRunning = false;
             isDying = true;
-            if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
-            else SoldierManager.Instance.LocalPlayerList.Remove(this);
+            GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row - 1;
             Anim.Play("Die");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
             transform.parent = null;
             yield return new WaitForSeconds(3f);
+            if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
+            else SoldierManager.Instance.LocalPlayerList.Remove(this);
             GameManager.Instance.UpdateStats();
             GameManager.Instance.CheckWin(CurrentSide);
             Destroy(gameObject);

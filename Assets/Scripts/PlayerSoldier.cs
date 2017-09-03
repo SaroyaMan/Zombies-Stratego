@@ -4,15 +4,15 @@ public abstract class PlayerSoldier: MonoBehaviour {
 
     [SerializeField] private short rank;
     [SerializeField] private int price;
-    [SerializeField] private float offset_x;
-    [SerializeField] private float offset_y;
+    [SerializeField] protected float offset_x;
+    [SerializeField] protected float offset_y;
 
     private StrategyEditor strategyEditor;
     private SpriteRenderer spriteRenderer;
     private Color blueColor = new Color(0, 0, 1, 0.6f);
     private Color redColor = new Color(1, 0, 0, 0.6f);
     private Color defaultColor = new Color(1, 1, 1, 1);
-    private float originOffsetX, originOffsetY;
+    protected float originOffsetX, originOffsetY;
 
 
     protected Vector3 originPosition;
