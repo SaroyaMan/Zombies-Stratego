@@ -148,6 +148,7 @@ public class Zombie: PlayerSoldier {
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(bomb.Explode());
         yield return new WaitForSeconds(1f);
+        isDieRunning = true;
         StartCoroutine(Die());
 
         yield return null;
@@ -161,33 +162,42 @@ public class Zombie: PlayerSoldier {
         yield return new WaitForSeconds(0.5f);
         if(Rank > enemy.Rank) {         //kill enemy
             CurrentTile.Soldier = this;
+            enemy.isDieRunning = true;
             StartCoroutine(enemy.Die());
         }
         else if(Rank < enemy.Rank) {    //kill this zombie
             enemy.Anim.Play("Idle");
             enemy.gameObject.tag = "Zombie";
             enemy.CurrentTile.Soldier = enemy;
+            isDieRunning = true;
             StartCoroutine(Die());
         }
         else {                          // draw - kill both
             CurrentTile.IsInUse = false;
+            isDieRunning = enemy.isDieRunning = true;
             StartCoroutine(Die());
             StartCoroutine(enemy.Die());
         }
         yield return null;
     }
 
+    public bool isDieRunning;
     private IEnumerator Die() {
-        isDying = true;
-        if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
-        else SoldierManager.Instance.LocalPlayerList.Remove(this);
-        Anim.Play("Die");
-        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
-        transform.parent = null;
-        yield return new WaitForSeconds(3f);
-        GameManager.Instance.UpdateStats();
-        GameManager.Instance.CheckWin(CurrentSide);
-        Destroy(gameObject);
+        if(isDieRunning) {
+            isDieRunning = false;
+            isDying = true;
+            if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
+            else SoldierManager.Instance.LocalPlayerList.Remove(this);
+            Anim.Play("Die");
+            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
+            transform.parent = null;
+            yield return new WaitForSeconds(3f);
+            GameManager.Instance.UpdateStats();
+            GameManager.Instance.CheckWin(CurrentSide);
+            Destroy(gameObject);
+        }
+
+        yield return null;
     }
 
     private IEnumerator CollectFlag() {

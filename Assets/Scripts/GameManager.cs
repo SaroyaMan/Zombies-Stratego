@@ -88,7 +88,7 @@ public class GameManager : Singleton<GameManager> {
             GameView.SetText("TitleWinner", "PC Won !");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerLose);
         }
-
+        SoundManager.Instance.Music.Stop();
         GameView.MakeScreenDark();
         isPaused = true;
         Time.timeScale = 0;           //Pause game here
@@ -177,6 +177,7 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void ResetMatch() {
+        SoundManager.Instance.Music.Play();     //stop the music and start over
         TileManager.Instance.ClearTiles();
         SoldierManager.Instance.ClearSoldiers();
         SoldierManager.Instance.LoadStrategy();
