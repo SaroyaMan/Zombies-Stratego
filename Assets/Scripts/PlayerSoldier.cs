@@ -101,4 +101,6 @@ public abstract class PlayerSoldier: MonoBehaviour {
             transform.position = new Vector2(CurrentTile.transform.position.x + offset_x, CurrentTile.transform.position.y + offset_y);
         }
     }
+
+    public abstract void SoldierPlacedInEditMode(bool isSoundActivated);
 }

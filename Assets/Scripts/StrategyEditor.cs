@@ -22,7 +22,8 @@ public class StrategyEditor: Singleton<StrategyEditor> {
             RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
             if(hit.collider != null && hit.collider.tag == "BuildTile") {   //Check if user clicked on build site
                 if(!EventSystem.current.IsPointerOverGameObject() && PlayerBtnPressed != null) {
-                    SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieBought);
+                    //SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieBought);
+                    
                     Tile tile = hit.transform.gameObject.GetComponent<Tile>();
                     PlaceSoldier(tile, PlayerBtnPressed.SoldierObject);
                     DisableDragSprite();
@@ -41,17 +42,8 @@ public class StrategyEditor: Singleton<StrategyEditor> {
         }
     }
 
-    public void PlaceSoldier(Tile tile, PlayerSoldier soldier) {
-        if(soldier is Bomb) {
-            NumOfBombs++;
-            if(NumOfBombs == Globals.MAX_BOMBS) {
-                GameView.DisableButton("Btn_Bomb");
-            }
-        }
-        if(soldier is Flag) {
-            HasFlag = true;
-            GameView.DisableButton("Btn_Flag");
-        }
+    public void PlaceSoldier(Tile tile, PlayerSoldier soldier, bool isSoundActivated = true) {
+        soldier.SoldierPlacedInEditMode(isSoundActivated);
         SoldierManager.Instance.PlaceSoldier(tile, soldier);
         MenuLogic.Instance.BuySoldier(soldier.Price);
     }
@@ -109,6 +101,7 @@ public class StrategyEditor: Singleton<StrategyEditor> {
                 NumOfBombs--;
                 GameView.EnableButton("Btn_Bomb");
             }
+            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SoldierSold);
             Destroy(soldier.gameObject);
         }
         return false;

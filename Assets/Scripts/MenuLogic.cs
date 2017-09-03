@@ -50,7 +50,6 @@ public class MenuLogic: Singleton<MenuLogic> {
             else {
                 PlayerPrefs.SetString(tile.Row + "," + tile.Column, "");
             }
-
         }
     }
 
@@ -61,7 +60,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         for(int i = 0; i < Globals.MAX_SOLDIERS_FOR_PLAYER + 1; i++) {
             string tilePattern = PlayerPrefs.GetString(y + "," + z, "");
             if(tilePattern != "") {
-                StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns[tilePattern].SoldierObject);
+                StrategyEditor.Instance.PlaceSoldier(matrixTile[y, z], soldierBtns[tilePattern].SoldierObject, false);
             }
             z++;
             if(z == 4) {

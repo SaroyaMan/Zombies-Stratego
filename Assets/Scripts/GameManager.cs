@@ -35,7 +35,6 @@ public class GameManager : Singleton<GameManager> {
         totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
         currentTurn = (GameSide) Random.Range(0, 2);
 
-        //TODO : Fix The Bug when pcSide is randomly taken:
         pcSide = (GameSide) Random.Range(0, 2);
         if(pcSide == GameSide.LeftSide) {
             SoldierManager.Instance.FlipSide();
@@ -56,8 +55,6 @@ public class GameManager : Singleton<GameManager> {
         else {
             isPcPlaying = false;
         }
-
-        //GameView.SetText("CurrTurnTxt", "Current Turn: " + currentTurn.ToString());
         GameView.SetImage("FlagColor", currentTurn == GameSide.LeftSide ? blueFlagSprite : redFlagSprite);
 
     }

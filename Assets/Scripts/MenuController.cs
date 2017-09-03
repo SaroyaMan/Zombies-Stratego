@@ -24,11 +24,11 @@ public class MenuController: MonoBehaviour {
     }
 
     public void SaveChangesInEditMode() {
+        soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MenuLogic.Instance.ChangeMenuState(MenuScreens.Main);
         MenuLogic.Instance.SaveStrategy();
     }
 
-    /* ================== Main Menu Controls ======================= */
     public void StartSingleGame() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MenuLogic.Instance.ChangeMenuState(MenuScreens.SinglePlayer);

@@ -70,6 +70,7 @@ public class Zombie: PlayerSoldier {
             //anim.speed = -1;
         }
         anim.Play("Walk");
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieWalk);
         UnMarkAvailableTilesToStep();
         CurrentTile.UnmarkTileInUse();
         CurrentTile.Soldier = null;
@@ -88,6 +89,7 @@ public class Zombie: PlayerSoldier {
         enemy.CoverSoldier();
 
         anim.Play("Walk");
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieWalkShort);
         playerCollider.isTrigger = true;
         enemy.PlayerCollider.isTrigger = true;
 
@@ -108,9 +110,6 @@ public class Zombie: PlayerSoldier {
         if(isInWar && other.gameObject.tag == "InWar") {
             isInWar = false;
             Zombie zombie = other.gameObject.GetComponent<Zombie>() as Zombie;
-
-            //CoverSoldier();
-            //zombie.CoverSoldier();
 
             playerCollider.isTrigger = false;
             zombie.PlayerCollider.isTrigger = false;
@@ -191,5 +190,10 @@ public class Zombie: PlayerSoldier {
         yield return new WaitForSeconds(1f);
         GameManager.Instance.WinGame(CurrentSide);
         yield return null;
+    }
+
+    public override void SoldierPlacedInEditMode(bool isSoundActivated) {
+        if(isSoundActivated)
+            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieBought);
     }
 }

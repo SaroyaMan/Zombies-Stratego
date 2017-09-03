@@ -13,6 +13,13 @@ public class SoundManager : Singleton<SoundManager> {
     [SerializeField] private AudioClip singlePlayerWin;
     [SerializeField] private AudioClip singlePlayerLose;
     [SerializeField] private AudioClip zombieBought;
+    [SerializeField] private AudioClip bombBought;
+    [SerializeField] private AudioClip flagBought;
+    [SerializeField] private AudioClip bombExplode;
+    [SerializeField] private AudioClip soldierSold;
+    [SerializeField] private AudioClip zombieWalk;
+    [SerializeField] private AudioClip zombieWalkShort;
+
 
     [SerializeField] private AudioClip inGameMusic;
 
@@ -21,8 +28,13 @@ public class SoundManager : Singleton<SoundManager> {
     public AudioClip SinglePlayerWin { get { return singlePlayerWin; } }
     public AudioClip SinglePlayerLose { get { return singlePlayerLose; } }
     public AudioClip ZombieBought { get { return zombieBought; } }
+    public AudioClip BombBought { get { return bombBought; } }
+    public AudioClip FlagBought { get { return flagBought; } }
     public AudioClip InGameMusic { get { return inGameMusic; } }
-
+    public AudioClip BombExplode { get { return bombExplode; } }
+    public AudioClip SoldierSold { get { return soldierSold; } }
+    public AudioClip ZombieWalk { get { return zombieWalk; } }
+    public AudioClip ZombieWalkShort { get { return zombieWalkShort; } }
 
 
     private void Awake() {
