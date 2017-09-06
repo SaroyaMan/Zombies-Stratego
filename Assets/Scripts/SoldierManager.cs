@@ -118,11 +118,11 @@ public class SoldierManager: Singleton<SoldierManager> {
     }
 
     public IEnumerator MakeRandomMove() {
-        var soldierList = enemyList;
         List<Tile> tilesToStep;
         Zombie randZombie;
+        yield return new WaitForSeconds(2f);
         while(true) {
-            randZombie = soldierList[Random.Range(0, soldierList.Count)] as Zombie;
+            randZombie = enemyList[Random.Range(0, enemyList.Count)] as Zombie;
             if(randZombie is Zombie && !randZombie.IsDying) {
                 tilesToStep = TileManager.Instance.GetClosestTiles(randZombie.CurrentTile, randZombie);
                 if(tilesToStep.Count > 0) {
@@ -135,7 +135,6 @@ public class SoldierManager: Singleton<SoldierManager> {
             tile.ReadyToStep(randZombie, true);
         }
         var randTile = tilesToStep[Random.Range(0, tilesToStep.Count)];
-        yield return new WaitForSeconds(2f);
         randTile.OnMouseDown();
 
         yield return null;

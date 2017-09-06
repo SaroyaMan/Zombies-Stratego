@@ -114,6 +114,12 @@ public class Zombie: PlayerSoldier {
 
         if(enemy is Zombie)
             enemy.gameObject.tag = "InWar";
+        else if(enemy is Bomb) {
+            enemy.gameObject.tag = "BombInWar";
+        }
+        else {      //enemy is Flag)
+            enemy.gameObject.tag = "FlagInWar";
+        }
 
         UnMarkAvailableTilesToStep();
         CurrentTile.UnmarkTileInUse();
@@ -135,7 +141,7 @@ public class Zombie: PlayerSoldier {
             StartCoroutine(Kill(zombie));
         }
 
-        if(isInWar && other.gameObject.tag == "Bomb") {
+        if(isInWar && other.gameObject.tag == "BombInWar") {
             isInWar = false;
             Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
 
@@ -144,7 +150,7 @@ public class Zombie: PlayerSoldier {
             StartCoroutine(Explode(bomb));
         }
 
-        if(isInWar && other.gameObject.tag == "Flag") {
+        if(isInWar && other.gameObject.tag == "FlagInWar") {
             isInWar = false;
             Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
             GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;

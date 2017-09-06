@@ -75,7 +75,12 @@ public class Tile: MonoBehaviour {
     }
 
     public void OnMouseDown() {
-        //print(soldier);
+        if(soldier != null) {
+            print(soldier.name + " " + soldier.CurrentSide.ToString());
+        }
+        else {
+            print("soldier is NULL");
+        }
         if(isReadyToStep) {
             if(attackingZombie != null && attackingZombie is Zombie) {
                 (attackingZombie as Zombie).GetCloser(soldier);
