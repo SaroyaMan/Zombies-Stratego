@@ -32,7 +32,7 @@ public class Globals : Singleton<Globals> {
     public const string SECRET_KEY = "63321bf8738b29b5ff09ddf0f88f47b7f20b5ba4acff1dec3ccab7a3406b2c27";
 
     public static bool IS_IN_GAME;
-    public static bool Is_SINGLE_PLAYER = true;
+    public static bool IS_SINGLE_PLAYER = true;
 
     public MenuScreens currentScreen;
 

@@ -85,4 +85,10 @@ public class MenuController: MonoBehaviour {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MenuLogic.Instance.OpenCV();
     }
+
+    public void CancelConnection() {
+        soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
+        MultiPlayerManager.Instance.Disconnect();
+
+    }
 }

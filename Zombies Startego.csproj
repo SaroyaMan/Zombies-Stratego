@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\MenuController.cs" />
     <Compile Include="Assets\Scripts\MenuLogic.cs" />
     <Compile Include="Assets\Scripts\MiniJSON.cs" />
+    <Compile Include="Assets\Scripts\MultiPlayerManager.cs" />
     <Compile Include="Assets\Scripts\PlayerSoldier.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\SoldierBtn.cs" />

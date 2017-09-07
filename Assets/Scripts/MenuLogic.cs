@@ -1,7 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class MenuLogic: Singleton<MenuLogic> {
 
@@ -97,6 +95,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         unityObjects["ScreenMultiplayer"].SetActive(false);
         unityObjects["ScreenEdit"].SetActive(false);
         unityObjects["TitleGameImg"].SetActive(false);
+        unityObjects["StatusConnectionWindow"].SetActive(false);
     }
 
     public void GoBack() {
@@ -172,11 +171,19 @@ public class MenuLogic: Singleton<MenuLogic> {
     }
 
     public void StartGame(bool isSinglePlayer) {
-        Globals.Is_SINGLE_PLAYER = isSinglePlayer;
-        SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
-        SoundManager.Instance.Music.Play();
-        //SceneManager.LoadSceneAsync("Game_Scene");
-        Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
+        Globals.IS_SINGLE_PLAYER = isSinglePlayer;
+
+        if(isSinglePlayer) {       // start single player game
+            SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
+            SoundManager.Instance.Music.Play();
+            //SceneManager.LoadSceneAsync("Game_Scene");
+            Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
+        }
+        else {                    // start multi player game
+            Globals.Instance.UnityObjects["StatusConnectionWindow"].SetActive(true);
+            //MultiPlayerManager.Instance.SetUsername("ROBIN HOOD");
+            MultiPlayerManager.Instance.ConnectGame();
+        }
     }
 
     public void UpdateMoneySliderTxt(float value) {
