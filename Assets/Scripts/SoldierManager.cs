@@ -207,10 +207,10 @@ public class SoldierManager: Singleton<SoldierManager> {
             soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
             if(soldier is Flag) {
                 if(GameManager.Instance.PcSide == GameSide.LeftSide) {
-                    soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                    soldier.OriginAnim = soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
                 }
                 else {
-                    soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                    soldier.OriginAnim = soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
                 }
             }
         }
@@ -230,10 +230,10 @@ public class SoldierManager: Singleton<SoldierManager> {
 
             if(soldier is Flag) {
                 if(GameManager.Instance.PcSide == GameSide.LeftSide) {
-                    soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                    soldier.OriginAnim = soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
                 }
                 else {
-                    soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                    soldier.OriginAnim = soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
                 }
             }
         }

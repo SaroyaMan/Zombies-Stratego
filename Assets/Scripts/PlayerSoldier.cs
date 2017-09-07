@@ -28,7 +28,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public Tile CurrentTile { get; set; }
     public GameSide CurrentSide { get; set; }
     public Animator Anim { get { return anim; } set { anim = value; } }
-    public RuntimeAnimatorController OriginAnim { get { return originAnim; } }
+    public RuntimeAnimatorController OriginAnim { get { return originAnim; } set { originAnim = value; } }
 
     public PolygonCollider2D PlayerCollider { get { return playerCollider; } }
     public Vector3 OriginPosition { get { return originPosition; } }

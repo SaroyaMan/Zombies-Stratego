@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
-    private Slider moneySlider, musicSlider, sfxSlider;
+    private Slider musicSlider, sfxSlider;
     private SoundManager soundManager;
 
     private void Start() {
