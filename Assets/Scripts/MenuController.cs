@@ -31,12 +31,12 @@ public class MenuController: MonoBehaviour {
 
     public void StartSingleGame() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
-        MenuLogic.Instance.ChangeMenuState(MenuScreens.SinglePlayer);
+        MenuLogic.Instance.StartGame(true);
     }
 
     public void StartMultiplayerGame() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
-        MenuLogic.Instance.ChangeMenuState(MenuScreens.Loading);
+        MenuLogic.Instance.StartGame(false);
     }
 
     public void Multiplayer() {

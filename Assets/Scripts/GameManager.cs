@@ -7,7 +7,6 @@ public class GameManager : Singleton<GameManager> {
     [SerializeField] private Sprite blueFlagSprite;
     [SerializeField] private Sprite redFlagSprite;
 
-    private bool isSinglePlayer = true;
     private bool isPcPlaying;
     private bool isPaused;
     private GameSide currentTurn;
@@ -15,7 +14,6 @@ public class GameManager : Singleton<GameManager> {
     int totalSoldiersLocalSide, totalSoldiersEnemySide;
     private GameScreens prevScreen, currentScreen;
 
-    public bool IsSinglePlayer { get { return isSinglePlayer; } }
     public bool IsPcPlaying { get { return isPcPlaying; } }
     public GameSide CurrentTurn { get { return currentTurn; } }
     public GameSide PcSide { get { return pcSide; } set { pcSide = value; } }
@@ -28,7 +26,7 @@ public class GameManager : Singleton<GameManager> {
     }
 
     private void InitGame() {
-        if(isSinglePlayer) {
+        if(Globals.Is_SINGLE_PLAYER) {
             SoldierManager.Instance.InitPcBoard();
         }
         totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
@@ -48,7 +46,7 @@ public class GameManager : Singleton<GameManager> {
     public void PassTurn() {
         currentTurn = currentTurn == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
 
-        if(isSinglePlayer && currentTurn == pcSide && !isPcPlaying) {
+        if(Globals.Is_SINGLE_PLAYER && currentTurn == pcSide && !isPcPlaying) {
             isPcPlaying = true;
             StartCoroutine(SoldierManager.Instance.MakeRandomMove());
         }
@@ -60,7 +58,7 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void UpdateStats() {
-        if(isSinglePlayer && pcSide == GameSide.RightSide) {
+        if(Globals.Is_SINGLE_PLAYER && pcSide == GameSide.RightSide) {
             GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
             GameView.SetText("ZombiesRightText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
         }
@@ -80,11 +78,11 @@ public class GameManager : Singleton<GameManager> {
     public void WinGame(GameSide winSide) {
         SoldierManager.Instance.CoverAllSoldiers();
         Globals.Instance.UnityObjects["WinWindow"].SetActive(true);
-        if(isSinglePlayer && pcSide != winSide) {
+        if(Globals.Is_SINGLE_PLAYER && pcSide != winSide) {
             GameView.SetText("TitleWinner", "You Won !");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerWin);
         }
-        else if(isSinglePlayer && pcSide == winSide) {
+        else if(Globals.Is_SINGLE_PLAYER && pcSide == winSide) {
             GameView.SetText("TitleWinner", "PC Won !");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerLose);
         }

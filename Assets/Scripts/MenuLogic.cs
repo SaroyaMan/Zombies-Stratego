@@ -114,9 +114,6 @@ public class MenuLogic: Singleton<MenuLogic> {
         switch(prevScreen) {
             case MenuScreens.Main: unityObjects["ScreenMenu"].SetActive(false); break;
 
-            case MenuScreens.SinglePlayer:
-                break;
-
             case MenuScreens.MultiPlayer: unityObjects["ScreenMultiplayer"].SetActive(false); break;
 
             case MenuScreens.StudentInfo: unityObjects["ScreenStudentInfo"].SetActive(false); break;
@@ -142,13 +139,6 @@ public class MenuLogic: Singleton<MenuLogic> {
             case MenuScreens.Main:
                 unityObjects["ScreenMenu"].SetActive(true);
                 GameView.SetText("TitleMenu", "Main Menu");
-                break;
-
-            case MenuScreens.SinglePlayer:
-                SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
-                SoundManager.Instance.Music.Play();
-                //SceneManager.LoadSceneAsync("Game_Scene");
-                Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
                 break;
 
             case MenuScreens.MultiPlayer:
@@ -179,6 +169,14 @@ public class MenuLogic: Singleton<MenuLogic> {
 
             default: break;
         }
+    }
+
+    public void StartGame(bool isSinglePlayer) {
+        Globals.Is_SINGLE_PLAYER = isSinglePlayer;
+        SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
+        SoundManager.Instance.Music.Play();
+        //SceneManager.LoadSceneAsync("Game_Scene");
+        Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
     }
 
     public void UpdateMoneySliderTxt(float value) {

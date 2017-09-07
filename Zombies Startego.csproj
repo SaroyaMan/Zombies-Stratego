@@ -82,6 +82,9 @@
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
+    <Reference Include="AppWarpUnity">
+      <HintPath>Assets\DLL\AppWarpUnity.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Bomb.cs" />
@@ -90,8 +93,10 @@
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GameView.cs" />
     <Compile Include="Assets\Scripts\Globals.cs" />
+    <Compile Include="Assets\Scripts\Listener.cs" />
     <Compile Include="Assets\Scripts\MenuController.cs" />
     <Compile Include="Assets\Scripts\MenuLogic.cs" />
+    <Compile Include="Assets\Scripts\MiniJSON.cs" />
     <Compile Include="Assets\Scripts\PlayerSoldier.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\SoldierBtn.cs" />

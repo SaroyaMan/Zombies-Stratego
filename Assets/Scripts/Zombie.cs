@@ -125,8 +125,7 @@ public class Zombie: PlayerSoldier {
         CurrentTile.UnmarkTileInUse();
         CurrentTile.Soldier = null;
         CurrentTile = enemy.CurrentTile;
-
-        CurrentTile.Soldier = this;
+        //CurrentTile.Soldier = this;
         destination = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);
         isWalking = isInWar = true;
     }
@@ -161,7 +160,6 @@ public class Zombie: PlayerSoldier {
     }
 
     private IEnumerator Explode(Bomb bomb) {
-        isInWar = false;
         anim.Play("Attack");
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
@@ -211,10 +209,11 @@ public class Zombie: PlayerSoldier {
             Anim.Play("Die");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
             transform.parent = null;
-            yield return new WaitForSeconds(3f);
             if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
             else SoldierManager.Instance.LocalPlayerList.Remove(this);
             GameManager.Instance.UpdateStats();
+            yield return new WaitForSeconds(3f);
+
             GameManager.Instance.CheckWin(CurrentSide);
             Destroy(gameObject);
         }

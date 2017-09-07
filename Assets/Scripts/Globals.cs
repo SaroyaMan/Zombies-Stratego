@@ -5,7 +5,7 @@ using UnityEngine;
 //public enum GameMode { Edit, SinglePlayer, Multiplayer }
 
 public enum MenuScreens {
-    Default, Main, SinglePlayer, MultiPlayer, StudentInfo, Options, Loading, Edit
+    Default, Main, MultiPlayer, StudentInfo, Options, Loading, Edit
 }
 
 public enum GameScreens {
@@ -27,7 +27,12 @@ public class Globals : Singleton<Globals> {
     public const int MAX_BOMBS = 6;
     public const string GITHUB_PROFILE_URL = "https://github.com/SaroyaMan";
     public const string CV_URL = "https://drive.google.com/file/d/0B8BaWfqNelVKTjEwRHFnSkVXMnM/view";
+
+    public const string API_KEY = "bcb4d556c7487b614b770ac80bc93f4532876f50761ee3683321b79ce5ffb15f";
+    public const string SECRET_KEY = "63321bf8738b29b5ff09ddf0f88f47b7f20b5ba4acff1dec3ccab7a3406b2c27";
+
     public static bool IS_IN_GAME;
+    public static bool Is_SINGLE_PLAYER = true;
 
     public MenuScreens currentScreen;
 
