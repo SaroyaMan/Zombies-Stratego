@@ -155,10 +155,11 @@ public class SoldierManager: Singleton<SoldierManager> {
         int y = 0, z = 0;
         var matrixTile = TileManager.Instance.MatrixTiles;
 
-        Dictionary<string, PlayerSoldier> soldierPrototypes = new Dictionary<string, PlayerSoldier>();
-        soldierPrototypes.Add(bombPrototype.name, bombPrototype);
-        soldierPrototypes.Add(localFlagPrototype.name, localFlagPrototype);
-        soldierPrototypes.Add(enemyFlagPrototype.name, enemyFlagPrototype);
+        Dictionary<string, PlayerSoldier> soldierPrototypes = new Dictionary<string, PlayerSoldier> {
+            { bombPrototype.name, bombPrototype },
+            { localFlagPrototype.name, localFlagPrototype },
+            { enemyFlagPrototype.name, enemyFlagPrototype }
+        };
         foreach(var zombie in zombiePrototypes) {
             soldierPrototypes.Add(zombie.name, zombie);
         }
@@ -214,26 +215,26 @@ public class SoldierManager: Singleton<SoldierManager> {
                 }
             }
         }
-
-
-        foreach(var soldier in enemyList) {
-            var tile = matrixTiles[soldier.CurrentTile.Row, Globals.COLUMNS - 1 - soldier.CurrentTile.Column];
-            if(!inUsedTiles.ContainsKey(soldier.CurrentTile.Row.ToString() + soldier.CurrentTile.Column.ToString())) {
-                soldier.CurrentTile.ResetTile();
-            }
-            soldier.FlipSide();
-
-            soldier.CurrentTile = tile;
-            soldier.CurrentTile.IsInUse = true;
-            soldier.CurrentTile.Soldier = soldier;
-            soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
-
-            if(soldier is Flag) {
-                if(GameManager.Instance.PcSide == GameSide.LeftSide) {
-                    soldier.OriginAnim = soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+        if(Globals.IS_SINGLE_PLAYER) {
+            foreach(var soldier in enemyList) {
+                var tile = matrixTiles[soldier.CurrentTile.Row, Globals.COLUMNS - 1 - soldier.CurrentTile.Column];
+                if(!inUsedTiles.ContainsKey(soldier.CurrentTile.Row.ToString() + soldier.CurrentTile.Column.ToString())) {
+                    soldier.CurrentTile.ResetTile();
                 }
-                else {
-                    soldier.OriginAnim = soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                soldier.FlipSide();
+
+                soldier.CurrentTile = tile;
+                soldier.CurrentTile.IsInUse = true;
+                soldier.CurrentTile.Soldier = soldier;
+                soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
+
+                if(soldier is Flag) {
+                    if(GameManager.Instance.PcSide == GameSide.LeftSide) {
+                        soldier.OriginAnim = soldier.Anim.runtimeAnimatorController = localFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                    }
+                    else {
+                        soldier.OriginAnim = soldier.Anim.runtimeAnimatorController = enemyFlagPrototype.GetComponent<Animator>().runtimeAnimatorController;
+                    }
                 }
             }
         }

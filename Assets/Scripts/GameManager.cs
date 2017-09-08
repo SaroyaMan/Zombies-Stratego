@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using AssemblyCSharp;
+using com.shephertz.app42.gaming.multiplayer.client.events;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager> {
@@ -9,13 +11,13 @@ public class GameManager : Singleton<GameManager> {
 
     private bool isPcPlaying;
     private bool isPaused;
-    private GameSide currentTurn;
+    public static GameSide CURRENT_TURN;
     private GameSide pcSide = GameSide.RightSide;
-    int totalSoldiersLocalSide, totalSoldiersEnemySide;
+    private int totalSoldiersLocalSide, totalSoldiersEnemySide;
     private GameScreens prevScreen, currentScreen;
 
     public bool IsPcPlaying { get { return isPcPlaying; } }
-    public GameSide CurrentTurn { get { return currentTurn; } }
+    //public GameSide CurrentTurn { get { return currentTurn; } set { currentTurn = value; } }
     public GameSide PcSide { get { return pcSide; } set { pcSide = value; } }
     public bool IsPaused { get { return isPaused; } }
 
@@ -35,30 +37,34 @@ public class GameManager : Singleton<GameManager> {
             if(pcSide == GameSide.LeftSide) {
                 SoldierManager.Instance.FlipSide();
             }
+            totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
+            totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
+            CURRENT_TURN = (GameSide) Random.Range(0, 2);
+
+            SoldierManager.Instance.HideAllSoldiers();
+            UpdateStats();
+            PassTurn();
         }
         else {      //game is multiplayer
-
+            if(MultiPlayerManager.Instance.PlayerSide == GameSide.RightSide) {
+                SoldierManager.Instance.FlipSide();
+            }
+            MultiPlayerManager.Instance.SendLocalSoldierList();
         }
-        totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
-        totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
-        currentTurn = (GameSide) Random.Range(0, 2);
 
-        SoldierManager.Instance.HideAllSoldiers();
-        UpdateStats();
-        PassTurn();
     }
 
     public void PassTurn() {
-        currentTurn = currentTurn == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
+        CURRENT_TURN = CURRENT_TURN == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
 
-        if(Globals.IS_SINGLE_PLAYER && currentTurn == pcSide && !isPcPlaying) {
+        if(Globals.IS_SINGLE_PLAYER && CURRENT_TURN == pcSide && !isPcPlaying) {
             isPcPlaying = true;
             StartCoroutine(SoldierManager.Instance.MakeRandomMove());
         }
         else {
             isPcPlaying = false;
         }
-        GameView.SetImage("FlagColor", currentTurn == GameSide.LeftSide ? blueFlagSprite : redFlagSprite);
+        GameView.SetImage("FlagColor", CURRENT_TURN == GameSide.LeftSide ? blueFlagSprite : redFlagSprite);
 
     }
 

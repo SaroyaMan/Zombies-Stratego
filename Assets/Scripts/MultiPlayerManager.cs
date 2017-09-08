@@ -3,6 +3,7 @@ using AssemblyCSharp;
 using com.shephertz.app42.gaming.multiplayer.client;
 using com.shephertz.app42.gaming.multiplayer.client.events;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class MultiPlayerManager : Singleton<MultiPlayerManager> {
@@ -14,6 +15,23 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
     private string username = string.Empty;
     private List<string> rooms;
     private int index = 0;
+
+
+    //
+    private string currentUsernameTurn = string.Empty;
+    private GameSide playerSide;
+    private bool isMyTurn;
+
+    public GameSide PlayerSide { get { return playerSide; } }
+    public bool IsMyTurn { get { return isMyTurn; } }
+
+    //
+
+    //public string Username {
+    //    get {
+    //        return username;
+    //    }
+    //}
 
     private void Awake() {
         DontDestroyOnLoad(this);
@@ -48,25 +66,29 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
     public void ConnectGame() {
         GameView.SetText("StatusTxt", "Connecting...");
         WarpClient.GetInstance().Connect(username);
-        WarpClient.GetInstance().GetRoomsInRange(1, 2);
+        //WarpClient.GetInstance().GetRoomsInRange(1, 2);
     }
 
     private void OnEnable() {
-        Listener.OnConnect += OnConnectOccured;
-        Listener.OnRoomsInRange += OnRoomsInRangeOccured;
-        Listener.OnCreateRoom += OnCreateRoomOccured;
-        Listener.OnGetLiveRoomInfo += OnGetLiveRoomInfoOccured;
-        Listener.OnUserJoinRoom += OnUserJoinRoomOccured;
-        Listener.OnGameStarted += OnGameStartedOccured;
+        Listener.OnConnect          += OnConnectOccured;
+        Listener.OnRoomsInRange     += OnRoomsInRangeOccured;
+        Listener.OnCreateRoom       += OnCreateRoomOccured;
+        Listener.OnGetLiveRoomInfo  += OnGetLiveRoomInfoOccured;
+        Listener.OnUserJoinRoom     += OnUserJoinRoomOccured;
+        Listener.OnGameStarted      += OnGameStartedOccured;
+        Listener.OnMoveCompleted    += OnMoveCompletedOccured;
+        Listener.OnGameStopped      += OnGameStoppedOccured;
     }
 
     private void OnDisable() {
-        Listener.OnConnect -= OnConnectOccured;
-        Listener.OnRoomsInRange -= OnRoomsInRangeOccured;
-        Listener.OnCreateRoom -= OnCreateRoomOccured;
-        Listener.OnGetLiveRoomInfo -= OnGetLiveRoomInfoOccured;
-        Listener.OnUserJoinRoom -= OnUserJoinRoomOccured;
-        Listener.OnGameStarted -= OnGameStartedOccured;
+        Listener.OnConnect          -= OnConnectOccured;
+        Listener.OnRoomsInRange     -= OnRoomsInRangeOccured;
+        Listener.OnCreateRoom       -= OnCreateRoomOccured;
+        Listener.OnGetLiveRoomInfo  -= OnGetLiveRoomInfoOccured;
+        Listener.OnUserJoinRoom     -= OnUserJoinRoomOccured;
+        Listener.OnGameStarted      -= OnGameStartedOccured;
+        Listener.OnMoveCompleted    -= OnMoveCompletedOccured;
+        Listener.OnGameStopped      -= OnGameStoppedOccured;
     }
 
     private void OnConnectOccured(bool _IsSuccess) {
@@ -158,9 +180,59 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
         SoundManager.Instance.Music.Play();
         //SceneManager.LoadSceneAsync("Game_Scene");
         Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
-        //SC_MenuView.Instance.SetInfoText("OnGameStarted " + _Sender + " " + _RoomId + " " + _NextTurn);
-        //SC_MenuGlobals.Instance.unityObjects["Screen_Menu"].SetActive(false);
-        //SC_MenuGlobals.Instance.unityObjects["Screen_Game"].SetActive(true);
+
+        currentUsernameTurn = _NextTurn;
+        GameManager.CURRENT_TURN = GameSide.LeftSide;
+        if(currentUsernameTurn == username) {
+            playerSide = GameSide.LeftSide;
+            isMyTurn = true;
+        }
+        else {
+            playerSide = GameSide.RightSide;
+            isMyTurn = false;
+        }
+        Debug.LogError("player Side = " + playerSide);
+    }
+
+    public void SendLocalSoldierList() {
+        isMyTurn = false;
+        Dictionary<string, object> toSend = new Dictionary<string, object>();
+        var localSoldiers = SoldierManager.Instance.LocalPlayerList;
+        toSend.Add("UserName", username);
+        toSend.Add("State", playerSide);
+
+        List<string> listOfSoldiers = new List<string>();
+        foreach(var soldier in localSoldiers) {
+            listOfSoldiers.Add(soldier.CurrentTile.Row + "," + soldier.CurrentTile.Column + "," + Regex.Match(soldier.name, @"^[a-zA-Z0-9]*").Value);
+        }
+
+        toSend.Add("Soldiers", listOfSoldiers);
+        Debug.LogError("Sending LocalSoldierList to each other");
+        string jsonToSend = MiniJSON.Json.Serialize(toSend);
+        WarpClient.GetInstance().sendMove(jsonToSend);
+    }
+
+    private void OnMoveCompletedOccured(MoveEvent _Move) {
+        Debug.Log("OnMoveCompletedOccured");
+        //Debug.Log("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
+        if(_Move.getSender() != username && _Move.getMoveData() != null) {
+            Dictionary<string, object> recievedData = MiniJSON.Json.Deserialize(_Move.getMoveData()) as Dictionary<string, object>;
+            if(recievedData != null) {
+                if(recievedData.ContainsKey("Soldiers")) {
+                    List<string> enemySoldiers = recievedData["Soldiers"] as List<string>;
+                    foreach(var enemy in enemySoldiers) {
+                        Debug.LogError(enemy);
+                    }
+
+                }
+                //SubmitLogic(_index);
+            }
+        }
+        //isMyTurn = (_Move.getNextTurn() == MultiPlayerManager.Instance.Username);
+    }
+
+    private void OnGameStoppedOccured(string _Sender, string _RoomId) {
+        Debug.Log(_Sender + " " + _RoomId);
     }
 
     public void Disconnect() {
