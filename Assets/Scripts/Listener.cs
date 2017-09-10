@@ -236,11 +236,11 @@ namespace AssemblyCSharp
         {
             if (WarpResponseResultCode.SUCCESS == eventObj.getResult())
             {
-				Debug.Log ("UpdateProperty event received with success status");
+				Debug.LogError ("UpdateProperty event received with success status");
             }
             else
             {
-				Debug.Log ("Update Propert event received with fail status. Status is :" + eventObj.getResult().ToString());
+				Debug.LogError("Update Propert event received with fail status. Status is :" + eventObj.getResult().ToString());
             }
         }
 		#endregion
@@ -308,8 +308,11 @@ namespace AssemblyCSharp
 		
 		public void onUserChangeRoomProperty(RoomData roomData, string sender, Dictionary<string, object> properties, Dictionary<string, string> lockedPropertiesTable)
 		{
+
 			Debug.Log ("onUserChangeRoomProperty : " + sender);
-		}
+            //Debug.LogError(MiniJSON.Json.Serialize(properties));
+            MultiPlayerManager.Instance.Data = properties;
+        }
 			
 		public void onPrivateChatReceived(string sender, string message)
 		{

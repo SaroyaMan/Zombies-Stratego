@@ -1,6 +1,4 @@
-﻿using AssemblyCSharp;
-using com.shephertz.app42.gaming.multiplayer.client.events;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager> {
@@ -46,12 +44,10 @@ public class GameManager : Singleton<GameManager> {
             PassTurn();
         }
         else {      //game is multiplayer
-            if(MultiPlayerManager.Instance.IsMyTurn) {
-                MultiPlayerManager.Instance.SendLocalSoldierList();
-                //SoldierManager.Instance.FlipSide();
-            }
-            else {
-            }
+            SoldierManager.Instance.HideAllSoldiers();
+            totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
+            totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
+            UpdateStats();
         }
 
     }
@@ -71,14 +67,27 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void UpdateStats() {
-        if(Globals.IS_SINGLE_PLAYER && pcSide == GameSide.RightSide) {
-            GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
-            GameView.SetText("ZombiesRightText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
+        if(Globals.IS_SINGLE_PLAYER) {
+            if(pcSide == GameSide.RightSide) {
+                GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
+                GameView.SetText("ZombiesRightText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
+            }
+            else {
+                GameView.SetText("ZombiesRightText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
+                GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
+            }
         }
         else {
-            GameView.SetText("ZombiesRightText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
-            GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
+            if(MultiPlayerManager.Instance.PlayerSide == GameSide.LeftSide) {
+                GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
+                GameView.SetText("ZombiesRightText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
+            }
+            else {
+                GameView.SetText("ZombiesRightText", (SoldierManager.Instance.LocalPlayerList.Count - 1) + " / " + totalSoldiersLocalSide);
+                GameView.SetText("ZombiesLeftText", (SoldierManager.Instance.EnemyList.Count - 1) + " / " + totalSoldiersEnemySide);
+            }
         }
+
     }
 
     public void CheckWin(GameSide potentialLoserSide) {

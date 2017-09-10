@@ -236,7 +236,7 @@ public class SoldierManager: Singleton<SoldierManager> {
         }
 
 
-        if(MultiPlayerManager.Instance.PlayerSide == GameSide.RightSide) {
+        //if(MultiPlayerManager.Instance.PlayerSide == GameSide.LeftSide) {
             //TODO: Continue from here: right now, the guest player has board initalized properly.
             //Now guest player needs to send his soldiers to the home player
             foreach(var enemy in enemySoldiers) {
@@ -250,21 +250,21 @@ public class SoldierManager: Singleton<SoldierManager> {
                 }
                 PlaceSoldier(matrixTiles[row, Globals.COLUMNS - 1 - column], soldierProt, true);
             }
-            FlipSide();
+            //FlipSide();
             //MultiPlayerManager.Instance.SendLocalSoldierList();
-        }
-        else {
-            foreach(var enemy in enemySoldiers) {
-                string[] enemyRegex = enemy.ToString().Split(',');
-                int row = int.Parse(enemyRegex[0]);
-                int column = int.Parse(enemyRegex[1]);
-                string soldierName = enemyRegex[2];
-                var soldierProt = soldierPrototypes[soldierName];
-                if(soldierName == "BlueFlag") {
-                    soldierProt = enemyFlagPrototype;
-                }
-                PlaceSoldier(matrixTiles[row, column], soldierProt, true);
-            }
-        }
+        //}
+        //else {
+        //    foreach(var enemy in enemySoldiers) {
+        //        string[] enemyRegex = enemy.ToString().Split(',');
+        //        int row = int.Parse(enemyRegex[0]);
+        //        int column = int.Parse(enemyRegex[1]);
+        //        string soldierName = enemyRegex[2];
+        //        var soldierProt = soldierPrototypes[soldierName];
+        //        if(soldierName == "BlueFlag") {
+        //            soldierProt = enemyFlagPrototype;
+        //        }
+        //        PlaceSoldier(matrixTiles[row, column], soldierProt, true);
+        //    }
+        //}
     }
 }

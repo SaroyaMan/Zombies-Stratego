@@ -2,13 +2,14 @@
 using com.shephertz.app42.gaming.multiplayer.client;
 using com.shephertz.app42.gaming.multiplayer.client.events;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class MultiPlayerManager : Singleton<MultiPlayerManager> {
+public class MultiPlayerManager: Singleton<MultiPlayerManager> {
 
     private Dictionary<string, object> data;
-    
+
 
     private Listener listener;
     private string username = string.Empty;
@@ -23,6 +24,7 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
 
     public GameSide PlayerSide { get { return playerSide; } }
     public bool IsMyTurn { get { return isMyTurn; } }
+    public Dictionary<string, object> Data { get { return data; } set { data = value; } }
 
     //
 
@@ -64,36 +66,39 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
 
     public void ConnectGame() {
         GameView.SetText("StatusTxt", "Connecting...");
+
+        data["HomePlayer" + username] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray());
+
         WarpClient.GetInstance().Connect(username);
         //WarpClient.GetInstance().GetRoomsInRange(1, 2);
     }
 
     private void OnEnable() {
-        Listener.OnConnect          += OnConnectOccured;
-        Listener.OnRoomsInRange     += OnRoomsInRangeOccured;
-        Listener.OnCreateRoom       += OnCreateRoomOccured;
-        Listener.OnGetLiveRoomInfo  += OnGetLiveRoomInfoOccured;
-        Listener.OnUserJoinRoom     += OnUserJoinRoomOccured;
-        Listener.OnGameStarted      += OnGameStartedOccured;
-        Listener.OnMoveCompleted    += OnMoveCompletedOccured;
-        Listener.OnGameStopped      += OnGameStoppedOccured;
+        Listener.OnConnect += OnConnectOccured;
+        Listener.OnRoomsInRange += OnRoomsInRangeOccured;
+        Listener.OnCreateRoom += OnCreateRoomOccured;
+        Listener.OnGetLiveRoomInfo += OnGetLiveRoomInfoOccured;
+        Listener.OnUserJoinRoom += OnUserJoinRoomOccured;
+        Listener.OnGameStarted += OnGameStartedOccured;
+        Listener.OnMoveCompleted += OnMoveCompletedOccured;
+        Listener.OnGameStopped += OnGameStoppedOccured;
     }
 
     private void OnDisable() {
-        Listener.OnConnect          -= OnConnectOccured;
-        Listener.OnRoomsInRange     -= OnRoomsInRangeOccured;
-        Listener.OnCreateRoom       -= OnCreateRoomOccured;
-        Listener.OnGetLiveRoomInfo  -= OnGetLiveRoomInfoOccured;
-        Listener.OnUserJoinRoom     -= OnUserJoinRoomOccured;
-        Listener.OnGameStarted      -= OnGameStartedOccured;
-        Listener.OnMoveCompleted    -= OnMoveCompletedOccured;
-        Listener.OnGameStopped      -= OnGameStoppedOccured;
+        Listener.OnConnect -= OnConnectOccured;
+        Listener.OnRoomsInRange -= OnRoomsInRangeOccured;
+        Listener.OnCreateRoom -= OnCreateRoomOccured;
+        Listener.OnGetLiveRoomInfo -= OnGetLiveRoomInfoOccured;
+        Listener.OnUserJoinRoom -= OnUserJoinRoomOccured;
+        Listener.OnGameStarted -= OnGameStartedOccured;
+        Listener.OnMoveCompleted -= OnMoveCompletedOccured;
+        Listener.OnGameStopped -= OnGameStoppedOccured;
     }
 
     private void OnConnectOccured(bool _IsSuccess) {
         Debug.Log("OnConnect: " + _IsSuccess);
         if(_IsSuccess) {
-
+            //data["HomePlayer"] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray() );
             GameView.SetText("StatusTxt", "Getting Rooms in range...");
             WarpClient.GetInstance().GetRoomsInRange(1, 2);
         }
@@ -128,7 +133,7 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
     private void OnCreateRoomOccured(bool _IsSuccess, string _RoomId) {
         Debug.Log("OnCreateRoom " + _IsSuccess + " " + _RoomId);
         if(_IsSuccess) {
-            GameView.SetText("StatusTxt","Created Room!");
+            GameView.SetText("StatusTxt", "Created Room!");
             WarpClient.GetInstance().JoinRoom(_RoomId);
 
             //so i can get events when other users join my room
@@ -138,7 +143,7 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
 
     private void OnGetLiveRoomInfoOccured(LiveRoomInfoEvent eventObj) {
         Debug.Log("OnGetLiveRoomInfo " + eventObj.getData().getId() + " " + eventObj.getResult() + " " + eventObj.getJoinedUsers().Length);
-        GameView.SetText("StatusTxt","Room Information: " + eventObj.getData().getId() + " " + eventObj.getJoinedUsers().Length);
+        GameView.SetText("StatusTxt", "Room Information: " + eventObj.getData().getId() + " " + eventObj.getJoinedUsers().Length);
 
         Dictionary<string, object> _temp = eventObj.getProperties();
         Debug.Log(_temp.Count + " " + _temp["Password"] + " " + data["Password"].ToString());
@@ -147,6 +152,10 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
             _temp["Password"].ToString() == data["Password"].ToString()) {
             WarpClient.GetInstance().JoinRoom(eventObj.getData().getId());
             WarpClient.GetInstance().SubscribeRoom(eventObj.getData().getId());
+
+            data["AwayPlayer"] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray());
+            WarpClient.GetInstance().UpdateRoomProperties(rooms[index], data, null);
+
             GameView.SetText("StatusTxt", "Joining Room...");
         }
         else {
@@ -157,7 +166,11 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
             }
             else {
                 Debug.Log("No rooms were availible, create a room");
+
                 WarpClient.GetInstance().CreateTurnRoom("Room Name", username, 2, null, 60);
+
+                data["HomePlayer"] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray());
+                WarpClient.GetInstance().UpdateRoomProperties(rooms[index], data, null);
             }
         }
     }
@@ -165,6 +178,7 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
     private void OnUserJoinRoomOccured(RoomData eventObj, string _UserName) {
         Debug.Log("OnUserJoinRoom " + " " + _UserName);
         GameView.SetText("StatusTxt", "User " + _UserName + " Joined Room!");
+
         //SC_MenuView.Instance.SetInfoText("OnUserJoinRoom " + " " + _UserName);
         if(_UserName != eventObj.getRoomOwner()) {
             WarpClient.GetInstance().startGame();
@@ -180,10 +194,15 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
         if(currentUsernameTurn == username) {
             playerSide = GameSide.LeftSide;
             isMyTurn = true;
+            var awaySoldiers = MiniJSON.Json.Deserialize(data["AwayPlayer"].ToString()) as List<object>;
+            SoldierManager.Instance.InitEnemyBoard(awaySoldiers);
         }
         else {
             playerSide = GameSide.RightSide;
             isMyTurn = false;
+            var homeSoldiers = MiniJSON.Json.Deserialize(data["HomePlayer" + currentUsernameTurn].ToString()) as List<object>;
+            SoldierManager.Instance.InitEnemyBoard(homeSoldiers);
+            SoldierManager.Instance.FlipSide();
         }
         Debug.LogError("player Side = " + playerSide);
 
@@ -193,22 +212,6 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
         Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
     }
 
-    public void SendLocalSoldierList() {
-        Dictionary<string, object> toSend = new Dictionary<string, object>();
-        var localSoldiers = SoldierManager.Instance.LocalPlayerList;
-        toSend.Add("UserName", username);
-        toSend.Add("State", playerSide);
-
-        List<string> listOfSoldiers = new List<string>();
-        foreach(var soldier in localSoldiers) {
-            listOfSoldiers.Add(soldier.CurrentTile.Row + "," + soldier.CurrentTile.Column + "," + Regex.Match(soldier.name, @"^[a-zA-Z0-9]*").Value);
-        }
-        
-        toSend.Add("Soldiers", listOfSoldiers.ToArray() );
-        Debug.LogError("Sending LocalSoldierList to each other");
-        string jsonToSend = MiniJSON.Json.Serialize(toSend);
-        WarpClient.GetInstance().sendMove(jsonToSend);
-    }
 
     public void OnMoveCompletedOccured(MoveEvent _Move) {
         Debug.LogError("OnMoveComplete Occured");
@@ -239,4 +242,16 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
         index = 0;
         Globals.Instance.UnityObjects["StatusConnectionWindow"].SetActive(false);
     }
+
+    private List<string> GetLocalSoldiers() {
+        var localSoldiers = SoldierManager.Instance.LocalPlayerList;
+        List<string> listOfSoldiers = new List<string>();
+        foreach(var soldier in localSoldiers) {
+            listOfSoldiers.Add(soldier.CurrentTile.Row + "," + soldier.CurrentTile.Column + "," + Regex.Match(soldier.name, @"^[a-zA-Z0-9]*").Value);
+        }
+        return listOfSoldiers;
+    }
+
+
+
 }
