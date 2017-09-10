@@ -46,7 +46,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
         originOffsetY = offset_y;
     }
 
-    public void FlipSide() {
+    public virtual void FlipSide() {
         offset_x = originOffsetX = -offset_x;
         transform.localScale = new Vector3(-transform.localScale.x, 1, 1);
         CurrentSide = CurrentSide == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;

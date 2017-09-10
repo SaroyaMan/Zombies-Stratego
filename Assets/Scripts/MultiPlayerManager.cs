@@ -1,5 +1,4 @@
-﻿
-using AssemblyCSharp;
+﻿using AssemblyCSharp;
 using com.shephertz.app42.gaming.multiplayer.client;
 using com.shephertz.app42.gaming.multiplayer.client.events;
 using System.Collections.Generic;
@@ -172,14 +171,9 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
         }
     }
 
-    private void OnGameStartedOccured(string _Sender, string _RoomId, string _NextTurn) {
+    public void OnGameStartedOccured(string _Sender, string _RoomId, string _NextTurn) {
         Debug.Log("SC_MenuLogic: " + _Sender + " " + _RoomId + " " + _NextTurn);
         Debug.Log("Game is starting...");
-
-        SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
-        SoundManager.Instance.Music.Play();
-        //SceneManager.LoadSceneAsync("Game_Scene");
-        Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
 
         currentUsernameTurn = _NextTurn;
         GameManager.CURRENT_TURN = GameSide.LeftSide;
@@ -192,10 +186,14 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
             isMyTurn = false;
         }
         Debug.LogError("player Side = " + playerSide);
+
+        SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
+        SoundManager.Instance.Music.Play();
+        //SceneManager.LoadSceneAsync("Game_Scene");
+        Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
     }
 
     public void SendLocalSoldierList() {
-        isMyTurn = false;
         Dictionary<string, object> toSend = new Dictionary<string, object>();
         var localSoldiers = SoldierManager.Instance.LocalPlayerList;
         toSend.Add("UserName", username);
@@ -205,33 +203,33 @@ public class MultiPlayerManager : Singleton<MultiPlayerManager> {
         foreach(var soldier in localSoldiers) {
             listOfSoldiers.Add(soldier.CurrentTile.Row + "," + soldier.CurrentTile.Column + "," + Regex.Match(soldier.name, @"^[a-zA-Z0-9]*").Value);
         }
-
-        toSend.Add("Soldiers", listOfSoldiers);
+        
+        toSend.Add("Soldiers", listOfSoldiers.ToArray() );
         Debug.LogError("Sending LocalSoldierList to each other");
         string jsonToSend = MiniJSON.Json.Serialize(toSend);
         WarpClient.GetInstance().sendMove(jsonToSend);
     }
 
-    private void OnMoveCompletedOccured(MoveEvent _Move) {
-        Debug.Log("OnMoveCompletedOccured");
-        //Debug.Log("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
+    public void OnMoveCompletedOccured(MoveEvent _Move) {
+        Debug.LogError("OnMoveComplete Occured");
+        //Debug.LogError("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
         if(_Move.getSender() != username && _Move.getMoveData() != null) {
             Dictionary<string, object> recievedData = MiniJSON.Json.Deserialize(_Move.getMoveData()) as Dictionary<string, object>;
             if(recievedData != null) {
                 if(recievedData.ContainsKey("Soldiers")) {
-                    List<string> enemySoldiers = recievedData["Soldiers"] as List<string>;
-                    foreach(var enemy in enemySoldiers) {
-                        Debug.LogError(enemy);
-                    }
+                    //Debug.LogError("recievedData[soldiers] = " + recievedData["Soldiers"]);
+                    List<object> enemySoldiers = recievedData["Soldiers"] as List<object>;
+                    //Debug.LogError("enemySoldiers.Length = " + enemySoldiers.Length);
+                    SoldierManager.Instance.InitEnemyBoard(enemySoldiers);
 
                 }
                 //SubmitLogic(_index);
             }
         }
-        //isMyTurn = (_Move.getNextTurn() == MultiPlayerManager.Instance.Username);
+        isMyTurn = (_Move.getNextTurn() == username);
     }
 
-    private void OnGameStoppedOccured(string _Sender, string _RoomId) {
+    public void OnGameStoppedOccured(string _Sender, string _RoomId) {
         Debug.Log(_Sender + " " + _RoomId);
     }
 

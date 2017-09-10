@@ -46,10 +46,12 @@ public class GameManager : Singleton<GameManager> {
             PassTurn();
         }
         else {      //game is multiplayer
-            if(MultiPlayerManager.Instance.PlayerSide == GameSide.RightSide) {
-                SoldierManager.Instance.FlipSide();
+            if(MultiPlayerManager.Instance.IsMyTurn) {
+                MultiPlayerManager.Instance.SendLocalSoldierList();
+                //SoldierManager.Instance.FlipSide();
             }
-            MultiPlayerManager.Instance.SendLocalSoldierList();
+            else {
+            }
         }
 
     }
