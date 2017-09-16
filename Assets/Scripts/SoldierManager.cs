@@ -140,6 +140,18 @@ public class SoldierManager: Singleton<SoldierManager> {
         yield return null;
     }
 
+    public void MakeEnemyMove(Zombie zombie, Tile tileToStep) {
+        var tilesToStep = TileManager.Instance.GetClosestTiles(zombie.CurrentTile, zombie);
+        zombie.TilesToStep = tilesToStep;
+        foreach(var tile in tilesToStep) {
+            tile.ReadyToStep(zombie, true);
+            if(tile.Row == tileToStep.Row && tile.Column == tileToStep.Column) {
+                tileToStep = tile;
+            }
+        }
+        tileToStep.OnMouseDown();
+    }
+
     public void ClearSoldiers() {
         foreach(var soldier in localPlayerList) {
             Destroy(soldier.gameObject);

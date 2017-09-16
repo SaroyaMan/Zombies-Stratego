@@ -44,7 +44,7 @@ public class GameManager : Singleton<GameManager> {
             PassTurn();
         }
         else {      //game is multiplayer
-            SoldierManager.Instance.HideAllSoldiers();
+            
             totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
             totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
             UpdateStats();
@@ -52,18 +52,22 @@ public class GameManager : Singleton<GameManager> {
 
     }
 
-    public void PassTurn() {
+    public void PassTurn(Tile oldTile = null, Tile newTile = null) {
         CURRENT_TURN = CURRENT_TURN == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
 
-        if(Globals.IS_SINGLE_PLAYER && CURRENT_TURN == pcSide && !isPcPlaying) {
-            isPcPlaying = true;
-            StartCoroutine(SoldierManager.Instance.MakeRandomMove());
+        if(Globals.IS_SINGLE_PLAYER) {
+            if(CURRENT_TURN == pcSide && !isPcPlaying) {
+                isPcPlaying = true;
+                StartCoroutine(SoldierManager.Instance.MakeRandomMove());
+            }
+            else {
+                isPcPlaying = false;
+            }
         }
-        else {
-            isPcPlaying = false;
+        else {  //game is multiplayer
+            MultiPlayerManager.Instance.SendMove(oldTile, newTile);
         }
         GameView.SetImage("FlagColor", CURRENT_TURN == GameSide.LeftSide ? blueFlagSprite : redFlagSprite);
-
     }
 
     public void UpdateStats() {

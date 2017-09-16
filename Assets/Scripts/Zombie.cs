@@ -41,7 +41,7 @@ public class Zombie: PlayerSoldier {
 
     private new void OnMouseDown() {
         base.OnMouseDown();
-        if(GameManager.Instance != null && GameManager.CURRENT_TURN == CurrentSide && !GameManager.Instance.IsPcPlaying && !GameManager.Instance.IsPaused && !IsDying) {
+        if(IsSinglePlayerAllowClick() || IsMultiPlayerAllowClick()) {
             if(!isGridMarked && !isDying) {
                 SoldierManager.Instance.MarkSelectedSoldier(this);
                 MarkAvailableTilesToStep();
@@ -50,6 +50,14 @@ public class Zombie: PlayerSoldier {
                 UnMarkAvailableTilesToStep();
             }
         }
+    }
+
+    private bool IsSinglePlayerAllowClick() {
+        return Globals.IS_SINGLE_PLAYER && GameManager.Instance != null && GameManager.CURRENT_TURN == CurrentSide && !GameManager.Instance.IsPcPlaying && !GameManager.Instance.IsPaused && !IsDying;
+    }
+
+    private bool IsMultiPlayerAllowClick() {
+        return !Globals.IS_SINGLE_PLAYER && !GameManager.Instance.IsPaused && !IsDying && MultiPlayerManager.Instance.PlayerSide == CurrentSide && CurrentSide == GameManager.CURRENT_TURN;
     }
 
     public void MarkAvailableTilesToStep() {
@@ -71,6 +79,7 @@ public class Zombie: PlayerSoldier {
     }
 
     public void Walk(Tile tile) {
+        tile.IsInUse = true;
         if(CurrentSide == GameSide.LeftSide && tile.Column < CurrentTile.Column
             || CurrentSide == GameSide.RightSide && tile.Column > CurrentTile.Column) {      //TODO: Fix animation when Zombie walks reverse
             isFlipped = true;

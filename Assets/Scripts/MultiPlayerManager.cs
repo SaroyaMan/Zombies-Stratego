@@ -2,7 +2,6 @@
 using com.shephertz.app42.gaming.multiplayer.client;
 using com.shephertz.app42.gaming.multiplayer.client.events;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -26,14 +25,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     public bool IsMyTurn { get { return isMyTurn; } }
     public Dictionary<string, object> Data { get { return data; } set { data = value; } }
 
-    //
-
-    //public string Username {
-    //    get {
-    //        return username;
-    //    }
-    //}
-
     private void Awake() {
         DontDestroyOnLoad(this);
         Init();
@@ -55,7 +46,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
         WarpClient.GetInstance().AddRoomRequestListener(listener);
         WarpClient.GetInstance().AddZoneRequestListener(listener);
         WarpClient.GetInstance().AddTurnBasedRoomRequestListener(listener);
-
+        DontDestroyOnLoad(WarpClient.GetInstance());
         username = System.DateTime.UtcNow.Ticks.ToString();
     }
 
@@ -135,9 +126,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
         if(_IsSuccess) {
             GameView.SetText("StatusTxt", "Created Room!");
             WarpClient.GetInstance().JoinRoom(_RoomId);
-
-            //so i can get events when other users join my room
-            WarpClient.GetInstance().SubscribeRoom(_RoomId);
+            WarpClient.GetInstance().SubscribeRoom(_RoomId); //so i can get events when other users join my room
         }
     }
 
@@ -150,11 +139,13 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
 
         if(eventObj.getResult() == 0 && eventObj.getJoinedUsers().Length == 1 &&
             _temp["Password"].ToString() == data["Password"].ToString()) {
+
             WarpClient.GetInstance().JoinRoom(eventObj.getData().getId());
             WarpClient.GetInstance().SubscribeRoom(eventObj.getData().getId());
 
             data["AwayPlayer"] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray());
-            WarpClient.GetInstance().UpdateRoomProperties(rooms[index], data, null);
+
+            WarpClient.GetInstance().UpdateRoomProperties(eventObj.getData().getId(), data, null);
 
             GameView.SetText("StatusTxt", "Joining Room...");
         }
@@ -169,7 +160,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
 
                 WarpClient.GetInstance().CreateTurnRoom("Room Name", username, 2, null, 60);
 
-                data["HomePlayer"] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray());
+                data["HomePlayer" + username] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray());
                 WarpClient.GetInstance().UpdateRoomProperties(rooms[index], data, null);
             }
         }
@@ -178,16 +169,25 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     private void OnUserJoinRoomOccured(RoomData eventObj, string _UserName) {
         Debug.Log("OnUserJoinRoom " + " " + _UserName);
         GameView.SetText("StatusTxt", "User " + _UserName + " Joined Room!");
-
-        //SC_MenuView.Instance.SetInfoText("OnUserJoinRoom " + " " + _UserName);
         if(_UserName != eventObj.getRoomOwner()) {
+            //int randTurn = Random.Range(0, 2);
+            //string firstPlayer = string.Empty;
+            //firstPlayer = randTurn == 0 ? username : _UserName;
+            //WarpClient.GetInstance().startGame(true, firstPlayer);
+
             WarpClient.GetInstance().startGame();
         }
     }
 
+    private void SwitchToGameScene() {
+        SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
+        SoundManager.Instance.Music.Play();
+        Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
+    }
+
     public void OnGameStartedOccured(string _Sender, string _RoomId, string _NextTurn) {
-        Debug.Log("SC_MenuLogic: " + _Sender + " " + _RoomId + " " + _NextTurn);
-        Debug.Log("Game is starting...");
+
+        Debug.Log("OnGameStartedOccured: " + _Sender + " " + _RoomId + " " + _NextTurn);
 
         currentUsernameTurn = _NextTurn;
         GameManager.CURRENT_TURN = GameSide.LeftSide;
@@ -196,6 +196,8 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             isMyTurn = true;
             var awaySoldiers = MiniJSON.Json.Deserialize(data["AwayPlayer"].ToString()) as List<object>;
             SoldierManager.Instance.InitEnemyBoard(awaySoldiers);
+            WarpClient.GetInstance().SetNextTurn(username);
+            //SendMove(TileManager.Instance.MatrixTiles[0, 0], TileManager.Instance.MatrixTiles[0, 1]);
         }
         else {
             playerSide = GameSide.RightSide;
@@ -204,31 +206,50 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             SoldierManager.Instance.InitEnemyBoard(homeSoldiers);
             SoldierManager.Instance.FlipSide();
         }
-        Debug.LogError("player Side = " + playerSide);
+        SoldierManager.Instance.HideAllSoldiers();
 
-        SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
-        SoundManager.Instance.Music.Play();
-        //SceneManager.LoadSceneAsync("Game_Scene");
-        Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
+        SwitchToGameScene();
+
+        //Works HERE Perefect, and even in the if-else blocks
+        //SendMove(TileManager.Instance.MatrixTiles[0, 0], TileManager.Instance.MatrixTiles[0, 1]);
     }
 
+    public void SendMove(Tile oldTile, Tile newTile) {
+        //Debug.LogError("Con State : " + WarpClient.GetInstance().GetConnectionState());
+        if(isMyTurn) {
+            isMyTurn = false;
+            Dictionary<string, object> toSend = new Dictionary<string, object> {
+                { "UserName", username },
+                { "oldTileRow", oldTile.Row },
+                { "oldTileColumn", oldTile.Column },
+                { "newTileRow", newTile.Row },
+                { "newTileColumn", newTile.Column }
+            };
+            string jsonToSend = MiniJSON.Json.Serialize(toSend);
+            Debug.Log("SENDING MOVE...");
+            Debug.Log(jsonToSend);
+            WarpClient.GetInstance().sendMove(jsonToSend);
+        }
+    }
 
     public void OnMoveCompletedOccured(MoveEvent _Move) {
-        Debug.LogError("OnMoveComplete Occured");
+        //Debug.LogError("OnMoveComplete Occured");
         //Debug.LogError("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
         if(_Move.getSender() != username && _Move.getMoveData() != null) {
             Dictionary<string, object> recievedData = MiniJSON.Json.Deserialize(_Move.getMoveData()) as Dictionary<string, object>;
             if(recievedData != null) {
-                if(recievedData.ContainsKey("Soldiers")) {
-                    //Debug.LogError("recievedData[soldiers] = " + recievedData["Soldiers"]);
-                    List<object> enemySoldiers = recievedData["Soldiers"] as List<object>;
-                    //Debug.LogError("enemySoldiers.Length = " + enemySoldiers.Length);
-                    SoldierManager.Instance.InitEnemyBoard(enemySoldiers);
+                if(recievedData.ContainsKey("oldTileRow")) {
+                    Debug.LogError("BLA BLA BLA");
+                    var matrixTile = TileManager.Instance.MatrixTiles;
+                    Tile oldTile = matrixTile[int.Parse(recievedData["oldTileRow"].ToString()), int.Parse(recievedData["oldTileColumn"].ToString())];
+                    Tile newTile = matrixTile[int.Parse(recievedData["newTileRow"].ToString()), int.Parse(recievedData["newTileColumn"].ToString())];
+                    var soldier = oldTile.Soldier as Zombie;
+                    SoldierManager.Instance.MakeEnemyMove(soldier, newTile);
 
                 }
-                //SubmitLogic(_index);
             }
         }
+        currentUsernameTurn = _Move.getNextTurn();
         isMyTurn = (_Move.getNextTurn() == username);
     }
 
@@ -252,6 +273,8 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
         return listOfSoldiers;
     }
 
-
+    private void OnApplicationQuit() {
+        WarpClient.GetInstance().Disconnect();
+    }
 
 }

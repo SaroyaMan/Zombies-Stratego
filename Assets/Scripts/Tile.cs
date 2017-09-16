@@ -76,12 +76,17 @@ public class Tile: MonoBehaviour {
 
     public void OnMouseDown() {
         if(soldier != null) {
-            print(soldier.name + " " + soldier.CurrentSide.ToString());
+            Debug.LogError(soldier.name + " " + soldier.CurrentSide.ToString());
         }
         else {
-            print("soldier is NULL");
+            Debug.LogError("soldier is NULL");
         }
         if(isReadyToStep) {
+            isReadyToStep = false;
+
+            if(!Globals.IS_SINGLE_PLAYER)
+                GameManager.Instance.PassTurn(soldier.CurrentTile, this);
+
             if(attackingZombie != null && attackingZombie is Zombie) {
                 (attackingZombie as Zombie).GetCloser(soldier);
                 attackingZombie = null;
@@ -89,9 +94,9 @@ public class Tile: MonoBehaviour {
 
             else if(soldier is Zombie) {
                 (soldier as Zombie).Walk(this);
-                IsInUse = true;
             }
-            GameManager.Instance.PassTurn();
+            if(Globals.IS_SINGLE_PLAYER)
+                GameManager.Instance.PassTurn();
         }
     }
 }

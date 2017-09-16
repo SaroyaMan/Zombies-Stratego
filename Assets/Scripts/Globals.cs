@@ -28,8 +28,8 @@ public class Globals : Singleton<Globals> {
     public const string GITHUB_PROFILE_URL = "https://github.com/SaroyaMan";
     public const string CV_URL = "https://drive.google.com/file/d/0B8BaWfqNelVKTjEwRHFnSkVXMnM/view";
 
-    public const string API_KEY = "bcb4d556c7487b614b770ac80bc93f4532876f50761ee3683321b79ce5ffb15f";
-    public const string SECRET_KEY = "63321bf8738b29b5ff09ddf0f88f47b7f20b5ba4acff1dec3ccab7a3406b2c27";
+    public const string API_KEY = "1dc818fddbb3315fed817a82c40754049e7ebaa74c2cdfe7df2bfed170262bd9";
+    public const string SECRET_KEY = "b95a9bc59465bd0ce4f3bc5b01fc2464a0be156452afb2282b77970adeb00327";
 
     public static bool IS_IN_GAME;
     public static bool IS_SINGLE_PLAYER = true;

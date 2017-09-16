@@ -1,11 +1,8 @@
 using UnityEngine;
-
 using com.shephertz.app42.gaming.multiplayer.client;
 using com.shephertz.app42.gaming.multiplayer.client.events;
 using com.shephertz.app42.gaming.multiplayer.client.listener;
 using com.shephertz.app42.gaming.multiplayer.client.command;
-using com.shephertz.app42.gaming.multiplayer.client.message;
-using com.shephertz.app42.gaming.multiplayer.client.transformer;
 
 using System;
 using System.Collections.Generic;
@@ -236,11 +233,11 @@ namespace AssemblyCSharp
         {
             if (WarpResponseResultCode.SUCCESS == eventObj.getResult())
             {
-				Debug.LogError ("UpdateProperty event received with success status");
+				Debug.Log ("UpdateProperty event received with success status");
             }
             else
             {
-				Debug.LogError("Update Propert event received with fail status. Status is :" + eventObj.getResult().ToString());
+				Debug.Log("Update Propert event received with fail status. Status is :" + eventObj.getResult().ToString());
             }
         }
 		#endregion
@@ -310,7 +307,6 @@ namespace AssemblyCSharp
 		{
 
 			Debug.Log ("onUserChangeRoomProperty : " + sender);
-            //Debug.LogError(MiniJSON.Json.Serialize(properties));
             MultiPlayerManager.Instance.Data = properties;
         }
 			
@@ -385,7 +381,8 @@ namespace AssemblyCSharp
 		//TurnBasedRoomListener
 		#region TurnBasedRoomListener
 		public void onSendMoveDone(byte result)
-		{   
+		{
+            //Debug.LogError("result = " + (int) result);
 			if (OnSendMoveAck != null)
 				OnSendMoveAck();
 		}
