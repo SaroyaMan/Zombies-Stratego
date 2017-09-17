@@ -60,7 +60,7 @@ public class Tile: MonoBehaviour {
     public void ReadyToStep(PlayerSoldier zombie, bool isPc = false) {
         isReadyToStep = true;
         if(!isPc) ColorTile();
-        if(soldier == null || !soldier.IsEnemy(zombie) )
+        if(soldier == null || !soldier.IsEnemy(zombie))
             soldier = zombie;
         else {
             attackingZombie = zombie as Zombie;
@@ -69,8 +69,8 @@ public class Tile: MonoBehaviour {
 
     public void UnReadyToStep(PlayerSoldier zombie, bool isPc = false) {
         isReadyToStep = false;
-        if(!isPc)  UnColorTile();
-        if(soldier != null && zombie == soldier )
+        if(!isPc) UnColorTile();
+        if(soldier != null && zombie == soldier)
             soldier = null;
     }
 
@@ -81,12 +81,15 @@ public class Tile: MonoBehaviour {
         else {
             Debug.LogError("soldier is NULL");
         }
+        if(isReadyToStep && !Globals.IS_SINGLE_PLAYER) {
+            GameManager.Instance.PassTurn(attackingZombie == null ? soldier.CurrentTile : attackingZombie.CurrentTile, this);
+        }
+        MakeStep();
+    }
+
+    public void MakeStep() {
         if(isReadyToStep) {
             isReadyToStep = false;
-
-            if(!Globals.IS_SINGLE_PLAYER)
-                GameManager.Instance.PassTurn(soldier.CurrentTile, this);
-
             if(attackingZombie != null && attackingZombie is Zombie) {
                 (attackingZombie as Zombie).GetCloser(soldier);
                 attackingZombie = null;

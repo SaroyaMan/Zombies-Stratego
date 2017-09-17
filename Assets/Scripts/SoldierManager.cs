@@ -135,21 +135,16 @@ public class SoldierManager: Singleton<SoldierManager> {
             tile.ReadyToStep(randZombie, true);
         }
         var randTile = tilesToStep[Random.Range(0, tilesToStep.Count)];
-        randTile.OnMouseDown();
+        randTile.MakeStep();
 
         yield return null;
     }
 
     public void MakeEnemyMove(Zombie zombie, Tile tileToStep) {
-        var tilesToStep = TileManager.Instance.GetClosestTiles(zombie.CurrentTile, zombie);
-        zombie.TilesToStep = tilesToStep;
-        foreach(var tile in tilesToStep) {
-            tile.ReadyToStep(zombie, true);
-            if(tile.Row == tileToStep.Row && tile.Column == tileToStep.Column) {
-                tileToStep = tile;
-            }
-        }
-        tileToStep.OnMouseDown();
+        zombie.TilesToStep = new List<Tile>() { tileToStep };
+        tileToStep.ReadyToStep(zombie, true);
+        tileToStep.MakeStep();
+        GameManager.Instance.ChangeTurn();
     }
 
     public void ClearSoldiers() {

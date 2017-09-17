@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager> {
@@ -53,8 +54,13 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void PassTurn(Tile oldTile = null, Tile newTile = null) {
-        CURRENT_TURN = CURRENT_TURN == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
+        StartCoroutine(PassTurnAfterTwoSecs(oldTile, newTile));
 
+    }
+
+    private IEnumerator PassTurnAfterTwoSecs(Tile oldTile = null, Tile newTile = null) {
+        yield return new WaitForSeconds(1f);
+        ChangeTurn();
         if(Globals.IS_SINGLE_PLAYER) {
             if(CURRENT_TURN == pcSide && !isPcPlaying) {
                 isPcPlaying = true;
@@ -67,6 +73,10 @@ public class GameManager : Singleton<GameManager> {
         else {  //game is multiplayer
             MultiPlayerManager.Instance.SendMove(oldTile, newTile);
         }
+    }
+
+    public void ChangeTurn() {
+        CURRENT_TURN = CURRENT_TURN == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
         GameView.SetImage("FlagColor", CURRENT_TURN == GameSide.LeftSide ? blueFlagSprite : redFlagSprite);
     }
 
@@ -104,12 +114,12 @@ public class GameManager : Singleton<GameManager> {
     public void WinGame(GameSide winSide) {
         SoldierManager.Instance.CoverAllSoldiers();
         Globals.Instance.UnityObjects["WinWindow"].SetActive(true);
-        if(Globals.IS_SINGLE_PLAYER && pcSide != winSide) {
+        if(Globals.IS_SINGLE_PLAYER && pcSide != winSide || !Globals.IS_SINGLE_PLAYER && winSide == MultiPlayerManager.Instance.PlayerSide) {
             GameView.SetText("TitleWinner", "You Won !");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerWin);
         }
-        else if(Globals.IS_SINGLE_PLAYER && pcSide == winSide) {
-            GameView.SetText("TitleWinner", "PC Won !");
+        else {
+            GameView.SetText("TitleWinner", "You Lost !");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerLose);
         }
         SoundManager.Instance.Music.Stop();

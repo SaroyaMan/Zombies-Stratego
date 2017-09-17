@@ -226,7 +226,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
                 { "newTileColumn", newTile.Column }
             };
             string jsonToSend = MiniJSON.Json.Serialize(toSend);
-            Debug.Log("SENDING MOVE...");
             Debug.Log(jsonToSend);
             WarpClient.GetInstance().sendMove(jsonToSend);
         }
@@ -239,12 +238,11 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             Dictionary<string, object> recievedData = MiniJSON.Json.Deserialize(_Move.getMoveData()) as Dictionary<string, object>;
             if(recievedData != null) {
                 if(recievedData.ContainsKey("oldTileRow")) {
-                    Debug.LogError("BLA BLA BLA");
                     var matrixTile = TileManager.Instance.MatrixTiles;
                     Tile oldTile = matrixTile[int.Parse(recievedData["oldTileRow"].ToString()), int.Parse(recievedData["oldTileColumn"].ToString())];
                     Tile newTile = matrixTile[int.Parse(recievedData["newTileRow"].ToString()), int.Parse(recievedData["newTileColumn"].ToString())];
-                    var soldier = oldTile.Soldier as Zombie;
-                    SoldierManager.Instance.MakeEnemyMove(soldier, newTile);
+                    var zombie = oldTile.Soldier as Zombie;
+                    SoldierManager.Instance.MakeEnemyMove(zombie, newTile);
 
                 }
             }
