@@ -9,8 +9,10 @@ public class Bomb : PlayerSoldier {
         anim.Play("Explode");
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.BombExplode);
         yield return new WaitForSeconds(1.5f);
-        if(CurrentSide == GameManager.Instance.PcSide) SoldierManager.Instance.EnemyList.Remove(this);
-        else SoldierManager.Instance.LocalPlayerList.Remove(this);
+        if(Globals.IS_SINGLE_PLAYER && CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != CurrentSide)
+            SoldierManager.Instance.EnemyList.Remove(this);
+        else
+            SoldierManager.Instance.LocalPlayerList.Remove(this);
         GameManager.Instance.UpdateStats();
 
         Destroy(gameObject);
