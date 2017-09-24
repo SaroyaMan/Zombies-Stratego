@@ -5,17 +5,20 @@ public class MenuController: MonoBehaviour {
 
     private Slider moneySlider, musicSlider, sfxSlider;
     private SoundManager soundManager;
+    private InputField usernameField;
 
     private void Start() {
         moneySlider = Globals.Instance.UnityObjects["MoneySlider"].GetComponent<Slider>();
         musicSlider = Globals.Instance.UnityObjects["MusicSlider"].GetComponent<Slider>();
         sfxSlider = Globals.Instance.UnityObjects["SfxSlider"].GetComponent<Slider>();
+        usernameField = Globals.Instance.UnityObjects["Input_Username"].GetComponent<InputField>();
 
         soundManager = SoundManager.Instance;
 
         moneySlider.value = PlayerPrefs.GetInt("MoneyBet", 2);
         musicSlider.value = PlayerPrefs.GetFloat("Music", 1);
         sfxSlider.value = PlayerPrefs.GetFloat("SFX", 1);
+        usernameField.text = PlayerPrefs.GetString("Username", "No-Name");
     }
 
 
@@ -86,9 +89,12 @@ public class MenuController: MonoBehaviour {
         MenuLogic.Instance.OpenCV();
     }
 
+    public void ChangeUsername() {
+        MenuLogic.Instance.UpdateUsername(usernameField.text);
+    }
+
     public void CancelConnection() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MultiPlayerManager.Instance.Disconnect();
-
     }
 }

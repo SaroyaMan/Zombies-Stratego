@@ -50,4 +50,8 @@ public static class GameView {
     public static void MakeScreenNormal() {
         Globals.Instance.UnityObjects["Canvas"].GetComponent<Image>().color = defaultColor;
     }
+
+    public static void UpdateInputField(string elementName, string txt) {
+        Globals.Instance.UnityObjects[elementName].GetComponent<InputField>().text = txt;
+    }
 }

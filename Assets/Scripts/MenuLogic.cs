@@ -8,8 +8,10 @@ public class MenuLogic: Singleton<MenuLogic> {
     private GameObject trash;
     private bool isAllowedToPlay;
     int money = Globals.TOTAL_MONEY;
+    string username;
 
     public int Money { get { return money; } }
+    public string Username { get { return username; } }
 
     private void Start() {
         Init();
@@ -19,8 +21,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         prevScreen = Globals.Instance.currentScreen = MenuScreens.Default;
         trash = GameObject.FindGameObjectWithTag("Trash");
         trash.SetActive(false);
-        //money = PlayerPrefs.GetInt("Money", Globals.TOTAL_MONEY); //TODO: Uncomment it
-        GameView.SetText("Txt_CurrMoney", money.ToString());
+
         LoadStrategy();
         ShutdownScreens();    
         ChangeMenuState(MenuScreens.Main);
@@ -202,6 +203,11 @@ public class MenuLogic: Singleton<MenuLogic> {
         PlayerPrefs.SetFloat("SFX", value);
     }
 
+    public void UpdateUsername(string username) {
+        this.username = username;
+        PlayerPrefs.SetString("Username", username);
+    }
+
     public void OpenGithub() {
         Application.OpenURL(Globals.GITHUB_PROFILE_URL);
     }
@@ -213,5 +219,6 @@ public class MenuLogic: Singleton<MenuLogic> {
     private void ToggleMenuWindow(bool isTurnOn) {
         Globals.Instance.UnityObjects["MainWindow"].SetActive(isTurnOn);
         Globals.Instance.UnityObjects["Img_Logo"].SetActive(isTurnOn);
+        Globals.Instance.UnityObjects["Input_Username"].SetActive(isTurnOn);
     }
 }

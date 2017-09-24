@@ -50,11 +50,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
         username = System.DateTime.UtcNow.Ticks.ToString();
     }
 
-    public void SetUsername(string newUsername) {
-        username = newUsername;
-        GameView.SetText("Txt_Username", "Welcome " + username + "!");
-    }
-
     public void ConnectGame() {
         GameView.SetText("StatusTxt", "Connecting...");
 
@@ -112,7 +107,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             }
             else {
                 Debug.Log("No rooms were availible, create a room");
-                WarpClient.GetInstance().CreateTurnRoom("Room Name", username, 2, data, 60);
+                WarpClient.GetInstance().CreateTurnRoom("Room Name", username, 2, data, 10);
             }
         }
         else {
@@ -133,7 +128,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     private void OnGetLiveRoomInfoOccured(LiveRoomInfoEvent eventObj) {
         Debug.Log("OnGetLiveRoomInfo " + eventObj.getData().getId() + " " + eventObj.getResult() + " " + eventObj.getJoinedUsers().Length);
         GameView.SetText("StatusTxt", "Room Information: " + eventObj.getData().getId() + " " + eventObj.getJoinedUsers().Length);
-
         Dictionary<string, object> _temp = eventObj.getProperties();
         Debug.Log(_temp.Count + " " + _temp["Password"] + " " + data["Password"].ToString());
 
@@ -231,6 +225,14 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
         }
     }
 
+    public void SendGameQuit(string msg) {
+        Dictionary<string, object> toSend = new Dictionary<string, object> {
+                { "GameQuit", msg },
+            };
+        string jsonToSend = MiniJSON.Json.Serialize(toSend);
+        WarpClient.GetInstance().sendMove(jsonToSend);
+    }
+
     public void OnMoveCompletedOccured(MoveEvent _Move) {
         //Debug.LogError("OnMoveComplete Occured");
         //Debug.LogError("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
@@ -243,7 +245,9 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
                     Tile newTile = matrixTile[int.Parse(recievedData["newTileRow"].ToString()), int.Parse(recievedData["newTileColumn"].ToString())];
                     var zombie = oldTile.Soldier as Zombie;
                     SoldierManager.Instance.MakeEnemyMove(zombie, newTile);
-
+                }
+                else if(recievedData.ContainsKey("GameQuit")) {
+                    GameManager.Instance.WinGame(PlayerSide, recievedData["GameQuit"].ToString());
                 }
             }
         }
@@ -272,6 +276,9 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     }
 
     private void OnApplicationQuit() {
+        if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
+            SendGameQuit(username + " gave up");
+        }
         WarpClient.GetInstance().Disconnect();
     }
 

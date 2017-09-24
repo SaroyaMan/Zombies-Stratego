@@ -49,8 +49,9 @@ public class GameManager : Singleton<GameManager> {
             totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
             totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
             UpdateStats();
-        }
 
+            Globals.Instance.UnityObjects["PauseBtn"].SetActive(false);
+        }
     }
 
     public void PassTurn(Tile oldTile = null, Tile newTile = null) {
@@ -59,7 +60,8 @@ public class GameManager : Singleton<GameManager> {
     }
 
     private IEnumerator PassTurnAfterTwoSecs(Tile oldTile = null, Tile newTile = null) {
-        yield return new WaitForSeconds(1f);
+        if(!Globals.IS_SINGLE_PLAYER)
+            yield return new WaitForSeconds(1f);
         ChangeTurn();
         if(Globals.IS_SINGLE_PLAYER) {
             if(CURRENT_TURN == pcSide && !isPcPlaying) {
@@ -111,7 +113,7 @@ public class GameManager : Singleton<GameManager> {
         }
     }
 
-    public void WinGame(GameSide winSide) {
+    public void WinGame(GameSide winSide, string msg = null) {
         SoldierManager.Instance.CoverAllSoldiers();
         Globals.Instance.UnityObjects["WinWindow"].SetActive(true);
         if(Globals.IS_SINGLE_PLAYER && pcSide != winSide || !Globals.IS_SINGLE_PLAYER && winSide == MultiPlayerManager.Instance.PlayerSide) {
@@ -121,6 +123,9 @@ public class GameManager : Singleton<GameManager> {
         else {
             GameView.SetText("TitleWinner", "You Lost !");
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SinglePlayerLose);
+        }
+        if(msg != null) {
+            GameView.SetText("MsgWinner", msg);
         }
         SoundManager.Instance.Music.Stop();
         GameView.MakeScreenDark();
@@ -221,6 +226,7 @@ public class GameManager : Singleton<GameManager> {
         InitGame();
         ResumeGame();
         if(Globals.Instance.UnityObjects["WinWindow"]) {
+            GameView.SetText("MsgWinner", "");
             Globals.Instance.UnityObjects["WinWindow"].SetActive(false);
         }
     }
