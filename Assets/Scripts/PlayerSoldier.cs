@@ -21,6 +21,9 @@ public abstract class PlayerSoldier: MonoBehaviour {
     protected PolygonCollider2D playerCollider;
     protected bool isHidden;
 
+    private float clickTime;
+    private bool longClick;
+
     public short Rank { get { return rank; } }
     public int Price { get { return price; } }
     public float OffsetX { get { return offset_x; } }
@@ -57,6 +60,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
     }
 
     protected void OnMouseDown() {
+        clickTime = Time.time;
         if(strategyEditor != null && strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
             originPosition = transform.position;
             TileManager.Instance.MarkAvailableBuildTiles();
@@ -68,6 +72,16 @@ public abstract class PlayerSoldier: MonoBehaviour {
             var mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
         }
+        else if(Globals.IS_IN_GAME && Mathf.Abs(Time.time - clickTime) > 1f && !longClick) {
+            longClick = true;
+            clickTime = Time.time;
+            DisplayInfo();
+        }
+    }
+
+    private void DisplayInfo() {
+        GameManager.Instance.DisplayInfo(this);
+        longClick = false;
     }
 
     protected void OnMouseUp() {

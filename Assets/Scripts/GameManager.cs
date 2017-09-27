@@ -66,7 +66,7 @@ public class GameManager : Singleton<GameManager> {
         if(MultiPlayerManager.Instance.IsMyTurn) {
             yield return new WaitForSeconds(1);
             currentTurnSecondsLeft -= 1;
-            if(currentTurnSecondsLeft < 10) {
+            if(currentTurnSecondsLeft < 11 && currentTurnSecondsLeft > -1) {
                 if(currentTurnSecondsLeft % 2 != 0) {
                     SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ClockTickOne);
                 }
@@ -117,13 +117,7 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void PassTurn(Tile oldTile = null, Tile newTile = null) {
-        StartCoroutine(PassTurnAfterTwoSecs(oldTile, newTile));
-
-    }
-
-    private IEnumerator PassTurnAfterTwoSecs(Tile oldTile = null, Tile newTile = null) {
-        if(!Globals.IS_SINGLE_PLAYER)
-            yield return new WaitForSeconds(1f);
+        //StartCoroutine(PassTurnAfterTwoSecs(oldTile, newTile));
         ChangeTurn();
         if(Globals.IS_SINGLE_PLAYER) {
             if(CURRENT_TURN == pcSide && !isPcPlaying) {
@@ -137,7 +131,26 @@ public class GameManager : Singleton<GameManager> {
         else {  //game is multiplayer
             MultiPlayerManager.Instance.SendMove(oldTile, newTile);
         }
+
     }
+
+    //private IEnumerator PassTurnAfterTwoSecs(Tile oldTile = null, Tile newTile = null) {
+    //    if(!Globals.IS_SINGLE_PLAYER)
+    //        yield return new WaitForSeconds(1f);
+    //    ChangeTurn();
+    //    if(Globals.IS_SINGLE_PLAYER) {
+    //        if(CURRENT_TURN == pcSide && !isPcPlaying) {
+    //            isPcPlaying = true;
+    //            StartCoroutine(SoldierManager.Instance.MakeRandomMove());
+    //        }
+    //        else {
+    //            isPcPlaying = false;
+    //        }
+    //    }
+    //    else {  //game is multiplayer
+    //        MultiPlayerManager.Instance.SendMove(oldTile, newTile);
+    //    }
+    //}
 
     public void ChangeTurn() {
         CURRENT_TURN = CURRENT_TURN == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
@@ -295,5 +308,9 @@ public class GameManager : Singleton<GameManager> {
             GameView.SetText("MsgWinner", "");
             Globals.Instance.UnityObjects["WinWindow"].SetActive(false);
         }
+    }
+
+    public void DisplayInfo(PlayerSoldier soldier) {
+
     }
 }
