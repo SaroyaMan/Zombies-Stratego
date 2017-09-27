@@ -22,9 +22,9 @@ public class GameManager : Singleton<GameManager> {
 
     private void Start() {
         Globals.IS_IN_GAME = true;
-        if(Globals.IS_SINGLE_PLAYER) {
-            MultiPlayerManager.Instance.gameObject.SetActive(false);
-        }
+        //if(Globals.IS_SINGLE_PLAYER) {
+        //    MultiPlayerManager.Instance.gameObject.SetActive(false);
+        //}
         InitGame();
         ShutdownScreens();
     }
@@ -39,7 +39,6 @@ public class GameManager : Singleton<GameManager> {
             totalSoldiersLocalSide = SoldierManager.Instance.LocalPlayerList.Count - 1;
             totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
             CURRENT_TURN = (GameSide) Random.Range(0, 2);
-
             SoldierManager.Instance.HideAllSoldiers();
             UpdateStats();
             PassTurn();
@@ -50,7 +49,34 @@ public class GameManager : Singleton<GameManager> {
             totalSoldiersEnemySide = SoldierManager.Instance.EnemyList.Count - 1;
             UpdateStats();
 
-            Globals.Instance.UnityObjects["PauseBtn"].SetActive(false);
+            Globals.Instance.UnityObjects["ResetBtn"].SetActive(false);
+            GameView.DisableButton("ResetWinBtn");
+        }
+        UpdateTitles();
+    }
+
+    private void UpdateTitles() {
+        if(Globals.IS_SINGLE_PLAYER) {
+            GameView.SetText("TitleGame", "Single Player");
+            if(pcSide == GameSide.LeftSide) {
+                GameView.SetText("LeftSideNameTxt", "PC");
+                GameView.SetText("RightSideNameTxt", PlayerPrefs.GetString("Username", "No-Name"));
+            }
+            else {
+                GameView.SetText("LeftSideNameTxt", PlayerPrefs.GetString("Username", "No-Name"));
+                GameView.SetText("RightSideNameTxt", "PC");
+            }
+        }
+        else {
+            GameView.SetText("TitleGame", "Multi Player");
+            if(MultiPlayerManager.Instance.PlayerSide == GameSide.LeftSide) {
+                GameView.SetText("LeftSideNameTxt", PlayerPrefs.GetString("Username", "No-Name"));
+                GameView.SetText("RightSideNameTxt", MultiPlayerManager.Instance.RealEnemyUsername);
+            }
+            else {
+                GameView.SetText("LeftSideNameTxt", MultiPlayerManager.Instance.RealEnemyUsername);
+                GameView.SetText("RightSideNameTxt", PlayerPrefs.GetString("Username", "No-Name"));
+            }
         }
     }
 
@@ -207,6 +233,9 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void QuitGame() {
+        if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
+            MultiPlayerManager.Instance.SendGameQuit(MultiPlayerManager.ParseUsername(MultiPlayerManager.Instance.Username) + " gave up");
+        }
         Destroy(SoldierManager.Instance.gameObject);
         Destroy(SoundManager.Instance.gameObject);
         Destroy(TileManager.Instance.gameObject);

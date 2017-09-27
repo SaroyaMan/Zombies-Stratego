@@ -285,6 +285,9 @@ namespace AssemblyCSharp
 		public void onUserLeftRoom (RoomData eventObj, string username)
 		{
 			Debug.Log ("onUserLeftRoom : " + username);
+            if(username == MultiPlayerManager.Instance.Username) {
+
+            }
 		}
 		
 		public void onUserJoinedRoom (RoomData eventObj, string username)

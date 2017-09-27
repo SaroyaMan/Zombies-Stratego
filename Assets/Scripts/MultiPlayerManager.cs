@@ -12,6 +12,8 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
 
     private Listener listener;
     private string username = string.Empty;
+    private string realUsername = string.Empty;
+    private string realEnemyUsername = string.Empty;
     private List<string> rooms;
     private int index = 0;
 
@@ -23,6 +25,8 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
 
     public GameSide PlayerSide { get { return playerSide; } }
     public bool IsMyTurn { get { return isMyTurn; } }
+    public string Username { get { return username; } }
+    public string RealEnemyUsername { get { return realEnemyUsername; } }
     public Dictionary<string, object> Data { get { return data; } set { data = value; } }
 
     private void Awake() {
@@ -36,7 +40,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
         data = new Dictionary<string, object> {
             { "Password", "12345" }
         };
-
         WarpClient.initialize(Globals.API_KEY, Globals.SECRET_KEY);
         WarpClient.GetInstance().AddConnectionRequestListener(listener);
         WarpClient.GetInstance().AddChatRequestListener(listener);
@@ -52,9 +55,9 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
 
     public void ConnectGame() {
         GameView.SetText("StatusTxt", "Connecting...");
-
+        realUsername = PlayerPrefs.GetString("Username", "No-Name");
+        username = realUsername + "#" + username;
         data["HomePlayer" + username] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray());
-
         WarpClient.GetInstance().Connect(username);
         //WarpClient.GetInstance().GetRoomsInRange(1, 2);
     }
@@ -162,13 +165,13 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
 
     private void OnUserJoinRoomOccured(RoomData eventObj, string _UserName) {
         Debug.Log("OnUserJoinRoom " + " " + _UserName);
-        GameView.SetText("StatusTxt", "User " + _UserName + " Joined Room!");
+        GameView.SetText("StatusTxt", "User " + ParseUsername(_UserName) + " Joined Room!");
         if(_UserName != eventObj.getRoomOwner()) {
             //int randTurn = Random.Range(0, 2);
             //string firstPlayer = string.Empty;
             //firstPlayer = randTurn == 0 ? username : _UserName;
             //WarpClient.GetInstance().startGame(true, firstPlayer);
-
+            realEnemyUsername = ParseUsername(_UserName);
             WarpClient.GetInstance().startGame();
         }
     }
@@ -182,8 +185,12 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     public void OnGameStartedOccured(string _Sender, string _RoomId, string _NextTurn) {
 
         Debug.Log("OnGameStartedOccured: " + _Sender + " " + _RoomId + " " + _NextTurn);
+        if(_Sender != username) {
+            realEnemyUsername = ParseUsername(_Sender);
+        }
 
         currentUsernameTurn = _NextTurn;
+        ParseUsername(_NextTurn);
         GameManager.CURRENT_TURN = GameSide.LeftSide;
         if(currentUsernameTurn == username) {
             playerSide = GameSide.LeftSide;
@@ -191,7 +198,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             var awaySoldiers = MiniJSON.Json.Deserialize(data["AwayPlayer"].ToString()) as List<object>;
             SoldierManager.Instance.InitEnemyBoard(awaySoldiers);
             WarpClient.GetInstance().SetNextTurn(username);
-            //SendMove(TileManager.Instance.MatrixTiles[0, 0], TileManager.Instance.MatrixTiles[0, 1]);
         }
         else {
             playerSide = GameSide.RightSide;
@@ -203,9 +209,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
         SoldierManager.Instance.HideAllSoldiers();
 
         SwitchToGameScene();
-
-        //Works HERE Perefect, and even in the if-else blocks
-        //SendMove(TileManager.Instance.MatrixTiles[0, 0], TileManager.Instance.MatrixTiles[0, 1]);
     }
 
     public void SendMove(Tile oldTile, Tile newTile) {
@@ -275,11 +278,19 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
         return listOfSoldiers;
     }
 
+    public static string ParseUsername(string username) {
+        return username.Remove(username.IndexOf('#'));
+    }
+
     private void OnApplicationQuit() {
         if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
-            SendGameQuit(username + " gave up");
+            SendGameQuit(realUsername + " gave up");
         }
         WarpClient.GetInstance().Disconnect();
     }
 
+    private void OnDestroy() {
+        WarpClient.GetInstance().Disconnect();
+        Destroy(WarpClient.GetInstance());
+    }
 }
