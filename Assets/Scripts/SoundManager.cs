@@ -22,6 +22,8 @@ public class SoundManager : Singleton<SoundManager> {
     [SerializeField] private AudioClip zombieDie;
     [SerializeField] private AudioClip zombieAttack;
     [SerializeField] private AudioClip zombieCancelBomb;
+    [SerializeField] private AudioClip clockTickOne;
+    [SerializeField] private AudioClip clockTickTwo;
 
 
     [SerializeField] private AudioClip inGameMusic;
@@ -41,7 +43,8 @@ public class SoundManager : Singleton<SoundManager> {
     public AudioClip ZombieDie { get { return zombieDie; } }
     public AudioClip ZombieAttack { get { return zombieAttack; } }
     public AudioClip ZombieCancelBomb { get { return zombieCancelBomb; } }
-
+    public AudioClip ClockTickOne { get { return clockTickOne; } }
+    public AudioClip ClockTickTwo { get { return clockTickTwo; } }
 
     private void Awake() {
         DontDestroyOnLoad(this);

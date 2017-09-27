@@ -25,6 +25,7 @@ public class Globals : Singleton<Globals> {
     public const int COLUMNS = 16;
     public const int MIN_PRICE = 1;
     public const int MAX_BOMBS = 6;
+    public const int MAX_TURN_TIME = 30;
     public const string GITHUB_PROFILE_URL = "https://github.com/SaroyaMan";
     public const string CV_URL = "https://drive.google.com/file/d/0B8BaWfqNelVKTjEwRHFnSkVXMnM/view";
 

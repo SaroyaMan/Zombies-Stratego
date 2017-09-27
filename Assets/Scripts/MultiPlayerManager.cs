@@ -26,6 +26,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     public GameSide PlayerSide { get { return playerSide; } }
     public bool IsMyTurn { get { return isMyTurn; } }
     public string Username { get { return username; } }
+    public string RealUsername { get { return realUsername; } }
     public string RealEnemyUsername { get { return realEnemyUsername; } }
     public Dictionary<string, object> Data { get { return data; } set { data = value; } }
 
@@ -110,11 +111,10 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             }
             else {
                 Debug.Log("No rooms were availible, create a room");
-                WarpClient.GetInstance().CreateTurnRoom("Room Name", username, 2, data, 10);
+                WarpClient.GetInstance().CreateTurnRoom(username, username, 2, data, 100);
             }
         }
         else {
-            //GameObject.Find("Btn_Play").GetComponent<Button>().interactable = true;
             Debug.Log("OnRoomsInRangeOccured: connection failed!");
         }
     }
@@ -155,7 +155,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             else {
                 Debug.Log("No rooms were availible, create a room");
 
-                WarpClient.GetInstance().CreateTurnRoom("Room Name", username, 2, null, 60);
+                WarpClient.GetInstance().CreateTurnRoom("Room Name", username, 2, null, 30);
 
                 data["HomePlayer" + username] = MiniJSON.Json.Serialize(GetLocalSoldiers().ToArray());
                 WarpClient.GetInstance().UpdateRoomProperties(rooms[index], data, null);
@@ -197,7 +197,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             isMyTurn = true;
             var awaySoldiers = MiniJSON.Json.Deserialize(data["AwayPlayer"].ToString()) as List<object>;
             SoldierManager.Instance.InitEnemyBoard(awaySoldiers);
-            WarpClient.GetInstance().SetNextTurn(username);
         }
         else {
             playerSide = GameSide.RightSide;
@@ -207,7 +206,6 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
             SoldierManager.Instance.FlipSide();
         }
         SoldierManager.Instance.HideAllSoldiers();
-
         SwitchToGameScene();
     }
 
@@ -237,25 +235,27 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     }
 
     public void OnMoveCompletedOccured(MoveEvent _Move) {
-        //Debug.LogError("OnMoveComplete Occured");
-        //Debug.LogError("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
+        Debug.LogError("OnMoveComplete Occured");
+        Debug.LogError("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
         if(_Move.getSender() != username && _Move.getMoveData() != null) {
             Dictionary<string, object> recievedData = MiniJSON.Json.Deserialize(_Move.getMoveData()) as Dictionary<string, object>;
-            if(recievedData != null) {
+            if(recievedData != null && !GameManager.Instance.IsGameOver) {
                 if(recievedData.ContainsKey("oldTileRow")) {
                     var matrixTile = TileManager.Instance.MatrixTiles;
                     Tile oldTile = matrixTile[int.Parse(recievedData["oldTileRow"].ToString()), int.Parse(recievedData["oldTileColumn"].ToString())];
                     Tile newTile = matrixTile[int.Parse(recievedData["newTileRow"].ToString()), int.Parse(recievedData["newTileColumn"].ToString())];
                     var zombie = oldTile.Soldier as Zombie;
                     SoldierManager.Instance.MakeEnemyMove(zombie, newTile);
+
+                    currentUsernameTurn = _Move.getNextTurn();
+                    isMyTurn = (_Move.getNextTurn() == username);
+                    StartCoroutine(GameManager.Instance.CountTime());
                 }
                 else if(recievedData.ContainsKey("GameQuit")) {
                     GameManager.Instance.WinGame(PlayerSide, recievedData["GameQuit"].ToString());
                 }
             }
         }
-        currentUsernameTurn = _Move.getNextTurn();
-        isMyTurn = (_Move.getNextTurn() == username);
     }
 
     public void OnGameStoppedOccured(string _Sender, string _RoomId) {

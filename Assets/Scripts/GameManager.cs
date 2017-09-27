@@ -10,21 +10,26 @@ public class GameManager : Singleton<GameManager> {
 
     private bool isPcPlaying;
     private bool isPaused;
+    private bool isGameOver;
     public static GameSide CURRENT_TURN;
     private GameSide pcSide = GameSide.RightSide;
     private int totalSoldiersLocalSide, totalSoldiersEnemySide;
     private GameScreens prevScreen, currentScreen;
 
+    private int currentTurnSecondsLeft = Globals.MAX_TURN_TIME;
+
     public bool IsPcPlaying { get { return isPcPlaying; } }
     //public GameSide CurrentTurn { get { return currentTurn; } set { currentTurn = value; } }
     public GameSide PcSide { get { return pcSide; } set { pcSide = value; } }
     public bool IsPaused { get { return isPaused; } }
+    public bool IsGameOver { get { return isGameOver; } }
 
     private void Start() {
         Globals.IS_IN_GAME = true;
-        //if(Globals.IS_SINGLE_PLAYER) {
-        //    MultiPlayerManager.Instance.gameObject.SetActive(false);
-        //}
+        if(Globals.IS_SINGLE_PLAYER) {
+            Globals.Instance.UnityObjects["ClockDisplay"].SetActive(false);
+            //MultiPlayerManager.Instance.gameObject.SetActive(false);
+        }
         InitGame();
         ShutdownScreens();
     }
@@ -51,8 +56,39 @@ public class GameManager : Singleton<GameManager> {
 
             Globals.Instance.UnityObjects["ResetBtn"].SetActive(false);
             GameView.DisableButton("ResetWinBtn");
+
+            StartCoroutine(CountTime());
         }
         UpdateTitles();
+    }
+
+    public IEnumerator CountTime() {
+        if(MultiPlayerManager.Instance.IsMyTurn) {
+            yield return new WaitForSeconds(1);
+            currentTurnSecondsLeft -= 1;
+            if(currentTurnSecondsLeft < 10) {
+                if(currentTurnSecondsLeft % 2 != 0) {
+                    SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ClockTickOne);
+                }
+                else {
+                    SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ClockTickTwo);
+                }
+            }
+            if(currentTurnSecondsLeft == -1) {
+                WinGame(MultiPlayerManager.Instance.PlayerSide == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide, "You didn't make a move!");
+                MultiPlayerManager.Instance.SendGameQuit(MultiPlayerManager.Instance.RealUsername + "'s turn time is over");
+                yield return null;
+            }
+            else {
+                GameView.SetText("ClockTimeTxt", currentTurnSecondsLeft.ToString());
+                yield return CountTime();
+            }
+        }
+        else {
+            currentTurnSecondsLeft = Globals.MAX_TURN_TIME;
+            GameView.SetText("ClockTimeTxt", currentTurnSecondsLeft.ToString());
+            yield return null;
+        }
     }
 
     private void UpdateTitles() {
@@ -70,12 +106,12 @@ public class GameManager : Singleton<GameManager> {
         else {
             GameView.SetText("TitleGame", "Multi Player");
             if(MultiPlayerManager.Instance.PlayerSide == GameSide.LeftSide) {
-                GameView.SetText("LeftSideNameTxt", PlayerPrefs.GetString("Username", "No-Name"));
+                GameView.SetText("LeftSideNameTxt", MultiPlayerManager.Instance.RealUsername);
                 GameView.SetText("RightSideNameTxt", MultiPlayerManager.Instance.RealEnemyUsername);
             }
             else {
                 GameView.SetText("LeftSideNameTxt", MultiPlayerManager.Instance.RealEnemyUsername);
-                GameView.SetText("RightSideNameTxt", PlayerPrefs.GetString("Username", "No-Name"));
+                GameView.SetText("RightSideNameTxt", MultiPlayerManager.Instance.RealUsername);
             }
         }
     }
@@ -140,6 +176,7 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void WinGame(GameSide winSide, string msg = null) {
+        isGameOver = true;
         SoldierManager.Instance.CoverAllSoldiers();
         Globals.Instance.UnityObjects["WinWindow"].SetActive(true);
         if(Globals.IS_SINGLE_PLAYER && pcSide != winSide || !Globals.IS_SINGLE_PLAYER && winSide == MultiPlayerManager.Instance.PlayerSide) {
