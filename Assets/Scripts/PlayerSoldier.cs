@@ -6,9 +6,10 @@ public abstract class PlayerSoldier: MonoBehaviour {
     [SerializeField] private int price;
     [SerializeField] protected float offset_x;
     [SerializeField] protected float offset_y;
+    [SerializeField] protected string soldierName;
 
     private StrategyEditor strategyEditor;
-    private SpriteRenderer spriteRenderer;
+    protected SpriteRenderer spriteRenderer;
     private Color blueColor = new Color(0, 0, 1, 0.6f);
     private Color redColor = new Color(1, 0, 0, 0.6f);
     private Color defaultColor = new Color(1, 1, 1, 1);
@@ -20,9 +21,9 @@ public abstract class PlayerSoldier: MonoBehaviour {
     protected RuntimeAnimatorController originAnim;
     protected PolygonCollider2D playerCollider;
     protected bool isHidden;
+    protected Sprite sprite;
 
     private float clickTime;
-    private bool longClick;
 
     public short Rank { get { return rank; } }
     public int Price { get { return price; } }
@@ -35,6 +36,8 @@ public abstract class PlayerSoldier: MonoBehaviour {
 
     public PolygonCollider2D PlayerCollider { get { return playerCollider; } }
     public Vector3 OriginPosition { get { return originPosition; } }
+    public Sprite Sprite { get { return sprite; } }
+    public string SoldierName { get { return soldierName; } }
 
     public abstract void SoldierPlacedInEditMode(bool isSoundActivated);
     public abstract void MakeNoise();
@@ -44,6 +47,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
         originAnim = anim.runtimeAnimatorController;
         playerCollider = GetComponent<PolygonCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        sprite = spriteRenderer.sprite;
         strategyEditor = StrategyEditor.Instance;
         originOffsetX = offset_x;
         originOffsetY = offset_y;
@@ -72,16 +76,19 @@ public abstract class PlayerSoldier: MonoBehaviour {
             var mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
         }
-        else if(Globals.IS_IN_GAME && Mathf.Abs(Time.time - clickTime) > 1f && !longClick) {
-            longClick = true;
+        else if(!isHidden && Globals.IS_IN_GAME && Mathf.Abs(Time.time - clickTime) > .3f && !GameManager.Instance.IsDescriptionOpen) {
             clickTime = Time.time;
             DisplayInfo();
         }
     }
 
     private void DisplayInfo() {
-        GameManager.Instance.DisplayInfo(this);
-        longClick = false;
+        StartCoroutine(GameManager.Instance.DisplayInfo(this));
+    }
+
+    private void OnDestroy() {
+        if(Globals.IS_IN_GAME)
+            GameManager.Instance.CloseInfo();
     }
 
     protected void OnMouseUp() {

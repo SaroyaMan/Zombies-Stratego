@@ -81,7 +81,6 @@ namespace AssemblyCSharp
 		
 		public void onDisconnectDone(ConnectEvent eventObj)
 		{
-			Debug.Log("onDisconnectDone : " + eventObj.getResult());
 			if (eventObj.getResult() == 0 && OnDisconnect != null)
 				OnDisconnect (true);
 			else if (OnDisconnect != null)

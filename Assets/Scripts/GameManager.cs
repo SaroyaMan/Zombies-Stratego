@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager> {
 
@@ -11,10 +12,12 @@ public class GameManager : Singleton<GameManager> {
     private bool isPcPlaying;
     private bool isPaused;
     private bool isGameOver;
+    private bool isDescriptionOpen;
     public static GameSide CURRENT_TURN;
     private GameSide pcSide = GameSide.RightSide;
     private int totalSoldiersLocalSide, totalSoldiersEnemySide;
     private GameScreens prevScreen, currentScreen;
+    private GameObject cloudInfo;
 
     private int currentTurnSecondsLeft = Globals.MAX_TURN_TIME;
 
@@ -23,9 +26,11 @@ public class GameManager : Singleton<GameManager> {
     public GameSide PcSide { get { return pcSide; } set { pcSide = value; } }
     public bool IsPaused { get { return isPaused; } }
     public bool IsGameOver { get { return isGameOver; } }
+    public bool IsDescriptionOpen { get { return isDescriptionOpen; } }
 
     private void Start() {
         Globals.IS_IN_GAME = true;
+        cloudInfo = Globals.Instance.UnityObjects["InfoBubble"];
         if(Globals.IS_SINGLE_PLAYER) {
             Globals.Instance.UnityObjects["ClockDisplay"].SetActive(false);
             //MultiPlayerManager.Instance.gameObject.SetActive(false);
@@ -59,6 +64,7 @@ public class GameManager : Singleton<GameManager> {
 
             StartCoroutine(CountTime());
         }
+        cloudInfo.SetActive(false);
         UpdateTitles();
     }
 
@@ -226,6 +232,7 @@ public class GameManager : Singleton<GameManager> {
     private void ShutdownScreens() {
         Globals.Instance.UnityObjects["PauseWindow"].SetActive(false);
         Globals.Instance.UnityObjects["WinWindow"].SetActive(false);
+        Globals.Instance.UnityObjects["InfoBubble"].SetActive(false);
     }
 
     public void ChangeGameState(GameScreens newScreen) {
@@ -310,7 +317,34 @@ public class GameManager : Singleton<GameManager> {
         }
     }
 
-    public void DisplayInfo(PlayerSoldier soldier) {
+    public IEnumerator DisplayInfo(PlayerSoldier soldier) {
+        GameView.SetImage("SoldierImg", soldier.Sprite);
+        GameView.SetText("RankInfoTxt", soldier.Rank.ToString());
+        GameView.SetText("InfoTitleTxt", soldier.SoldierName);
+        //cloudInfo.transform.position = soldier.transform.position;
+        cloudInfo.transform.position = new Vector2(Input.mousePosition.x + (soldier.CurrentSide == GameSide.LeftSide ? 70 : -70), Input.mousePosition.y);
+        SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.Description);
+        isDescriptionOpen = true;
+        cloudInfo.SetActive(true);
 
+        yield return new WaitForSeconds(3f);
+        CloseInfo();
+    }
+
+    public void CloseInfo() {
+        if(IsDescriptionOpen) {
+            cloudInfo.SetActive(false);
+            isDescriptionOpen = false;
+        }
+    }
+
+    public static Vector3 GetScreenPosition(Transform transform, Canvas canvas, Camera cam) {
+        Vector3 pos;
+        float width = canvas.GetComponent<RectTransform>().sizeDelta.x;
+        float height = canvas.GetComponent<RectTransform>().sizeDelta.y;
+        float x = Camera.main.WorldToScreenPoint(transform.position).x / Screen.width;
+        float y = Camera.main.WorldToScreenPoint(transform.position).y / Screen.height;
+        pos = new Vector3(width * x - width / 2, y * height - height / 2);
+        return pos;
     }
 }
