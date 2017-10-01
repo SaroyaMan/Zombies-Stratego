@@ -209,6 +209,7 @@ public class GameManager : Singleton<GameManager> {
         if(msg != null) {
             GameView.SetText("MsgWinner", msg);
         }
+        GameManager.Instance.CloseInfo();
         SoundManager.Instance.Music.Stop();
         GameView.MakeScreenDark();
         isPaused = true;

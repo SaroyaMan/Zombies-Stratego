@@ -226,6 +226,7 @@ public class Zombie: PlayerSoldier {
             yield return new WaitForSeconds(3f);
 
             GameManager.Instance.CheckWin(CurrentSide);
+            GameManager.Instance.CloseInfo();
             Destroy(gameObject);
         }
 

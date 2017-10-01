@@ -14,7 +14,7 @@ public class Bomb : PlayerSoldier {
         else
             SoldierManager.Instance.LocalPlayerList.Remove(this);
         GameManager.Instance.UpdateStats();
-
+        GameManager.Instance.CloseInfo();
         Destroy(gameObject);
     }
 

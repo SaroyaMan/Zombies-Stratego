@@ -7,6 +7,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
     [SerializeField] protected float offset_x;
     [SerializeField] protected float offset_y;
     [SerializeField] protected string soldierName;
+    [SerializeField] protected string description;
 
     private StrategyEditor strategyEditor;
     protected SpriteRenderer spriteRenderer;
@@ -71,24 +72,15 @@ public abstract class PlayerSoldier: MonoBehaviour {
         }
     }
 
-    protected void OnMouseDrag() {
+    protected void OnMouseDrag() {      //Use for dragging in edit mode, and also for long click during the game
         if(strategyEditor != null && strategyEditor.PlayerBtnPressed == null && StrategyEditor.IsInEdit) {
             var mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
             transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
         }
         else if(!isHidden && Globals.IS_IN_GAME && Mathf.Abs(Time.time - clickTime) > .3f && !GameManager.Instance.IsDescriptionOpen) {
             clickTime = Time.time;
-            DisplayInfo();
+            StartCoroutine(GameManager.Instance.DisplayInfo(this));
         }
-    }
-
-    private void DisplayInfo() {
-        StartCoroutine(GameManager.Instance.DisplayInfo(this));
-    }
-
-    private void OnDestroy() {
-        if(Globals.IS_IN_GAME)
-            GameManager.Instance.CloseInfo();
     }
 
     protected void OnMouseUp() {
