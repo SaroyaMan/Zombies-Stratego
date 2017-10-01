@@ -8,6 +8,7 @@ public class StrategyEditor: Singleton<StrategyEditor> {
     private SpriteRenderer spriteRenderer;
     public static bool IsInEdit;
     public static int NumOfBombs;
+    public static int NumOfSappers;
     public static bool HasFlag;
 
     private void Start() {
@@ -22,8 +23,6 @@ public class StrategyEditor: Singleton<StrategyEditor> {
             RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
             if(hit.collider != null && hit.collider.tag == "BuildTile") {   //Check if user clicked on build site
                 if(!EventSystem.current.IsPointerOverGameObject() && PlayerBtnPressed != null) {
-                    //SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieBought);
-                    
                     Tile tile = hit.transform.gameObject.GetComponent<Tile>();
                     PlaceSoldier(tile, PlayerBtnPressed.SoldierObject);
                     DisableDragSprite();
@@ -100,6 +99,10 @@ public class StrategyEditor: Singleton<StrategyEditor> {
             if(soldier is Bomb) {
                 NumOfBombs--;
                 GameView.EnableButton("Btn_Bomb");
+            }
+            else if(soldier.Rank == Globals.RANK_OF_SAPPER) {
+                NumOfSappers--;
+                GameView.EnableButton("Btn_Zombie9");
             }
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.SoldierSold);
             Destroy(soldier.gameObject);

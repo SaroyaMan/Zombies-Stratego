@@ -173,12 +173,12 @@ public class Zombie: PlayerSoldier {
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
         GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
-        StartCoroutine(bomb.Explode());
+        StartCoroutine(bomb.Explode(Rank != Globals.RANK_OF_SAPPER));
         yield return new WaitForSeconds(1f);
-        isDieRunning = true;
-        StartCoroutine(Die());
-
-        yield return null;
+        if(Rank != Globals.RANK_OF_SAPPER) {
+            isDieRunning = true;
+            StartCoroutine(Die());
+        }
     }
 
     private IEnumerator Kill(Zombie enemy) {
@@ -187,7 +187,7 @@ public class Zombie: PlayerSoldier {
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
-        if(Rank > enemy.Rank) {         //kill enemy
+        if(Rank > enemy.Rank || Rank == 1 && enemy.Rank >= 13 || Rank == 2 && enemy.Rank >= 14 || Rank == 3 && enemy.Rank == 15 ) {         //kill enemy
             CurrentTile.Soldier = this;
             enemy.isDieRunning = true;
             StartCoroutine(enemy.Die());
@@ -242,6 +242,9 @@ public class Zombie: PlayerSoldier {
     public override void SoldierPlacedInEditMode(bool isSoundActivated) {
         if(isSoundActivated)
             MakeNoise();
+        if(Rank == Globals.RANK_OF_SAPPER && ++StrategyEditor.NumOfSappers == Globals.MAX_SAPPERS) {
+            GameView.DisableButton("Btn_Zombie9");
+        }
     }
 
     public override void MakeNoise() {
