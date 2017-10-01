@@ -32,6 +32,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public float OffsetY { get { return offset_y; } }
     public Tile CurrentTile { get; set; }
     public GameSide CurrentSide { get; set; }
+    public bool IsHidden { get { return isHidden; } }
     public Animator Anim { get { return anim; } set { anim = value; } }
     public RuntimeAnimatorController OriginAnim { get { return originAnim; } set { originAnim = value; } }
 

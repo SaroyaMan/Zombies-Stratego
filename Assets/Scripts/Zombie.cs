@@ -45,6 +45,7 @@ public class Zombie: PlayerSoldier {
             if(!isGridMarked && !isDying) {
                 SoldierManager.Instance.MarkSelectedSoldier(this);
                 MarkAvailableTilesToStep();
+                SoldierManager.Instance.MarkEnemyTiles();
             }
             else {
                 UnMarkAvailableTilesToStep();
@@ -75,6 +76,7 @@ public class Zombie: PlayerSoldier {
                 tile.UnReadyToStep(this);
             }
             tilesToStep = null;
+            SoldierManager.Instance.UnMarkEnemyTiles();
         }
     }
 

@@ -8,6 +8,9 @@ public class Tile: MonoBehaviour {
     private Color markColor = new Color(0.929f, 0.850f, 0.670f);
     private Color defaultColor = new Color(1.0f, 1.0f, 1.0f);
 
+    private Color blueColor = new Color(0, 0, 1, 0.6f);
+    private Color redColor = new Color(0.615f, 0.027f, 0.054f, 0.7f);
+
     private SpriteRenderer spriteRenderer;
     public bool isReadyToStep;
     private PlayerSoldier soldier;
@@ -57,11 +60,17 @@ public class Tile: MonoBehaviour {
         spriteRenderer.color = defaultColor;
     }
 
+    public void MarkSoldierSide() {
+        if(spriteRenderer.color != markColor)
+            spriteRenderer.color = soldier.CurrentSide == GameSide.LeftSide ? blueColor : redColor;
+    }
+
     public void ReadyToStep(PlayerSoldier zombie, bool isPc = false) {
         isReadyToStep = true;
         if(!isPc) ColorTile();
-        if(soldier == null || !soldier.IsEnemy(zombie))
+        if(soldier == null || !soldier.IsEnemy(zombie)) {
             soldier = zombie;
+        }
         else {
             attackingZombie = zombie as Zombie;
         }
