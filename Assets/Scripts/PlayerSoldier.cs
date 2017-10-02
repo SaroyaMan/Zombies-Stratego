@@ -2,7 +2,7 @@
 
 public abstract class PlayerSoldier: MonoBehaviour {
 
-    [SerializeField] private short rank;
+    [SerializeField] protected short rank;
     [SerializeField] private int price;
     [SerializeField] protected float offset_x;
     [SerializeField] protected float offset_y;

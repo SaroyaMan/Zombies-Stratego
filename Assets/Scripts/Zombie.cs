@@ -184,17 +184,24 @@ public class Zombie: PlayerSoldier {
     }
 
     private IEnumerator Kill(Zombie enemy) {
+        bool isCopycat = false;
+        if(Rank == Globals.RANK_OF_COPYCAT) {
+            rank = (short) Random.Range(0, 16);
+            isCopycat = true;
+        }
+
         anim.Play("Attack");
         enemy.Anim.Play("Attack");
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
-        if(Rank > enemy.Rank || Rank == 1 && enemy.Rank >= 13 || Rank == 2 && enemy.Rank >= 14 || Rank == 3 && enemy.Rank == 15 ) {         //kill enemy
+        if(Rank > enemy.Rank || !isCopycat && (Rank == 1 && enemy.Rank >= 13 || Rank == 2 && enemy.Rank >= 14 || Rank == 3 && enemy.Rank == 15 )) {         //kill enemy
+            if(isCopycat) rank = Globals.RANK_OF_COPYCAT;
             CurrentTile.Soldier = this;
             enemy.isDieRunning = true;
             StartCoroutine(enemy.Die());
         }
-        else if(Rank < enemy.Rank) {    //kill this zombie
+        else if(Rank < enemy.Rank || enemy.Rank == 1 && Rank >= 13 || enemy.Rank == 2 && Rank >= 14 || enemy.Rank == 3 && Rank == 15) {    //kill this zombie
             enemy.Anim.Play("Idle");
             enemy.gameObject.tag = "Zombie";
             enemy.CurrentTile.Soldier = enemy;
