@@ -29,6 +29,7 @@ public class Globals : Singleton<Globals> {
     public const int MAX_TURN_TIME = 30;
     public const int RANK_OF_SAPPER = 9;
     public const int RANK_OF_COPYCAT = 11;
+    public const int RANK_OF_EXPLODER = 6;
     public const string GITHUB_PROFILE_URL = "https://github.com/SaroyaMan";
     public const string CV_URL = "https://drive.google.com/file/d/0B8BaWfqNelVKTjEwRHFnSkVXMnM/view";
 

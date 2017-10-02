@@ -36,6 +36,7 @@ public class GameManager : Singleton<GameManager> {
             //MultiPlayerManager.Instance.gameObject.SetActive(false);
         }
         InitGame();
+        //Globals.Instance.UnityObjects["Smoke"].SetActive(false);
         ShutdownScreens();
     }
 

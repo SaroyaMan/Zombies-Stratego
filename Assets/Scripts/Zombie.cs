@@ -14,6 +14,7 @@ public class Zombie: PlayerSoldier {
     private bool isWalking;
     private bool isInWar;
     private bool isDying;
+    private bool isExploder;
     private Vector2 destination;
 
     public bool IsDying { get { return isDying; } }
@@ -188,6 +189,13 @@ public class Zombie: PlayerSoldier {
         if(Rank == Globals.RANK_OF_COPYCAT) {
             rank = (short) Random.Range(0, 16);
             isCopycat = true;
+            Globals.Instance.UnityObjects["Smoke"].transform.position = new Vector2(transform.position.x, transform.position.y - 1);
+            Globals.Instance.UnityObjects["Smoke"].GetComponent<ParticleSystem>().Play();
+            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.Copycat);
+        }
+        if(enemy.Rank == Globals.RANK_OF_EXPLODER) {
+            enemy.rank = Rank;
+            enemy.isExploder = true;
         }
 
         anim.Play("Attack");
@@ -195,6 +203,7 @@ public class Zombie: PlayerSoldier {
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
+
         if(Rank > enemy.Rank || !isCopycat && (Rank == 1 && enemy.Rank >= 13 || Rank == 2 && enemy.Rank >= 14 || Rank == 3 && enemy.Rank == 15 )) {         //kill enemy
             if(isCopycat) rank = Globals.RANK_OF_COPYCAT;
             CurrentTile.Soldier = this;
@@ -223,9 +232,15 @@ public class Zombie: PlayerSoldier {
         if(isDieRunning) {
             isDieRunning = false;
             isDying = true;
-            GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
-            Anim.Play("Die");
-            SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
+            if(isExploder) {
+                Anim.Play("Exploding");
+                SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.BombExplode);
+            }
+            else {
+                GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
+                Anim.Play("Die");
+                SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
+            }
             transform.parent = null;
             if(Globals.IS_SINGLE_PLAYER && CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != CurrentSide)
                 SoldierManager.Instance.EnemyList.Remove(this);
