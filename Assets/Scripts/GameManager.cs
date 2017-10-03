@@ -312,6 +312,8 @@ public class GameManager : Singleton<GameManager> {
         GameView.SetImage("SoldierImg", soldier.Sprite);
         GameView.SetText("RankInfoTxt", soldier.Rank.ToString());
         GameView.SetText("InfoTitleTxt", soldier.SoldierName);
+        GameView.SetText("DescriptionInfoTxt", soldier.Description);
+        GameView.SetText("SpecialAbilityTxt", soldier.SpecialAbilityDescription);
         //cloudInfo.transform.position = soldier.transform.position;
         cloudInfo.transform.position = new Vector2(Input.mousePosition.x + (soldier.CurrentSide == GameSide.LeftSide ? 70 : -70), Input.mousePosition.y);
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.Description);

@@ -8,6 +8,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
     [SerializeField] protected float offset_y;
     [SerializeField] protected string soldierName;
     [SerializeField] protected string description;
+    [SerializeField] protected string specialAbilityDescription;
 
     private StrategyEditor strategyEditor;
     protected SpriteRenderer spriteRenderer;
@@ -40,6 +41,8 @@ public abstract class PlayerSoldier: MonoBehaviour {
     public Vector3 OriginPosition { get { return originPosition; } }
     public Sprite Sprite { get { return sprite; } }
     public string SoldierName { get { return soldierName; } }
+    public string Description { get { return description; } }
+    public string SpecialAbilityDescription { get { return specialAbilityDescription; } }
 
     public abstract void SoldierPlacedInEditMode(bool isSoundActivated);
     public abstract void MakeNoise();

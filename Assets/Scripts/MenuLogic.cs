@@ -90,7 +90,7 @@ public class MenuLogic: Singleton<MenuLogic> {
     private void ShutdownScreens() {
         var unityObjects = Globals.Instance.UnityObjects;
         unityObjects["ScreenMenu"].SetActive(false);
-        unityObjects["ScreenLoading"].SetActive(false);
+        //unityObjects["ScreenLoading"].SetActive(false);
         unityObjects["ScreenOptions"].SetActive(false);
         unityObjects["ScreenStudentInfo"].SetActive(false);
         unityObjects["ScreenMultiplayer"].SetActive(false);
@@ -120,7 +120,7 @@ public class MenuLogic: Singleton<MenuLogic> {
 
             case MenuScreens.Options: unityObjects["ScreenOptions"].SetActive(false); break;
 
-            case MenuScreens.Loading: unityObjects["ScreenLoading"].SetActive(false); break;
+            //case MenuScreens.Loading: unityObjects["ScreenLoading"].SetActive(false); break;
 
             case MenuScreens.Edit:
                 unityObjects["ScreenEdit"].SetActive(false);
@@ -155,8 +155,6 @@ public class MenuLogic: Singleton<MenuLogic> {
                 unityObjects["ScreenOptions"].SetActive(true);
                 GameView.SetText("TitleMenu", "Options");
                 break;
-
-            case MenuScreens.Loading: unityObjects["ScreenLoading"].SetActive(true); break;
 
             case MenuScreens.Edit:
                 unityObjects["ScreenEdit"].SetActive(true);

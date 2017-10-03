@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 //public enum GameMode { Edit, SinglePlayer, Multiplayer }
 
 public enum MenuScreens {
-    Default, Main, MultiPlayer, StudentInfo, Options, Loading, Edit
+    Default, Main, MultiPlayer, StudentInfo, Options, Edit
 }
 
 public enum GameScreens {
