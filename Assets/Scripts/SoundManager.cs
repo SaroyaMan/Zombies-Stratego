@@ -26,6 +26,7 @@ public class SoundManager : Singleton<SoundManager> {
     [SerializeField] private AudioClip clockTickTwo;
     [SerializeField] private AudioClip description;
     [SerializeField] private AudioClip copycat;
+    [SerializeField] private AudioClip explode;
 
     [SerializeField] private AudioClip inGameMusic;
 
@@ -48,6 +49,7 @@ public class SoundManager : Singleton<SoundManager> {
     public AudioClip ClockTickTwo { get { return clockTickTwo; } }
     public AudioClip Description { get { return description; } }
     public AudioClip Copycat { get { return copycat; } }
+    public AudioClip Explode { get { return explode; } }
 
 
     private void Awake() {

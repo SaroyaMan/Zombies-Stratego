@@ -234,7 +234,7 @@ public class Zombie: PlayerSoldier {
             isDying = true;
             if(isExploder) {
                 Anim.Play("Exploding");
-                SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.BombExplode);
+                SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.Explode);
             }
             else {
                 GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
@@ -248,9 +248,8 @@ public class Zombie: PlayerSoldier {
                 SoldierManager.Instance.LocalPlayerList.Remove(this);
             GameManager.Instance.UpdateStats();
             yield return new WaitForSeconds(3f);
-
-            GameManager.Instance.CheckWin(CurrentSide);
             GameManager.Instance.CloseInfo();
+            GameManager.Instance.CheckWin(CurrentSide);
             Destroy(gameObject);
         }
 

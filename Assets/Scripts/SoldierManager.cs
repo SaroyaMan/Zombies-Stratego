@@ -29,15 +29,15 @@ public class SoldierManager: Singleton<SoldierManager> {
     }
 
     public bool HasZombies(GameSide gameSide) {
-        if(gameSide == GameManager.Instance.PcSide) {
-            foreach(var soldier in enemyList) {
-                if(soldier is Zombie)
+        if( (Globals.IS_SINGLE_PLAYER && gameSide != GameManager.Instance.PcSide) || (!Globals.IS_SINGLE_PLAYER && gameSide == MultiPlayerManager.Instance.PlayerSide)) {
+            foreach(var soldier in localPlayerList) {
+                if(soldier is Zombie && TileManager.Instance.GetClosestTiles(soldier.CurrentTile, soldier as Zombie).Count > 0)
                     return true;
             }
         }
         else {
-            foreach(var solder in localPlayerList) {
-                if(solder is Zombie)
+            foreach(var soldier in enemyList) {
+                if(soldier is Zombie && TileManager.Instance.GetClosestTiles(soldier.CurrentTile, soldier as Zombie).Count > 0)
                     return true;
             }
         }

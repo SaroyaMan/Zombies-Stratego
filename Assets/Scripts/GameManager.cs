@@ -102,12 +102,12 @@ public class GameManager : Singleton<GameManager> {
         if(Globals.IS_SINGLE_PLAYER) {
             GameView.SetText("TitleGame", "Single Player");
             if(pcSide == GameSide.LeftSide) {
-                GameView.SetText("LeftSideNameTxt", "PC");
+                GameView.SetText("LeftSideNameTxt", "COM");
                 GameView.SetText("RightSideNameTxt", PlayerPrefs.GetString("Username", "No-Name"));
             }
             else {
                 GameView.SetText("LeftSideNameTxt", PlayerPrefs.GetString("Username", "No-Name"));
-                GameView.SetText("RightSideNameTxt", "PC");
+                GameView.SetText("RightSideNameTxt", "COM");
             }
         }
         else {
@@ -140,24 +140,6 @@ public class GameManager : Singleton<GameManager> {
         }
 
     }
-
-    //private IEnumerator PassTurnAfterTwoSecs(Tile oldTile = null, Tile newTile = null) {
-    //    if(!Globals.IS_SINGLE_PLAYER)
-    //        yield return new WaitForSeconds(1f);
-    //    ChangeTurn();
-    //    if(Globals.IS_SINGLE_PLAYER) {
-    //        if(CURRENT_TURN == pcSide && !isPcPlaying) {
-    //            isPcPlaying = true;
-    //            StartCoroutine(SoldierManager.Instance.MakeRandomMove());
-    //        }
-    //        else {
-    //            isPcPlaying = false;
-    //        }
-    //    }
-    //    else {  //game is multiplayer
-    //        MultiPlayerManager.Instance.SendMove(oldTile, newTile);
-    //    }
-    //}
 
     public void ChangeTurn() {
         CURRENT_TURN = CURRENT_TURN == GameSide.LeftSide ? GameSide.RightSide : GameSide.LeftSide;
@@ -210,7 +192,7 @@ public class GameManager : Singleton<GameManager> {
         if(msg != null) {
             GameView.SetText("MsgWinner", msg);
         }
-        GameManager.Instance.CloseInfo();
+        CloseInfo();
         SoundManager.Instance.Music.Stop();
         GameView.MakeScreenDark();
         isPaused = true;
@@ -280,7 +262,8 @@ public class GameManager : Singleton<GameManager> {
         GameView.SetText("TitlePause", "Game Paused");
         GameView.MakeScreenDark();
         isPaused = true;
-        Time.timeScale = 0;           //Pause game here
+        if(Globals.IS_SINGLE_PLAYER)
+            Time.timeScale = 0;           //Pause game here
     }
 
     private void ResumeGame() {
@@ -302,8 +285,8 @@ public class GameManager : Singleton<GameManager> {
         Time.timeScale = 1;
         Globals.IS_IN_GAME = false;
 
-        SceneManager.LoadScene("Main_Scene");
-        //Initiate.Fade("Main_Scene", GameView.transitionColor, 3f);
+        //SceneManager.LoadScene("Main_Scene");
+        Initiate.Fade("Main_Scene", GameView.transitionColor, 3f);
     }
 
     public void ResetMatch() {

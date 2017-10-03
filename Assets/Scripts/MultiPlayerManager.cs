@@ -235,8 +235,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     }
 
     public void OnMoveCompletedOccured(MoveEvent _Move) {
-        Debug.LogError("OnMoveComplete Occured");
-        Debug.LogError("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
+        //Debug.LogError("OnMoveCompleted " + _Move.getMoveData() + " " + _Move.getNextTurn() + " " + _Move.getSender());
         if(_Move.getSender() != username && _Move.getMoveData() != null) {
             Dictionary<string, object> recievedData = MiniJSON.Json.Deserialize(_Move.getMoveData()) as Dictionary<string, object>;
             if(recievedData != null && !GameManager.Instance.IsGameOver) {
