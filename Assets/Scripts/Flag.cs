@@ -17,7 +17,7 @@ public class Flag: PlayerSoldier {
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.FlagBought);
     }
 
-    public override void FlipSide() {
+    public override void FlipSide(bool isChangeSide = true) {
         base.FlipSide();
         OriginAnim = Anim.runtimeAnimatorController = CurrentSide == GameSide.LeftSide ?
             blueFlagAnimator.runtimeAnimatorController :

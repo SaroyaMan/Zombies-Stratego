@@ -32,8 +32,8 @@ public class Zombie: PlayerSoldier {
                 anim.Play("Idle");
                 isWalking = false;
                 if(isFlipped) {
-                    FlipSide();
                     isFlipped = false;
+                    FlipSide(false);
                     transform.position = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);
                 };
             }
@@ -84,9 +84,9 @@ public class Zombie: PlayerSoldier {
     public void Walk(Tile tile) {
         tile.IsInUse = true;
         if(CurrentSide == GameSide.LeftSide && tile.Column < CurrentTile.Column
-            || CurrentSide == GameSide.RightSide && tile.Column > CurrentTile.Column) {      //TODO: Fix animation when Zombie walks reverse
+            || CurrentSide == GameSide.RightSide && tile.Column > CurrentTile.Column) {
             isFlipped = true;
-            FlipSide();
+            FlipSide(false);
             transform.position = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);
         }
         anim.Play("Walk");
@@ -109,13 +109,14 @@ public class Zombie: PlayerSoldier {
         enemy.CoverSoldier();
 
         if(CurrentSide == GameSide.LeftSide && enemy.CurrentTile.Column < CurrentTile.Column
-            || CurrentSide == GameSide.RightSide && enemy.CurrentTile.Column > CurrentTile.Column) {      //TODO: Fix animation when Zombie walks reverse
+            || CurrentSide == GameSide.RightSide && enemy.CurrentTile.Column > CurrentTile.Column) {
             isFlipped = true;
             if(enemy is Zombie) {
-                enemy.FlipSide();
+                (enemy as Zombie).isFlipped = true;
+                enemy.FlipSide(false);
                 enemy.transform.position = new Vector2(enemy.CurrentTile.transform.position.x + OffsetX, enemy.CurrentTile.transform.position.y + OffsetY);
             }
-            FlipSide();
+            FlipSide(false);
             transform.position = new Vector2(CurrentTile.transform.position.x + OffsetX, CurrentTile.transform.position.y + OffsetY);
         }
 
@@ -217,7 +218,7 @@ public class Zombie: PlayerSoldier {
         else if(Rank < enemy.Rank || enemy.Rank == 1 && Rank >= 13 || enemy.Rank == 2 && Rank >= 14 || enemy.Rank == 3 && Rank == 15) {    //kill this zombie
             enemy.Anim.Play("Idle");
             enemy.CurrentTile.Soldier = enemy;
-            if(enemy.isFlipped) enemy.FlipSide();
+            if(enemy.isFlipped) enemy.FlipSide(false);
             isDieRunning = true;
             StartCoroutine(Die());
         }
