@@ -6,7 +6,6 @@ public class Flag: PlayerSoldier {
     [SerializeField] private Animator blueFlagAnimator;
     [SerializeField] private Animator redFlagAnimator;
 
-
     public override void SoldierPlacedInEditMode(bool isSoundActivated) {
         StrategyEditor.HasFlag = true;
         GameView.DisableButton("Btn_Flag");

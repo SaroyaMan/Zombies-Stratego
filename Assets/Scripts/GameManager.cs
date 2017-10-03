@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager> {
 
@@ -18,6 +16,7 @@ public class GameManager : Singleton<GameManager> {
     private int totalSoldiersLocalSide, totalSoldiersEnemySide;
     private GameScreens prevScreen, currentScreen;
     private GameObject cloudInfo;
+    private ParticleSystem stars;
 
     private int currentTurnSecondsLeft = Globals.MAX_TURN_TIME;
 
@@ -31,6 +30,7 @@ public class GameManager : Singleton<GameManager> {
     private void Start() {
         Globals.IS_IN_GAME = true;
         cloudInfo = Globals.Instance.UnityObjects["InfoBubble"];
+        stars = Globals.Instance.UnityObjects["Stars"].GetComponent<ParticleSystem>();
         if(Globals.IS_SINGLE_PLAYER) {
             Globals.Instance.UnityObjects["ClockDisplay"].SetActive(false);
             //MultiPlayerManager.Instance.gameObject.SetActive(false);
@@ -66,6 +66,7 @@ public class GameManager : Singleton<GameManager> {
             StartCoroutine(CountTime());
         }
         cloudInfo.SetActive(false);
+        stars.Stop();
         UpdateTitles();
     }
 
@@ -168,6 +169,11 @@ public class GameManager : Singleton<GameManager> {
             }
         }
 
+    }
+
+    public void ShowStars(Flag flag) {
+        stars.transform.position = flag.transform.position;
+        stars.Play();
     }
 
     public void CheckWin(GameSide potentialLoserSide) {

@@ -150,6 +150,7 @@ public class Zombie: PlayerSoldier {
             playerCollider.isTrigger = false;
             zombie.PlayerCollider.isTrigger = false;
             StartCoroutine(Kill(zombie));
+            other.gameObject.tag = "Zombie";
         }
 
         if(isInWar && other.gameObject.tag == "BombInWar") {
@@ -159,15 +160,18 @@ public class Zombie: PlayerSoldier {
             playerCollider.isTrigger = false;
             bomb.PlayerCollider.isTrigger = false;
             StartCoroutine(Explode(bomb));
+            other.gameObject.tag = "Zombie";
         }
 
         if(isInWar && other.gameObject.tag == "FlagInWar") {
             isInWar = false;
             Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
+            GameManager.Instance.ShowStars(flag);
             GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
             playerCollider.isTrigger = false;
             flag.PlayerCollider.isTrigger = false;
             StartCoroutine(CollectFlag());
+            other.gameObject.tag = "Flag";
         }
     }
 
@@ -212,7 +216,6 @@ public class Zombie: PlayerSoldier {
         }
         else if(Rank < enemy.Rank || enemy.Rank == 1 && Rank >= 13 || enemy.Rank == 2 && Rank >= 14 || enemy.Rank == 3 && Rank == 15) {    //kill this zombie
             enemy.Anim.Play("Idle");
-            enemy.gameObject.tag = "Zombie";
             enemy.CurrentTile.Soldier = enemy;
             if(enemy.isFlipped) enemy.FlipSide();
             isDieRunning = true;
@@ -257,7 +260,7 @@ public class Zombie: PlayerSoldier {
     }
 
     private IEnumerator CollectFlag() {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         GameManager.Instance.WinGame(CurrentSide);
         yield return null;
     }
