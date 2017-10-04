@@ -290,6 +290,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
 
     private void OnDestroy() {
         WarpClient.GetInstance().Disconnect();
-        Destroy(WarpClient.GetInstance());
+        if(WarpClient.GetInstance())
+            Destroy(WarpClient.GetInstance().gameObject);
     }
 }

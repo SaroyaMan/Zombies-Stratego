@@ -202,6 +202,9 @@ public class Zombie: PlayerSoldier {
             enemy.rank = Rank;
             enemy.isExploder = true;
         }
+        //if() {
+        //    isHandicap = true;
+        //}
 
         anim.Play("Attack");
         enemy.Anim.Play("Attack");
@@ -209,7 +212,7 @@ public class Zombie: PlayerSoldier {
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieAttack);
         yield return new WaitForSeconds(0.5f);
 
-        if(Rank > enemy.Rank || !isCopycat && (Rank == 1 && enemy.Rank >= 13 || Rank == 2 && enemy.Rank >= 14 || Rank == 3 && enemy.Rank == 15 )) {         //kill enemy
+        if(Rank > enemy.Rank || !isCopycat && (Rank == 1 && enemy.Rank >= 13 || Rank == 2 && enemy.Rank >= 14 || Rank == 3 && enemy.Rank == 15)) {         //kill enemy
             if(isCopycat) rank = Globals.RANK_OF_COPYCAT;
             CurrentTile.Soldier = this;
             enemy.isDieRunning = true;
@@ -218,7 +221,11 @@ public class Zombie: PlayerSoldier {
         else if(Rank < enemy.Rank || enemy.Rank == 1 && Rank >= 13 || enemy.Rank == 2 && Rank >= 14 || enemy.Rank == 3 && Rank == 15) {    //kill this zombie
             enemy.Anim.Play("Idle");
             enemy.CurrentTile.Soldier = enemy;
-            if(enemy.isFlipped) enemy.FlipSide(false);
+            if(enemy.isFlipped) {
+                enemy.FlipSide(false);
+                enemy.transform.position = new Vector2(enemy.CurrentTile.transform.position.x + OffsetX, enemy.CurrentTile.transform.position.y + OffsetY);
+                enemy.isFlipped = false;
+            }
             isDieRunning = true;
             StartCoroutine(Die());
         }

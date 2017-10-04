@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using com.shephertz.app42.gaming.multiplayer.client;
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager> {
@@ -281,13 +282,14 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void QuitGame() {
-        if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
-            MultiPlayerManager.Instance.SendGameQuit(MultiPlayerManager.ParseUsername(MultiPlayerManager.Instance.Username) + " gave up");
-        }
+        //if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
+        //    MultiPlayerManager.Instance.SendGameQuit(MultiPlayerManager.ParseUsername(MultiPlayerManager.Instance.Username) + " gave up");
+        //}
         Destroy(SoldierManager.Instance.gameObject);
         Destroy(SoundManager.Instance.gameObject);
         Destroy(TileManager.Instance.gameObject);
         Destroy(MultiPlayerManager.Instance.gameObject);
+        //Destroy(WarpClient.GetInstance().gameObject);
         Time.timeScale = 1;
         Globals.IS_IN_GAME = false;
 
