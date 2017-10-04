@@ -202,9 +202,6 @@ public class Zombie: PlayerSoldier {
             enemy.rank = Rank;
             enemy.isExploder = true;
         }
-        //if() {
-        //    isHandicap = true;
-        //}
 
         anim.Play("Attack");
         enemy.Anim.Play("Attack");
@@ -218,7 +215,7 @@ public class Zombie: PlayerSoldier {
             enemy.isDieRunning = true;
             StartCoroutine(enemy.Die());
         }
-        else if(Rank < enemy.Rank || enemy.Rank == 1 && Rank >= 13 || enemy.Rank == 2 && Rank >= 14 || enemy.Rank == 3 && Rank == 15) {    //kill this zombie
+        else if(Rank < enemy.Rank) {    //kill this zombie
             enemy.Anim.Play("Idle");
             enemy.CurrentTile.Soldier = enemy;
             if(enemy.isFlipped) {
