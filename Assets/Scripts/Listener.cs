@@ -284,10 +284,10 @@ namespace AssemblyCSharp
 		public void onUserLeftRoom (RoomData eventObj, string username)
 		{
 			Debug.Log ("onUserLeftRoom : " + username);
-            if(username == MultiPlayerManager.Instance.Username) {
-
+            if(username != MultiPlayerManager.Instance.Username && Globals.IS_IN_GAME) {
+                GameManager.Instance.WinGame(MultiPlayerManager.Instance.PlayerSide, MultiPlayerManager.ParseUsername(username) + " gave up");
             }
-		}
+        }
 		
 		public void onUserJoinedRoom (RoomData eventObj, string username)
 		{

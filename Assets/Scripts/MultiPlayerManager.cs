@@ -282,9 +282,9 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     }
 
     private void OnApplicationQuit() {
-        if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
-            SendGameQuit(realUsername + " gave up");
-        }
+        //if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
+        //    SendGameQuit(realUsername + " gave up");
+        //}
         WarpClient.GetInstance().Disconnect();
     }
 
