@@ -285,10 +285,10 @@ public class GameManager : Singleton<GameManager> {
         //if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
         //    MultiPlayerManager.Instance.SendGameQuit(MultiPlayerManager.ParseUsername(MultiPlayerManager.Instance.Username) + " gave up");
         //}
-        Destroy(SoldierManager.Instance.gameObject);
-        Destroy(SoundManager.Instance.gameObject);
-        Destroy(TileManager.Instance.gameObject);
-        Destroy(MultiPlayerManager.Instance.gameObject);
+        DestroyImmediate(SoldierManager.Instance.gameObject);
+        DestroyImmediate(SoundManager.Instance.gameObject);
+        DestroyImmediate(TileManager.Instance.gameObject);
+        DestroyImmediate(MultiPlayerManager.Instance.gameObject);
         //Destroy(WarpClient.GetInstance().gameObject);
         Time.timeScale = 1;
         Globals.IS_IN_GAME = false;
