@@ -15,9 +15,11 @@ public class Zombie: PlayerSoldier {
     private bool isInWar;
     private bool isDying;
     private bool isExploder;
+    private bool isCopycat;
     private Vector2 destination;
 
     public bool IsDying { get { return isDying; } }
+    public bool IsCopycat { get { return isCopycat; } set { isCopycat = value; } }
     public List<Tile> TilesToStep { get { return tilesToStep; } set { tilesToStep = value; } }
 
 
@@ -190,14 +192,17 @@ public class Zombie: PlayerSoldier {
     }
 
     private IEnumerator Kill(Zombie enemy) {
-        bool isCopycat = false;
-        if(Rank == Globals.RANK_OF_COPYCAT) {
+        //bool isCopycat = false;
+        if(Globals.IS_SINGLE_PLAYER && Rank == Globals.RANK_OF_COPYCAT) {
             rank = (short) Random.Range(0, 16);
-            isCopycat = true;
+            IsCopycat = true;
+        }
+        if(IsCopycat) {
             Globals.Instance.UnityObjects["Smoke"].transform.position = new Vector2(transform.position.x, transform.position.y - 1);
             Globals.Instance.UnityObjects["Smoke"].GetComponent<ParticleSystem>().Play();
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.Copycat);
         }
+
         if(enemy.Rank == Globals.RANK_OF_EXPLODER) {
             enemy.rank = Rank;
             enemy.isExploder = true;
@@ -210,7 +215,10 @@ public class Zombie: PlayerSoldier {
         yield return new WaitForSeconds(0.5f);
 
         if(Rank > enemy.Rank || !isCopycat && (Rank == 1 && enemy.Rank >= 13 || Rank == 2 && enemy.Rank >= 14 || Rank == 3 && enemy.Rank == 15)) {         //kill enemy
-            if(isCopycat) rank = Globals.RANK_OF_COPYCAT;
+            if(IsCopycat) {
+                rank = Globals.RANK_OF_COPYCAT;
+                IsCopycat = false;
+            };
             CurrentTile.Soldier = this;
             enemy.isDieRunning = true;
             StartCoroutine(enemy.Die());

@@ -85,7 +85,7 @@ public class Tile: MonoBehaviour {
 
     public void OnMouseDown() {
         //if(soldier != null) {
-        //    Debug.LogError(soldier.name + " " + soldier.CurrentSide.ToString());
+        //    Debug.LogError(soldier.name + " " + soldier.CurrentSide.ToString() + " Rank = " + soldier.Rank);
         //}
         //else {
         //    Debug.LogError("soldier is NULL");

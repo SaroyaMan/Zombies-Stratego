@@ -220,6 +220,11 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
                 { "newTileRow", newTile.Row },
                 { "newTileColumn", newTile.Column }
             };
+            if(oldTile.Soldier.Rank == Globals.RANK_OF_COPYCAT && newTile.Soldier != oldTile.Soldier) {
+                toSend.Add("RandomRank", oldTile.Soldier.Rank = (short) Random.Range(0, 16));
+                (oldTile.Soldier as Zombie).IsCopycat = true;
+            }
+              
             string jsonToSend = MiniJSON.Json.Serialize(toSend);
             Debug.Log(jsonToSend);
             WarpClient.GetInstance().sendMove(jsonToSend);
@@ -244,6 +249,13 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
                     Tile oldTile = matrixTile[int.Parse(recievedData["oldTileRow"].ToString()), int.Parse(recievedData["oldTileColumn"].ToString())];
                     Tile newTile = matrixTile[int.Parse(recievedData["newTileRow"].ToString()), int.Parse(recievedData["newTileColumn"].ToString())];
                     var zombie = oldTile.Soldier as Zombie;
+
+                    if(recievedData.ContainsKey("RandomRank")) {
+                        var randomRank = int.Parse(recievedData["RandomRank"].ToString());
+                        zombie.Rank = (short) randomRank;
+                        zombie.IsCopycat = true;
+                    }
+
                     SoldierManager.Instance.MakeEnemyMove(zombie, newTile);
 
                     currentUsernameTurn = _Move.getNextTurn();

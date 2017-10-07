@@ -27,7 +27,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
 
     private float clickTime;
 
-    public short Rank { get { return rank; } }
+    public short Rank { get { return rank; } set { rank = value; } }
     public int Price { get { return price; } }
     public float OffsetX { get { return offset_x; } }
     public float OffsetY { get { return offset_y; } }
