@@ -21,7 +21,7 @@ public class Globals : Singleton<Globals> {
     public const int MAX_SOLDIERS_FOR_PLAYER = 35; //9 rows on 4 columns = 36. 36 - 1 (flag) = 35
     public const int MIN_SOLDIERS_ALLOWED = 20;
     public const int ROWS = 9;
-    public const int COLUMNS = 16;
+    public const int COLUMNS = 12;
     public const int MIN_PRICE = 1;
     public const int MAX_BOMBS = 6;
     public const int MAX_SAPPERS = 3;
