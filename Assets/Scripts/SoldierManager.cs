@@ -67,7 +67,7 @@ public class SoldierManager: Singleton<SoldierManager> {
 
         //Get all enemy tiles
         List<Tile> enemyTiles = TileManager.Instance.GetAllEnemyTiles();
-        List<Tile> enemyFlagPotentialTiles = TileManager.Instance.GetAllPotentialFlagTiles();
+        List<Tile> enemyFlagPotentialTiles = TileManager.Instance.PotentialFlagTiles;
         Tile tile = null;
 
         //Place Flag
@@ -254,17 +254,25 @@ public class SoldierManager: Singleton<SoldierManager> {
         }
     }
 
-    public void MarkEnemyTiles() {
+    public IEnumerator MarkEnemyTiles() {
+        var enemyShownTiles = new List<Tile>();
         foreach(var soldier in enemyList) {
-            if(!soldier.IsHidden)
+            if(!soldier.IsHidden && !soldier.CurrentTile.IsMarked()) {
                 soldier.CurrentTile.MarkSoldierSide();
+                enemyShownTiles.Add(soldier.CurrentTile);
+            }
         }
+        yield return new WaitForSeconds(2f);
+        foreach(var tile in enemyShownTiles) {
+            tile.UnColorTile();
+        }
+        //UnMarkEnemyTiles();
     }
 
-    public void UnMarkEnemyTiles() {
-        foreach(var soldier in enemyList) {
-            if(!soldier.IsHidden)
-                soldier.CurrentTile.UnColorTile();
-        }
-    }
+    //public void UnMarkEnemyTiles() {
+    //    foreach(var soldier in enemyList) {
+    //        if(!soldier.IsHidden)
+    //            soldier.CurrentTile.UnColorTile();
+    //    }
+    //}
 }

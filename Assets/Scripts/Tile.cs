@@ -12,7 +12,7 @@ public class Tile: MonoBehaviour {
     private Color redColor = new Color(0.615f, 0.027f, 0.054f, 0.7f);
 
     private SpriteRenderer spriteRenderer;
-    public bool isReadyToStep;
+    private bool isReadyToStep;
     private PlayerSoldier soldier;
 
     private PlayerSoldier attackingZombie;
@@ -30,7 +30,7 @@ public class Tile: MonoBehaviour {
         if(Column < 4) {
             tag = "BuildTile";
         }
-        else if(Column > 11) {
+        else if(Column > 7) {
             tag = "EnemyTile";
         }
         else {
@@ -50,6 +50,10 @@ public class Tile: MonoBehaviour {
     public void UnmarkTileInUse() {
         IsInUse = false;
         tag = "BuildTile";
+    }
+
+    public bool IsMarked() {
+        return spriteRenderer.color == markColor;
     }
 
     public void ColorTile() {

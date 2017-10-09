@@ -48,7 +48,7 @@ public class Zombie: PlayerSoldier {
             if(!isGridMarked && !isDying) {
                 SoldierManager.Instance.MarkSelectedSoldier(this);
                 MarkAvailableTilesToStep();
-                SoldierManager.Instance.MarkEnemyTiles();
+                StartCoroutine(SoldierManager.Instance.MarkEnemyTiles());
             }
             else {
                 UnMarkAvailableTilesToStep();
@@ -79,7 +79,7 @@ public class Zombie: PlayerSoldier {
                 tile.UnReadyToStep(this);
             }
             tilesToStep = null;
-            SoldierManager.Instance.UnMarkEnemyTiles();
+            //SoldierManager.Instance.UnMarkEnemyTiles();
         }
     }
 
@@ -248,6 +248,7 @@ public class Zombie: PlayerSoldier {
         if(isDieRunning) {
             isDieRunning = false;
             isDying = true;
+            UnMarkAvailableTilesToStep();
             if(isExploder) {
                 Anim.Play("Exploding");
                 SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.Explode);

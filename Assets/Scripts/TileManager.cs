@@ -5,10 +5,12 @@ public class TileManager: Singleton<TileManager> {
 
     private Dictionary<int, Tile> buildTiles;    // all build tiles
     private Dictionary<int, Tile> allTiles;      // all tiles
+    private List<Tile> potentialFlagTiles;
     private Tile[,] matrixTiles;
 
     public Dictionary<int, Tile> BuildTiles { get { return buildTiles; } }
     public Dictionary<int, Tile> AllTiles { get { return allTiles; } }
+    public List<Tile> PotentialFlagTiles {  get { return potentialFlagTiles; } }
     public Tile[,] MatrixTiles { get { return matrixTiles; } }
 
 
@@ -32,6 +34,8 @@ public class TileManager: Singleton<TileManager> {
             allTiles.Add(tile.GetHashCode(), tile);
             matrixTiles[tile.Row, tile.Column] = tile;
         }
+
+        potentialFlagTiles = GetAllPotentialFlagTiles();
     }
 
     public void ClearTiles() {
@@ -71,14 +75,17 @@ public class TileManager: Singleton<TileManager> {
         return tiles;
     }
 
-    public List<Tile> GetAllPotentialFlagTiles() {
+    private List<Tile> GetAllPotentialFlagTiles() {
         List<Tile> tiles = new List<Tile>();
 
-        foreach(var tile in allTiles.Values) {
-            if(tile.tag == "EnemyTile" && tile.Column == Globals.COLUMNS - 1)
-                tiles.Add(tile);
+        //foreach(var tile in allTiles.Values) {
+        //    if(tile.tag == "EnemyTile" && tile.Column == Globals.COLUMNS - 1)
+        //        tiles.Add(tile);
+        //}
+        for(int i = 0; i < Globals.ROWS; i++) {
+            if(matrixTiles[i, Globals.COLUMNS - 1].tag == "EnemyTile")
+                tiles.Add(matrixTiles[i, Globals.COLUMNS - 1]);
         }
-
         return tiles;
     }
 
