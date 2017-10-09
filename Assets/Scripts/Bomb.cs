@@ -19,7 +19,7 @@ public class Bomb : PlayerSoldier {
         GameManager.Instance.UpdateStats();
         GameManager.Instance.CloseInfo();
         Destroy(gameObject);
-        CurrentTile.IsInUse = false;
+        //CurrentTile.IsInUse = false;
         CurrentTile = null;
     }
 

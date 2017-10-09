@@ -25,7 +25,7 @@ public class GameManager : Singleton<GameManager> {
     //public GameSide CurrentTurn { get { return currentTurn; } set { currentTurn = value; } }
     public GameSide PcSide { get { return pcSide; } set { pcSide = value; } }
     public bool IsPaused { get { return isPaused; } }
-    public bool IsGameOver { get { return isGameOver; } }
+    public bool IsGameOver { get { return isGameOver; } set { isGameOver = value; } }
     public bool IsDescriptionOpen { get { return isDescriptionOpen; } }
 
     private void Start() {
@@ -126,7 +126,6 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void PassTurn(Tile oldTile = null, Tile newTile = null) {
-        //StartCoroutine(PassTurnAfterTwoSecs(oldTile, newTile));
         ChangeTurn();
         if(Globals.IS_SINGLE_PLAYER) {
             if(CURRENT_TURN == pcSide && !isPcPlaying) {

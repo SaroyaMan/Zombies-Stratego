@@ -17,7 +17,7 @@ public class Tile: MonoBehaviour {
 
     private PlayerSoldier attackingZombie;
 
-    public bool IsInUse { get; set; }
+    //public bool IsInUse { get; set; }
     public short Row { get { return row; } }
     public short Column { get { return column; } }
     public PlayerSoldier Soldier { get { return soldier; } set { soldier = value; } }
@@ -36,19 +36,19 @@ public class Tile: MonoBehaviour {
         else {
             tag = "Tile";
         }
-        IsInUse = isReadyToStep = false;
+        isReadyToStep = false;
         Soldier = attackingZombie = null;
         UnColorTile();
     }
 
 
     public void MarkTileInUse() {
-        IsInUse = true;
+        //IsInUse = true;
         tag = "BuildTileFull";
     }
 
     public void UnmarkTileInUse() {
-        IsInUse = false;
+        //IsInUse = false;
         tag = "BuildTile";
     }
 
@@ -111,7 +111,7 @@ public class Tile: MonoBehaviour {
             else if(soldier is Zombie) {
                 (soldier as Zombie).Walk(this);
             }
-            if(Globals.IS_SINGLE_PLAYER)
+            if(Globals.IS_SINGLE_PLAYER && !(soldier is Flag) )
                 GameManager.Instance.PassTurn();
         }
     }

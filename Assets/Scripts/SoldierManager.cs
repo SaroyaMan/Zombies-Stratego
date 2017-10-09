@@ -202,14 +202,14 @@ public class SoldierManager: Singleton<SoldierManager> {
         Dictionary<string, Tile> inUsedTiles = new Dictionary<string, Tile>();
         foreach(var soldier in localPlayerList) {
             var tile = matrixTiles[soldier.CurrentTile.Row, Globals.COLUMNS - 1 - soldier.CurrentTile.Column];
-            if(tile.IsInUse) {
+            if(tile.Soldier != null) {
                 inUsedTiles.Add(tile.Row.ToString() + tile.Column.ToString(), tile);
             }
             soldier.FlipSide();
             soldier.CurrentTile.ResetTile();
 
             soldier.CurrentTile = tile;
-            soldier.CurrentTile.IsInUse = true;
+            //soldier.CurrentTile.IsInUse = true;
             soldier.CurrentTile.Soldier = soldier;
             soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
         }
@@ -222,7 +222,7 @@ public class SoldierManager: Singleton<SoldierManager> {
             soldier.FlipSide();
 
             soldier.CurrentTile = tile;
-            soldier.CurrentTile.IsInUse = true;
+            //soldier.CurrentTile.IsInUse = true;
             soldier.CurrentTile.Soldier = soldier;
             soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
         }

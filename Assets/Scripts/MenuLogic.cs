@@ -58,7 +58,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         var buildTiles = TileManager.Instance.BuildTiles;
         foreach(var tile in buildTiles.Values) {
             //print(tile.Row + ", " + tile.Column + Regex.Match(soldier.name, @"\d+").Value + ", ");
-            if(tile.IsInUse) {
+            if(tile.Soldier != null) {
                 PlayerPrefs.SetString(tile.Row + "," + tile.Column, Regex.Match(tile.Soldier.name, @"^[a-zA-Z0-9]*").Value);
             }
             else {

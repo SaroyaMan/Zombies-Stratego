@@ -98,7 +98,7 @@ public class TileManager: Singleton<TileManager> {
             tempTile = null;
         }
         else tempTile = matrixTiles[tile.Row - 1, tile.Column];
-        if(tempTile != null && (!tempTile.IsInUse || tempTile.Soldier != null && tempTile.Soldier.IsEnemy(zombie))) {
+        if(tempTile != null && (tempTile.Soldier == null || tempTile.Soldier.IsEnemy(zombie))) {
             tiles.Add(tempTile);
         }
 
@@ -107,7 +107,7 @@ public class TileManager: Singleton<TileManager> {
             tempTile = null;
         }
         else tempTile = matrixTiles[tile.Row, tile.Column + 1];
-        if(tempTile != null && (!tempTile.IsInUse || tempTile.Soldier != null && tempTile.Soldier.IsEnemy(zombie) )) {
+        if(tempTile != null && (tempTile.Soldier == null || tempTile.Soldier.IsEnemy(zombie) )) {
             tiles.Add(tempTile);
         }
 
@@ -116,7 +116,7 @@ public class TileManager: Singleton<TileManager> {
             tempTile = null;
         }
         else tempTile = matrixTiles[tile.Row + 1, tile.Column];
-        if(tempTile != null && (!tempTile.IsInUse || tempTile.Soldier != null && tempTile.Soldier.IsEnemy(zombie))) {
+        if(tempTile != null && (tempTile.Soldier == null || tempTile.Soldier.IsEnemy(zombie))) {
             tiles.Add(tempTile);
         }
 
@@ -125,7 +125,7 @@ public class TileManager: Singleton<TileManager> {
             tempTile = null;
         }
         else tempTile = matrixTiles[tile.Row, tile.Column - 1];
-        if(tempTile != null && (!tempTile.IsInUse || tempTile.Soldier != null && tempTile.Soldier.IsEnemy(zombie))) {
+        if(tempTile != null && (tempTile.Soldier == null || tempTile.Soldier.IsEnemy(zombie))) {
             tiles.Add(tempTile);
         }
 

@@ -84,7 +84,7 @@ public class Zombie: PlayerSoldier {
     }
 
     public void Walk(Tile tile) {
-        tile.IsInUse = true;
+        //tile.IsInUse = true;
         if(CurrentSide == GameSide.LeftSide && tile.Column < CurrentTile.Column
             || CurrentSide == GameSide.RightSide && tile.Column > CurrentTile.Column) {
             isFlipped = true;
@@ -170,6 +170,7 @@ public class Zombie: PlayerSoldier {
             isInWar = false;
             Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
             GameManager.Instance.ShowStars(flag);
+            GameManager.Instance.IsGameOver = true;
             GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
             playerCollider.isTrigger = false;
             flag.PlayerCollider.isTrigger = false;
@@ -235,7 +236,7 @@ public class Zombie: PlayerSoldier {
             StartCoroutine(Die());
         }
         else {                          // draw - kill both
-            CurrentTile.IsInUse = false;
+            //CurrentTile.IsInUse = false;
             isDieRunning = enemy.isDieRunning = true;
             StartCoroutine(Die());
             StartCoroutine(enemy.Die());
