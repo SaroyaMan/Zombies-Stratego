@@ -52,8 +52,10 @@ public class Globals : Singleton<Globals> {
         unityObjects = new Dictionary<string, GameObject>();
         GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("UnityObject");
         foreach(var ob in gameObjects) {
+            //if(!unityObjects.ContainsKey(ob.name))
             unityObjects.Add(ob.name, ob);
         }
+
         //PlayerPrefs.DeleteAll();    //For testing
     }
 

@@ -1,6 +1,7 @@
 ﻿using com.shephertz.app42.gaming.multiplayer.client;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager> {
 
@@ -281,19 +282,17 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void QuitGame() {
-        //if(Globals.IS_IN_GAME && !Globals.IS_SINGLE_PLAYER) {
-        //    MultiPlayerManager.Instance.SendGameQuit(MultiPlayerManager.ParseUsername(MultiPlayerManager.Instance.Username) + " gave up");
-        //}
-        DestroyImmediate(SoldierManager.Instance.gameObject);
-        DestroyImmediate(SoundManager.Instance.gameObject);
-        DestroyImmediate(TileManager.Instance.gameObject);
-        DestroyImmediate(MultiPlayerManager.Instance.gameObject);
-        //Destroy(WarpClient.GetInstance().gameObject);
         Time.timeScale = 1;
+        Globals.Instance.UnityObjects["PauseWindow"].SetActive(false);
+        Destroy(SoldierManager.Instance.gameObject);
+        Destroy(SoundManager.Instance.gameObject);
+        Destroy(TileManager.Instance.gameObject);
+        Destroy(MultiPlayerManager.Instance.gameObject);
+
         Globals.IS_IN_GAME = false;
 
         //SceneManager.LoadScene("Main_Scene");
-        Initiate.Fade("Main_Scene", GameView.transitionColor, 3f);
+        Initiate.Fade("Main_Scene", GameView.transitionColor, 2f);  //NOT WORKING
     }
 
     public void ResetMatch() {

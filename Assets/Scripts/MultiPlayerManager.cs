@@ -179,6 +179,7 @@ public class MultiPlayerManager: Singleton<MultiPlayerManager> {
     private void SwitchToGameScene() {
         SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
         SoundManager.Instance.Music.Play();
+        Globals.Instance.UnityObjects["ScreenMenu"].SetActive(false);
         Initiate.Fade("Game_Scene", GameView.transitionColor, 2f);
     }
 

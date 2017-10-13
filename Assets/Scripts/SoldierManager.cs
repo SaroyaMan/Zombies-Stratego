@@ -122,7 +122,7 @@ public class SoldierManager: Singleton<SoldierManager> {
         yield return new WaitForSeconds(2f);
         while(true) {
             randZombie = enemyList[Random.Range(0, enemyList.Count)] as Zombie;
-            if(randZombie is Zombie && !randZombie.IsDying) {
+            if(randZombie is Zombie && !randZombie.IsDying && TileManager.Instance != null) {
                 tilesToStep = TileManager.Instance.GetClosestTiles(randZombie.CurrentTile, randZombie);
                 if(tilesToStep.Count > 0) {
                     break;

@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuLogic: Singleton<MenuLogic> {
 
@@ -173,6 +174,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         Globals.IS_SINGLE_PLAYER = isSinglePlayer;
 
         if(isSinglePlayer) {       // start single player game
+            Globals.Instance.UnityObjects["ScreenMenu"].SetActive(false);
             SoundManager.Instance.Music.clip = SoundManager.Instance.InGameMusic;
             SoundManager.Instance.Music.Play();
             //SceneManager.LoadSceneAsync("Game_Scene");
