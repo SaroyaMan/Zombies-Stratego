@@ -1,4 +1,4 @@
-# Stratego Zombies PC Game
+# Stratego Zombies Game
 
 ##### Description:
 Stratego is a board game for 2 players. each player first set the zombies he chose on his area,
