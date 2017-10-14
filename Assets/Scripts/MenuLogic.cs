@@ -98,6 +98,7 @@ public class MenuLogic: Singleton<MenuLogic> {
         unityObjects["ScreenEdit"].SetActive(false);
         unityObjects["TitleGameImg"].SetActive(false);
         unityObjects["StatusConnectionWindow"].SetActive(false);
+        unityObjects["ErrorWindow"].SetActive(false);
     }
 
     public void GoBack() {
@@ -143,8 +144,14 @@ public class MenuLogic: Singleton<MenuLogic> {
                 break;
 
             case MenuScreens.MultiPlayer:
-                unityObjects["ScreenMultiplayer"].SetActive(true);
-                GameView.SetText("TitleMenu", "Multiplayer");
+                if(Application.internetReachability == NetworkReachability.NotReachable) {
+                    Globals.Instance.UnityObjects["ErrorWindow"].SetActive(true);
+                    GameView.SetText("ErrorTxt", "No Internet Connection !");
+                }
+                else {
+                    unityObjects["ScreenMultiplayer"].SetActive(true);
+                    GameView.SetText("TitleMenu", "Multiplayer");
+                }
                 break;
 
             case MenuScreens.StudentInfo:
@@ -182,7 +189,6 @@ public class MenuLogic: Singleton<MenuLogic> {
         }
         else {                    // start multi player game
             Globals.Instance.UnityObjects["StatusConnectionWindow"].SetActive(true);
-            //MultiPlayerManager.Instance.SetUsername("ROBIN HOOD");
             MultiPlayerManager.Instance.ConnectGame();
         }
     }
@@ -214,6 +220,11 @@ public class MenuLogic: Singleton<MenuLogic> {
 
     public void OpenCV() {
         Application.OpenURL(Globals.CV_URL);
+    }
+
+    public void ConfirmError() {
+        Globals.Instance.UnityObjects["ErrorWindow"].SetActive(false);
+        GoBack();
     }
 
     private void ToggleMenuWindow(bool isTurnOn) {

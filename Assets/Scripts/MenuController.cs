@@ -97,4 +97,9 @@ public class MenuController: MonoBehaviour {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MultiPlayerManager.Instance.Disconnect();
     }
+
+    public void ConfirmError() {
+        soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
+        MenuLogic.Instance.ConfirmError();
+    }
 }
