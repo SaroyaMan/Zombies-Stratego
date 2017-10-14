@@ -89,10 +89,10 @@ public class Tile: MonoBehaviour {
 
     public void OnMouseDown() {
         //if(soldier != null) {
-        //    Debug.LogError(soldier.name + " " + soldier.CurrentSide.ToString() + " Rank = " + soldier.Rank);
+        //    Debug.LogError(soldier.name + " " + soldier.CurrentSide.ToString() + " Rank = " + soldier.Rank + "isReadyToStep = " + isReadyToStep);
         //}
         //else {
-        //    Debug.LogError("soldier is NULL");
+        //    Debug.LogError("soldier is NULL, isReadyToStep = " + isReadyToStep);
         //}
         if(isReadyToStep && !Globals.IS_SINGLE_PLAYER) {
             GameManager.Instance.PassTurn(attackingZombie == null ? soldier.CurrentTile : attackingZombie.CurrentTile, this);
