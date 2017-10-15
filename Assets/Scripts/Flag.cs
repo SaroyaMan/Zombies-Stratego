@@ -23,4 +23,8 @@ public class Flag: PlayerSoldier {
             blueFlagAnimator.runtimeAnimatorController :
             redFlagAnimator.runtimeAnimatorController;
     }
+
+    public override void SetWarTag() {
+        gameObject.tag = "FlagInWar";
+    }
 }

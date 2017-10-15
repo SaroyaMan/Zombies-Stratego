@@ -128,6 +128,7 @@ public class GameManager : Singleton<GameManager> {
 
     public void PassTurn(Tile oldTile = null, Tile newTile = null) {
         ChangeTurn();
+        //FixIntegrity();
         if(Globals.IS_SINGLE_PLAYER) {
             if(CURRENT_TURN == pcSide && !isPcPlaying) {
                 isPcPlaying = true;
@@ -329,6 +330,11 @@ public class GameManager : Singleton<GameManager> {
             cloudInfo.SetActive(false);
             isDescriptionOpen = false;
         }
+    }
+
+    public void FixIntegrity() {
+        TileManager.Instance.Fix();
+        SoldierManager.Instance.Fix();
     }
 
     public static Vector3 GetScreenPosition(Transform transform, Canvas canvas, Camera cam) {

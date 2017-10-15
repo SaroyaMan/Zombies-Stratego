@@ -131,10 +131,11 @@ public class SoldierManager: Singleton<SoldierManager> {
                 }
             }
             randZombie.TilesToStep = tilesToStep;
-            foreach(var tile in tilesToStep) {
-                tile.ReadyToStep(randZombie, true);
-            }
+            //foreach(var tile in tilesToStep) {
+            //    tile.ReadyToStep(randZombie, true);
+            //}
             var randTile = tilesToStep[Random.Range(0, tilesToStep.Count)];
+            randTile.ReadyToStep(randZombie, true);
             randTile.MakeStep();
         }
         yield return null;
@@ -210,7 +211,6 @@ public class SoldierManager: Singleton<SoldierManager> {
             soldier.CurrentTile.ResetTile();
 
             soldier.CurrentTile = tile;
-            //soldier.CurrentTile.IsInUse = true;
             soldier.CurrentTile.Soldier = soldier;
             soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
         }
@@ -223,7 +223,6 @@ public class SoldierManager: Singleton<SoldierManager> {
             soldier.FlipSide();
 
             soldier.CurrentTile = tile;
-            //soldier.CurrentTile.IsInUse = true;
             soldier.CurrentTile.Soldier = soldier;
             soldier.transform.position = new Vector2(soldier.CurrentTile.transform.position.x + soldier.OffsetX, soldier.CurrentTile.transform.position.y + soldier.OffsetY);
         }
@@ -274,5 +273,14 @@ public class SoldierManager: Singleton<SoldierManager> {
             EnemyList.Remove(soldier);
         else
             LocalPlayerList.Remove(soldier);
+    }
+
+    public void Fix() {
+        foreach(var soldier in localPlayerList) {
+            soldier.CurrentTile.Soldier = soldier;
+        }
+        foreach(var soldier in enemyList) {
+            soldier.CurrentTile.Soldier = soldier;
+        }
     }
 }

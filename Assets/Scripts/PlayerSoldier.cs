@@ -46,6 +46,7 @@ public abstract class PlayerSoldier: MonoBehaviour {
 
     public abstract void SoldierPlacedInEditMode(bool isSoundActivated);
     public abstract void MakeNoise();
+    public abstract void SetWarTag();
 
     private void Awake() {
         anim = GetComponent<Animator>();

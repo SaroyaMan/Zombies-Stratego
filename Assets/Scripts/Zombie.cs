@@ -30,7 +30,7 @@ public class Zombie: PlayerSoldier {
                 transform.position = Vector2.MoveTowards(transform.position, destination, navigationTime);
                 navigationTime = 0;
             }
-            if(Vector2.Distance(transform.position, destination) < 0.01f && !isDying) {     // Zombie reached destionation
+            if(Vector2.Distance(transform.position, destination) < 0.01f && !isDying) {     // Zombie reached destination
                 anim.Play("Idle");
                 isWalking = false;
                 if(isFlipped) {
@@ -79,12 +79,11 @@ public class Zombie: PlayerSoldier {
                 tile.UnReadyToStep(this);
             }
             tilesToStep = null;
-            //SoldierManager.Instance.UnMarkEnemyTiles();
         }
     }
 
     public void Walk(Tile tile) {
-        //tile.IsInUse = true;
+        UnMarkAvailableTilesToStep();
         if(CurrentSide == GameSide.LeftSide && tile.Column < CurrentTile.Column
             || CurrentSide == GameSide.RightSide && tile.Column > CurrentTile.Column) {
             isFlipped = true;
@@ -93,8 +92,7 @@ public class Zombie: PlayerSoldier {
         }
         anim.Play("Walk");
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieWalk);
-        UnMarkAvailableTilesToStep();
-        CurrentTile.UnmarkTileInUse();
+        //UnMarkAvailableTilesToStep();
         CurrentTile.Soldier = null;
 
         CurrentTile = tile;
@@ -106,7 +104,7 @@ public class Zombie: PlayerSoldier {
     }
 
     public void GetCloser(PlayerSoldier enemy) {
-
+        UnMarkAvailableTilesToStep();
         CoverSoldier();
         enemy.CoverSoldier();
 
@@ -124,20 +122,9 @@ public class Zombie: PlayerSoldier {
 
         anim.Play("Walk");
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieWalkShort);
-        playerCollider.isTrigger = true;
-        enemy.PlayerCollider.isTrigger = true;
+        playerCollider.isTrigger = enemy.PlayerCollider.isTrigger = true;
+        enemy.SetWarTag();
 
-        if(enemy is Zombie)
-            enemy.gameObject.tag = "InWar";
-        else if(enemy is Bomb) {
-            enemy.gameObject.tag = "BombInWar";
-        }
-        else {      //enemy is Flag)
-            enemy.gameObject.tag = "FlagInWar";
-        }
-
-        UnMarkAvailableTilesToStep();
-        CurrentTile.UnmarkTileInUse();
         CurrentTile.Soldier = null;
         CurrentTile = enemy.CurrentTile;
         //CurrentTile.Soldier = this;
@@ -146,36 +133,33 @@ public class Zombie: PlayerSoldier {
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        if(isInWar && other.gameObject.tag == "InWar") {
-            isInWar = false;
-            Zombie zombie = other.gameObject.GetComponent<Zombie>() as Zombie;
+        if(isInWar) {
+            if(other.gameObject.tag == "InWar") {
+                isInWar = false;
+                Zombie zombie = other.gameObject.GetComponent<Zombie>() as Zombie;
+                playerCollider.isTrigger = zombie.PlayerCollider.isTrigger = false;
+                StartCoroutine(Kill(zombie));
+                other.gameObject.tag = "Zombie";
+            }
 
-            playerCollider.isTrigger = false;
-            zombie.PlayerCollider.isTrigger = false;
-            StartCoroutine(Kill(zombie));
-            other.gameObject.tag = "Zombie";
-        }
+            if(other.gameObject.tag == "BombInWar") {
+                isInWar = false;
+                Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
+                playerCollider.isTrigger = bomb.PlayerCollider.isTrigger = false;
+                StartCoroutine(Explode(bomb));
+                other.gameObject.tag = "Bomb";
+            }
 
-        if(isInWar && other.gameObject.tag == "BombInWar") {
-            isInWar = false;
-            Bomb bomb = other.gameObject.GetComponent<Bomb>() as Bomb;
-
-            playerCollider.isTrigger = false;
-            bomb.PlayerCollider.isTrigger = false;
-            StartCoroutine(Explode(bomb));
-            other.gameObject.tag = "Zombie";
-        }
-
-        if(isInWar && other.gameObject.tag == "FlagInWar") {
-            isInWar = false;
-            Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
-            GameManager.Instance.ShowStars(flag);
-            GameManager.Instance.IsGameOver = true;
-            GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
-            playerCollider.isTrigger = false;
-            flag.PlayerCollider.isTrigger = false;
-            StartCoroutine(CollectFlag());
-            other.gameObject.tag = "Flag";
+            if(other.gameObject.tag == "FlagInWar") {
+                isInWar = false;
+                Flag flag = other.gameObject.GetComponent<Flag>() as Flag;
+                GameManager.Instance.ShowStars(flag);
+                GameManager.Instance.IsGameOver = true;
+                GetComponent<SpriteRenderer>().sortingOrder = CurrentTile.Row;
+                playerCollider.isTrigger = flag.PlayerCollider.isTrigger = false;
+                StartCoroutine(CollectFlag());
+                other.gameObject.tag = "Flag";
+            }
         }
     }
 
@@ -259,16 +243,12 @@ public class Zombie: PlayerSoldier {
                 Anim.Play("Die");
                 SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
             }
-            //if(Globals.IS_SINGLE_PLAYER && CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != CurrentSide)
-            //    SoldierManager.Instance.EnemyList.Remove(this);
-            //else
-            //    SoldierManager.Instance.LocalPlayerList.Remove(this);
             SoldierManager.Instance.RemoveSoldierFromList(this);
 
 
             GameManager.Instance.UpdateStats();
-            yield return new WaitForSeconds(3f);
             GameManager.Instance.CloseInfo();
+            yield return new WaitForSeconds(3f);
             GameManager.Instance.CheckWin(CurrentSide);
             Destroy(gameObject);
         }
@@ -292,5 +272,9 @@ public class Zombie: PlayerSoldier {
 
     public override void MakeNoise() {
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieBought);
+    }
+
+    public override void SetWarTag() {
+        gameObject.tag = "InWar";
     }
 }

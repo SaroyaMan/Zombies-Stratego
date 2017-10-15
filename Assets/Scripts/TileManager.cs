@@ -131,4 +131,13 @@ public class TileManager: Singleton<TileManager> {
 
         return tiles;
     }
+
+    public void Fix() {
+        foreach(var tile in allTiles.Values) {
+            if(tile.Soldier != null && tile.Soldier.CurrentTile != tile) {
+                print("fixedIntegrity");
+                tile.Soldier = null;
+            }
+        }
+    }
 }

@@ -12,17 +12,11 @@ public class Bomb : PlayerSoldier {
         else {
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.BombBought);
         }
-
-        //if(Globals.IS_SINGLE_PLAYER && CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != CurrentSide)
-        //    SoldierManager.Instance.EnemyList.Remove(this);
-        //else
-        //    SoldierManager.Instance.LocalPlayerList.Remove(this);
         SoldierManager.Instance.RemoveSoldierFromList(this);
 
         GameManager.Instance.UpdateStats();
         GameManager.Instance.CloseInfo();
         Destroy(gameObject);
-        //CurrentTile.IsInUse = false;
         CurrentTile = null;
     }
 
@@ -36,5 +30,9 @@ public class Bomb : PlayerSoldier {
 
     public override void MakeNoise() {
         SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.BombBought);
+    }
+
+    public override void SetWarTag() {
+        gameObject.tag = "BombInWar";
     }
 }

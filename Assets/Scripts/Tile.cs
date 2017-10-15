@@ -69,11 +69,17 @@ public class Tile: MonoBehaviour {
     public void ReadyToStep(PlayerSoldier zombie, bool isPc = false) {
         isReadyToStep = true;
         if(!isPc) ColorTile();
-        if(soldier == null || !soldier.IsEnemy(zombie)) {
-            soldier = zombie;
-        }
-        else {
+        //if(soldier == null || !soldier.IsEnemy(zombie)) {
+        //    soldier = zombie;
+        //}
+        //else {
+        //    attackingZombie = zombie as Zombie;
+        //}
+        if(soldier != null && soldier.IsEnemy(zombie)) {
             attackingZombie = zombie as Zombie;
+        }
+        else if(soldier == null) {
+            soldier = zombie;
         }
     }
 
@@ -82,6 +88,7 @@ public class Tile: MonoBehaviour {
         if(!isPc) UnColorTile();
         if(soldier != null && zombie == soldier)
             soldier = null;
+        attackingZombie = null;
     }
 
     public void OnMouseDown() {
@@ -98,9 +105,9 @@ public class Tile: MonoBehaviour {
     }
 
     public void MakeStep() {
-        //FixIntegrity();
         if(isReadyToStep) {
             isReadyToStep = false;
+
             if(attackingZombie != null && attackingZombie is Zombie) {
                 (attackingZombie as Zombie).GetCloser(soldier);
                 attackingZombie = null;
@@ -111,14 +118,6 @@ public class Tile: MonoBehaviour {
             }
             if(Globals.IS_SINGLE_PLAYER && !(soldier is Flag) )
                 GameManager.Instance.PassTurn();
-        }
-    }
-
-    public void FixIntegrity() {
-        print("soldier.CurrentTile = " + soldier.CurrentTile.Row + " " + soldier.CurrentTile.Column);
-        if(soldier != null && soldier.CurrentTile != this) {
-            print("fixedIntegrity");
-            soldier = null;
         }
     }
 }
