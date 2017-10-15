@@ -236,7 +236,7 @@ public class Zombie: PlayerSoldier {
             StartCoroutine(Die());
         }
         else {                          // draw - kill both
-            //CurrentTile.IsInUse = false;
+            enemy.CurrentTile.Soldier = null;
             isDieRunning = enemy.isDieRunning = true;
             StartCoroutine(Die());
             StartCoroutine(enemy.Die());
@@ -259,11 +259,13 @@ public class Zombie: PlayerSoldier {
                 Anim.Play("Die");
                 SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.ZombieDie);
             }
-            transform.parent = null;
-            if(Globals.IS_SINGLE_PLAYER && CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != CurrentSide)
-                SoldierManager.Instance.EnemyList.Remove(this);
-            else
-                SoldierManager.Instance.LocalPlayerList.Remove(this);
+            //if(Globals.IS_SINGLE_PLAYER && CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != CurrentSide)
+            //    SoldierManager.Instance.EnemyList.Remove(this);
+            //else
+            //    SoldierManager.Instance.LocalPlayerList.Remove(this);
+            SoldierManager.Instance.RemoveSoldierFromList(this);
+
+
             GameManager.Instance.UpdateStats();
             yield return new WaitForSeconds(3f);
             GameManager.Instance.CloseInfo();

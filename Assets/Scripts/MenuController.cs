@@ -62,6 +62,11 @@ public class MenuController: MonoBehaviour {
         MenuLogic.Instance.ChangeMenuState(MenuScreens.Options);
     }
 
+    public void QuitGame() {
+        soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
+        MenuLogic.Instance.QuitGame();
+    }
+
     public void Back() {
         soundManager.SFX.PlayOneShot(soundManager.ButtonPress);
         MenuLogic.Instance.GoBack();

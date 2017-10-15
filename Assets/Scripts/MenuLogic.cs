@@ -227,6 +227,10 @@ public class MenuLogic: Singleton<MenuLogic> {
         GoBack();
     }
 
+    public void QuitGame() {
+        Application.Quit();
+    }
+
     private void ToggleMenuWindow(bool isTurnOn) {
         Globals.Instance.UnityObjects["MainWindow"].SetActive(isTurnOn);
         Globals.Instance.UnityObjects["Img_Logo"].SetActive(isTurnOn);

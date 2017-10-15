@@ -120,22 +120,23 @@ public class SoldierManager: Singleton<SoldierManager> {
         List<Tile> tilesToStep;
         Zombie randZombie;
         yield return new WaitForSeconds(2f);
-        while(true) {
-            randZombie = enemyList[Random.Range(0, enemyList.Count)] as Zombie;
-            if(randZombie is Zombie && !randZombie.IsDying && TileManager.Instance != null) {
-                tilesToStep = TileManager.Instance.GetClosestTiles(randZombie.CurrentTile, randZombie);
-                if(tilesToStep.Count > 0) {
-                    break;
+        if(HasZombies(GameManager.Instance.PcSide)) {
+            while(true) {
+                randZombie = enemyList[Random.Range(0, enemyList.Count)] as Zombie;
+                if(randZombie is Zombie && !randZombie.IsDying && TileManager.Instance != null) {
+                    tilesToStep = TileManager.Instance.GetClosestTiles(randZombie.CurrentTile, randZombie);
+                    if(tilesToStep.Count > 0) {
+                        break;
+                    }
                 }
             }
+            randZombie.TilesToStep = tilesToStep;
+            foreach(var tile in tilesToStep) {
+                tile.ReadyToStep(randZombie, true);
+            }
+            var randTile = tilesToStep[Random.Range(0, tilesToStep.Count)];
+            randTile.MakeStep();
         }
-        randZombie.TilesToStep = tilesToStep;
-        foreach(var tile in tilesToStep) {
-            tile.ReadyToStep(randZombie, true);
-        }
-        var randTile = tilesToStep[Random.Range(0, tilesToStep.Count)];
-        randTile.MakeStep();
-
         yield return null;
     }
 
@@ -266,13 +267,12 @@ public class SoldierManager: Singleton<SoldierManager> {
         foreach(var tile in enemyShownTiles) {
             tile.UnColorTile();
         }
-        //UnMarkEnemyTiles();
     }
 
-    //public void UnMarkEnemyTiles() {
-    //    foreach(var soldier in enemyList) {
-    //        if(!soldier.IsHidden)
-    //            soldier.CurrentTile.UnColorTile();
-    //    }
-    //}
+    public void RemoveSoldierFromList(PlayerSoldier soldier) {
+        if(Globals.IS_SINGLE_PLAYER && soldier.CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != soldier.CurrentSide)
+            EnemyList.Remove(soldier);
+        else
+            LocalPlayerList.Remove(soldier);
+    }
 }

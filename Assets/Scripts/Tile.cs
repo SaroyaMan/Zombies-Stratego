@@ -17,7 +17,6 @@ public class Tile: MonoBehaviour {
 
     private PlayerSoldier attackingZombie;
 
-    //public bool IsInUse { get; set; }
     public short Row { get { return row; } }
     public short Column { get { return column; } }
     public PlayerSoldier Soldier { get { return soldier; } set { soldier = value; } }
@@ -43,12 +42,10 @@ public class Tile: MonoBehaviour {
 
 
     public void MarkTileInUse() {
-        //IsInUse = true;
         tag = "BuildTileFull";
     }
 
     public void UnmarkTileInUse() {
-        //IsInUse = false;
         tag = "BuildTile";
     }
 
@@ -88,12 +85,12 @@ public class Tile: MonoBehaviour {
     }
 
     public void OnMouseDown() {
-        //if(soldier != null) {
-        //    Debug.LogError(soldier.name + " " + soldier.CurrentSide.ToString() + " Rank = " + soldier.Rank + "isReadyToStep = " + isReadyToStep);
-        //}
-        //else {
-        //    Debug.LogError("soldier is NULL, isReadyToStep = " + isReadyToStep);
-        //}
+        if(soldier != null) {
+            Debug.LogError(soldier.name + " " + soldier.CurrentSide.ToString() + " Rank = " + soldier.Rank + "isReadyToStep = " + isReadyToStep);
+        }
+        else {
+            Debug.LogError("soldier is NULL, isReadyToStep = " + isReadyToStep);
+        }
         if(isReadyToStep && !Globals.IS_SINGLE_PLAYER) {
             GameManager.Instance.PassTurn(attackingZombie == null ? soldier.CurrentTile : attackingZombie.CurrentTile, this);
         }
@@ -101,6 +98,7 @@ public class Tile: MonoBehaviour {
     }
 
     public void MakeStep() {
+        //FixIntegrity();
         if(isReadyToStep) {
             isReadyToStep = false;
             if(attackingZombie != null && attackingZombie is Zombie) {
@@ -113,6 +111,14 @@ public class Tile: MonoBehaviour {
             }
             if(Globals.IS_SINGLE_PLAYER && !(soldier is Flag) )
                 GameManager.Instance.PassTurn();
+        }
+    }
+
+    public void FixIntegrity() {
+        print("soldier.CurrentTile = " + soldier.CurrentTile.Row + " " + soldier.CurrentTile.Column);
+        if(soldier != null && soldier.CurrentTile != this) {
+            print("fixedIntegrity");
+            soldier = null;
         }
     }
 }

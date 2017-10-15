@@ -12,10 +12,13 @@ public class Bomb : PlayerSoldier {
         else {
             SoundManager.Instance.SFX.PlayOneShot(SoundManager.Instance.BombBought);
         }
-        if(Globals.IS_SINGLE_PLAYER && CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != CurrentSide)
-            SoldierManager.Instance.EnemyList.Remove(this);
-        else
-            SoldierManager.Instance.LocalPlayerList.Remove(this);
+
+        //if(Globals.IS_SINGLE_PLAYER && CurrentSide == GameManager.Instance.PcSide || !Globals.IS_SINGLE_PLAYER && MultiPlayerManager.Instance.PlayerSide != CurrentSide)
+        //    SoldierManager.Instance.EnemyList.Remove(this);
+        //else
+        //    SoldierManager.Instance.LocalPlayerList.Remove(this);
+        SoldierManager.Instance.RemoveSoldierFromList(this);
+
         GameManager.Instance.UpdateStats();
         GameManager.Instance.CloseInfo();
         Destroy(gameObject);
