@@ -297,10 +297,13 @@ public class GameManager : Singleton<GameManager> {
     }
 
     public void ResetMatch() {
+        SoldierManager.Instance.StopAllCoroutines();
+        StopAllCoroutines();
         SoundManager.Instance.Music.Play();     //stop the music and start over
         TileManager.Instance.ClearTiles();
         SoldierManager.Instance.ClearSoldiers();
         SoldierManager.Instance.LoadStrategy();
+        isPcPlaying = false;
         InitGame();
         ResumeGame();
         if(Globals.Instance.UnityObjects["WinWindow"]) {
