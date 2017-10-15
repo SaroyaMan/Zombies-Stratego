@@ -116,8 +116,10 @@ public class Tile: MonoBehaviour {
             else if(soldier is Zombie) {
                 (soldier as Zombie).Walk(this);
             }
-            if(Globals.IS_SINGLE_PLAYER && !(soldier is Flag) )
+            if(Globals.IS_SINGLE_PLAYER && !(soldier is Flag) ) {
                 GameManager.Instance.PassTurn();
+
+            }
         }
     }
 }
