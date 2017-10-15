@@ -91,7 +91,6 @@ public class MenuLogic: Singleton<MenuLogic> {
     private void ShutdownScreens() {
         var unityObjects = Globals.Instance.UnityObjects;
         unityObjects["ScreenMenu"].SetActive(false);
-        //unityObjects["ScreenLoading"].SetActive(false);
         unityObjects["ScreenOptions"].SetActive(false);
         unityObjects["ScreenStudentInfo"].SetActive(false);
         unityObjects["ScreenMultiplayer"].SetActive(false);
