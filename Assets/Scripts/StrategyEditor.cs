@@ -49,11 +49,18 @@ public class StrategyEditor: Singleton<StrategyEditor> {
 
     public void SelectedSoldier(SoldierBtn soldierSelected) {
         if(soldierSelected.SoldierObject.Price <= MenuLogic.Instance.Money && SoldierManager.Instance.LocalPlayerList.Count <= Globals.MAX_SOLDIERS_FOR_PLAYER) {
+            print("platform = " + Application.platform);
 
-            PlayerBtnPressed = soldierSelected;
-            EnableDragSprite(PlayerBtnPressed.DragSprite);
-            TileManager.Instance.MarkAvailableBuildTiles();
-
+            if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer) {
+                PlayerBtnPressed = soldierSelected;
+                EnableDragSprite(PlayerBtnPressed.DragSprite);
+                TileManager.Instance.MarkAvailableBuildTiles();
+            }
+            else {
+                var potentialBuildTile = TileManager.Instance.GetNextAvailableTile();
+                if(potentialBuildTile != null)
+                    PlaceSoldier(potentialBuildTile, soldierSelected.SoldierObject);
+            }
         }
     }
 

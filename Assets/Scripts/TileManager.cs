@@ -64,6 +64,13 @@ public class TileManager: Singleton<TileManager> {
         }
     }
 
+    public Tile GetNextAvailableTile() {
+        foreach(var tile in buildTiles.Values) {
+            if(tile.tag == "BuildTile") return tile;
+        }
+        return null;
+    }
+
     public List<Tile> GetAllEnemyTiles() {
         List<Tile> tiles = new List<Tile>();
 
@@ -77,11 +84,6 @@ public class TileManager: Singleton<TileManager> {
 
     private List<Tile> GetAllPotentialFlagTiles() {
         List<Tile> tiles = new List<Tile>();
-
-        //foreach(var tile in allTiles.Values) {
-        //    if(tile.tag == "EnemyTile" && tile.Column == Globals.COLUMNS - 1)
-        //        tiles.Add(tile);
-        //}
         for(int i = 0; i < Globals.ROWS; i++) {
             if(matrixTiles[i, Globals.COLUMNS - 1].tag == "EnemyTile")
                 tiles.Add(matrixTiles[i, Globals.COLUMNS - 1]);
